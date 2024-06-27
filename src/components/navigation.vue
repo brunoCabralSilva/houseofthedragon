@@ -118,6 +118,11 @@
     </ul>
   </div>
   <Logout v-if="close" @logout-user="close = false" />
+  <img
+    :src="require(`@/assets/wallpaper-dragon.jpg`)"
+    class="w-full object-cover object-center z-20 h-40vh"
+    alt="Emblema dourado da cara Targaryen"
+  >
 </template>
 
 <script>

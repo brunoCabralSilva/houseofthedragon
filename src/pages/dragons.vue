@@ -1,7 +1,13 @@
 <template>
   <Navigation />
-  <div class="h-screen flex items-center justify-center">
-    Dragons
+  <div class="h-screen flex items-start justify-center bg-black text-white pt-5">
+    <button
+      type="button"
+      class=""
+    >
+      Cadastrar Dragão
+    </button>
+    Fogo e Sangue
   </div>
   <Footer />
 </template>

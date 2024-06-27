@@ -1,5 +1,5 @@
 <template>
-  <footer className="relative text-white px-4 flex flex-col sm:flex-row justify-between items-center w-full py-2 z-5 bg-black">
+  <footer className="relative text-white px-4 flex flex-col sm:flex-row justify-between items-center w-full py-2 z-5 bg-black border-t border-golden">
     <div className="pl-0 sm:w-1/4 flex flex-row justify-center sm:justify-start my-4 sm:my-0">
       <img
         :src="require(`@/assets/targaryen-icon.png`)"

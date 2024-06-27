@@ -1,6 +1,6 @@
 <template>
   <Navigation />
-  <div class="h-screen flex items-center justify-center">
+  <div class="h-screen flex items-start justify-center bg-black text-white pt-5">
     Community
   </div>
   <Footer />

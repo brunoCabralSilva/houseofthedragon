@@ -9,6 +9,9 @@ module.exports = {
         'dark-golden': '#75501D',
         'light-golden': '#E2BA85',
       },
+      height: {
+        '40vh': '40vh',
+      },
       backgroundImage: theme => ({
         'drogon': "url('@/assets/wallpaper-drogon.jpg')",
       })
