@@ -7,6 +7,7 @@ import Community from '../pages/community.vue';
 import Profile from '../pages/profile.vue';
 import Login from '../pages/login.vue';
 import Register from '../pages/register.vue';
+import Match from '../pages/matchs.vue';
 
 const routes = [
   {
@@ -48,6 +49,11 @@ const routes = [
     path: '/profile',
     name: 'Profile',
     component: Profile
+  },
+  {
+    path: '/matchs',
+    name: 'Matchs',
+    component: Match
   }
 ];
 

@@ -1,6 +1,6 @@
   <template class="min-h-screen">
-    <section className="bg-ritual break-words bg-dice bg-center bg-fixed min-h-screen w-full items-center justify-center">
-    <div className="break-words bg-black/95 flex flex-col items-center justify-center px-2 sm:px-6 py-8 mx-auto h-full lg:py-0">
+    <section className="bg-drogon bg-cover break-words bg-dice bg-center bg-fixed min-h-screen w-full items-center justify-center">
+    <div className="break-words bg-black/90 flex flex-col items-center justify-center px-2 sm:px-6 py-8 mx-auto h-full lg:py-0">
        <div className="break-words md:my-5 w-full rounded-lg shadow">
           <div className="break-words p-4 space-y-4 md:space-y-6 sm:p-8">
             <div className="break-words flex items-center justify-between w-full mb-6 sm:mb-0">
@@ -9,7 +9,7 @@
               </h1>
               <div
                 @click="returnLogin"
-                className="break-words text-white hover:text-red-500 transition-colors sm:text-3xl text-2xl cursor-pointer"
+                className="break-words text-white hover:text-golden transition-colors sm:text-3xl text-2xl cursor-pointer"
               >
                 <FontAwesomeIcon :icon="['fas', 'angle-left']" />
                 <FontAwesomeIcon :icon="['fas', 'angle-left']" />
@@ -91,16 +91,16 @@
               <button 
                 type="button"
                 @click="handleRegister"
-                className="break-words relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-red-600 to-red-900 hover:from-red-900 hover:to-red-600 hover:text-white focus:ring-4 focus:outline-none w-full"
+                className="break-words relative inline-flex items-center justify-center p-0.5 mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-golden to-dark-golden hover:from-dark-golden hover:to-golden hover:text-white focus:ring-4 focus:outline-none w-full"
               >
-                <span className="break-words relative px-5 py-2.5 transition-all ease-in duration-75 text-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
+                <span className="break-words relative px-5 text-lg py-2.5 transition-all ease-in duration-75 text-white dark:bg-gray-900 rounded-md group-hover:bg-opacity-0">
                   {{ loading ? 'Registrando, por favor aguarde' : 'Registrar' }}
                 </span>
               </button>
             </div>
           </div>
         </div>
-      </div> 
+      </div>
     </section>
   </template>
   

@@ -2,7 +2,7 @@
   <Navigation />
   <section class="bg-drogon bg-cover break-words bg-dice bg-center h-screen w-full items-center justify-center">
     <div class="break-words flex flex-col items-center justify-center sm:px-6 py-8 mx-auto h-full lg:py-0 bg-black/90">
-      <div class="break-words p-1 bg-prot-light w-full rounded-lg shadow dark:border sm:max-w-md dark:border-gray-700 z-50 my-5">
+      <div class="break-words p-1 bg-prot-light w-full rounded-lg shadow dark:border sm:max-w-md dark:border-gray-700 my-5">
         <div class="break-words rounded-lg shadow dark:border md:mt-0 w-full xl:p-0 dark:border-gray-700 ">
           <div class="break-words p-4 space-y-4 md:space-y-6 sm:p-8">
             <div class="break-words space-y-4 md:space-y-6">
@@ -34,6 +34,7 @@
               </div>
               <div class="break-words flex items-center justify-center sm:justify-end">
                   <button
+                    @click="forgotPassword"
                     class="break-words text-sm font-medium underline text-white hover:text-golden transition-colors">
                       Esqueceu a Senha?
                   </button>
@@ -55,6 +56,7 @@
         </div>
       </div>
     </div>
+    <ForgotPassword v-if="forgot" @close-forgot-password="forgot = false" />
   </section>
   <Footer />
 </template>
@@ -62,6 +64,7 @@
 <script>
 import Footer from '@/components/footer.vue';
 import Navigation from '@/components/navigation.vue';
+import ForgotPassword from '@/components/forgotPassword.vue';
 import { useRouter } from "vue-router";
 import { authenticate, signIn } from "../firebase/authenticate";
 
@@ -73,11 +76,13 @@ export default {
     password: '',
     loading: false,
     showData: false,
+    forgot: false,
     }
   },
   components: {
     Navigation,
-    Footer
+    Footer,
+    ForgotPassword,
   },
   async created() {
     const router = useRouter();
@@ -103,6 +108,10 @@ export default {
         else window.alert('Não foi possível realizar o login. Por favor, verifique suas credenciais e tente novamente.');
         this.loading = false;
       }
+    },
+    
+    forgotPassword() {
+      this.forgot = true;
     },
 
     handleKeyDown(e) {
