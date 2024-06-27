@@ -7,7 +7,11 @@ module.exports = {
       colors: {
         'golden': '#BE8E4A',
         'dark-golden': '#75501D',
+        'light-golden': '#E2BA85',
       },
+      backgroundImage: theme => ({
+        'drogon': "url('@/assets/wallpaper-drogon.jpg')",
+      })
     },
   },
   variants: {
