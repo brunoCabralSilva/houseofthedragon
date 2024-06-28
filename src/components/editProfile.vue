@@ -1,5 +1,5 @@
 <template>
-    <div class="break-words z-50 fixed top-0 left-0 w-full flex items-start justify-center bg-black/80 px-3 py-4 sm:px-0 h-full overflow-y-auto">
+    <div class="break-words z-50 fixed top-0 left-0 w-full flex items-start justify-center bg-black/80 sm:px-0 h-full overflow-y-auto">
       <div class="bg-black break-words w-full flex flex-col justify-center items-center relative border-golden border-2 pb-5">
         <div class="break-words pt-4 sm:pt-3 px-3 w-full flex justify-end top-0 right-0">
           <FontAwesomeIcon
@@ -45,11 +45,11 @@
             </label>
             <label
               @click="showChangeImage"
-              class="flex w-full gap-2 items-center mb-2 cursor-pointer"
+              class="flex w-full gap-2 items-start sm:items-center mb-2 cursor-pointer"
             >
               <div v-if="changeImage" class="w-4 h-4 bg-golden border border-black"></div>
               <div v-else class="w-4 h-4 bg-black border border-golden"></div>
-              <p class="break-words w-full text-white leading-6">Quero alterar a imagem de Perfil</p>
+              <p class="break-words w-full text-white leading-4">Quero alterar a imagem de Perfil</p>
             </label>
             <label v-if="changeImage" htmlFor="image" className="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
               <p class="break-words w-full mb-3 sm:mb-1 text-white">Escolha uma Imagem de perfil</p>
