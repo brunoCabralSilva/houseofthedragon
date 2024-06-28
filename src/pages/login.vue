@@ -6,7 +6,7 @@
     </div>
     <div v-else class="bg-drogon bg-cover break-words bg-dice bg-center h-screen w-full items-center justify-center">
     <div class="break-words flex flex-col items-center justify-center sm:px-6 py-8 mx-auto h-full lg:py-0 bg-black/90">
-      <div class="break-words p-1 bg-prot-light w-full rounded-lg shadow my-5">
+      <div class="break-words p-1 bg-prot-light rounded-lg shadow my-5 w-11/12 md:w-1/2 lg:w-1/3 ">
         <div class="break-words rounded-lg shadow md:mt-0 w-full xl:p-0">
           <div class="break-words p-4 space-y-4 md:space-y-6 sm:p-8">
             <div class="break-words space-y-4 md:space-y-6">

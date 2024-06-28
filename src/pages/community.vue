@@ -1,7 +1,7 @@
 <template>
-  <Navigation />
-  <div :class="['min-h-screen', 'bg-black', 'flex', 'justify-center', showData ? 'items-start' : 'items-center']">
-    <div v-if="!showData" class="mt-20">
+  <div :class="['min-h-screen', 'bg-black', 'flex', 'flex-col', 'justify-start', showData ? 'items-start' : 'items-start']">
+    <Navigation />
+    <div v-if="!showData" class="mt-20 w-full flex items-center justify-center">
       <Loading />
     </div>
     <div v-else class="h-full flex flex-col items-start justify-start bg-black text-white pt-5 w-full gap-2 px-2">

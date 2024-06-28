@@ -2,8 +2,9 @@
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import { getAuth } from 'firebase/auth';
 import { collection, doc, getDoc, getDocs, getFirestore, query, setDoc, updateDoc, where } from 'firebase/firestore';
-import { createProfileImage } from './storage';
+import { createProfileImage, updateProfileImage } from './storage';
 import firebaseConfig from "./connection";
+import { changeUserPassword } from './authenticate';
 
 export async function registerUser(
   email,
@@ -81,14 +82,25 @@ export async function getUserById(userId) {
   }
 }
 
-export async function updateUserById(userData) {
+export async function updateUserById(id, firstName, lastName, email, oldPassword, image, password) {
   try {
     const db = getFirestore(firebaseConfig);
-    const userDocRef = doc(db, 'users', userData.id);
+    const userDocRef = doc(db, 'users', id);
     const userDocSnapshot = await getDoc(userDocRef);
     if (!userDocSnapshot.exists()) {
-      window.alert('Usuário / Empresa não encontrad(a)');
+      window.alert('Usuário não encontrad(a). Por favor, atualize a página e tente novamente.');
     } else {
+      const userData = { firstName, lastName };
+      if (image && password) {
+        const imageURL = await updateProfileImage(id, image);
+        userData.imageURL = imageURL;
+        await changeUserPassword(oldPassword, email, password);
+      }  
+      else if (image) {
+        const imageURL = await updateProfileImage(id, image)
+        userData.imageURL = imageURL;
+      }
+      else if (password) await changeUserPassword(oldPassword, email, password);
       await updateDoc(userDocRef, userData);
       window.alert('Dados atualizados com sucesso!');
       return true;
