@@ -1,7 +1,10 @@
 <template>
-    <div class="break-words w-full min-h-screen flex flex-col items-start justify-center bg-black/80 sm:px-0 h-full">
+    <div :class="['break-words', 'w-full', 'min-h-screen', 'flex', 'flex-col', 'items-start', 'justify-center', 'bg-black', 'sm:px-0', 'h-full']">
       <Navigation />
-      <div class="bg-black break-words w-full h-full flex flex-col justify-center items-center relative p-5">
+      <div v-if="!showData" class="w-full py-10 h-full flex justify-center items-center bg-black">
+        <Loading />
+      </div>
+      <div v-else class="break-words w-full h-full flex flex-col justify-center items-center relative p-5">
         <div class="break-words w-full h-full overflow-y-auto flex flex-col justify-center items-center">
           <div
             class="break-words w-full text-white text-xl sm:text-2xl pb-3 font-bold text-left sm:text-center mt-2 mb-2"
@@ -110,6 +113,7 @@
 <script>
 import Navigation from '@/components/navigation.vue';
 import Footer from '@/components/footer.vue';
+import Loading from '@/components/loading.vue';
 import { authenticate, signIn } from '@/firebase/authenticate';
 import { useRouter } from 'vue-router';
 import { getUserByEmail, updateUserById } from '@/firebase/user';
@@ -119,15 +123,17 @@ export default {
   components: {
     Navigation,
     Footer,
+    Loading,
   },
   data() {
     return {
       id: '',
       email: '',
-      loading: false,
-      lastName: '',
       image: '',
+      lastName: '',
       firstName: '',
+      loading: false,
+      showData: false,
       oldPassword: '',
       changeImage: false,
       changePassword: false,

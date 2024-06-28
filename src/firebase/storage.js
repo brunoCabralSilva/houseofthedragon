@@ -14,6 +14,19 @@ export async function createProfileImage(id, img){
   }
 }
 
+export async function createNewsImage(id, img){
+  try {
+    const storage = getStorage(firebaseConfig);
+    const storageRef = ref(storage, `images/news/${id}/${img.name}`);
+    await uploadBytes(storageRef, img);
+    const downloadUrl = await getDownloadURL(storageRef);
+    return downloadUrl;
+  } catch (error) {
+    window.alert("Erro ao fazer upload da midia imagem: " + error.message);
+    return false;
+  }
+}
+
 export async function updateProfileImage(id, newImg) {
   try {
     const storage = getStorage(firebaseConfig);

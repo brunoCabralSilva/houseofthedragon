@@ -9,6 +9,7 @@ import Login from '../pages/login.vue';
 import Register from '../pages/register.vue';
 import Match from '../pages/matchs.vue';
 import EditProfile from '@/pages/editProfile.vue';
+import CreateNews from '@/pages/createNews.vue';
 
 const routes = [
   {
@@ -60,6 +61,11 @@ const routes = [
     path: '/edit-profile',
     name: 'EditProfile',
     component: EditProfile
+  },
+  {
+    path: '/create-news',
+    name: 'CreateNews',
+    component: CreateNews
   }
 ];
 

@@ -24,19 +24,19 @@
       <p class="my-0 font-sedan-sc text-golden font-bold leading-none">Valyrian Wars</p>
     </div>
     <ul class="z-20 hidden md:flex justify-center gap-4 lg:gap-8">
-      <router-link to="/gaming" class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-lg">
+      <router-link to="/gaming" :class="['font-sedan-sc', 'cursor-pointer', 'text-golden', 'hover:text-white', 'font-bold', 'transition-colors', 'duration-300', 'text-lg', this.route === '/gaming' ? 'underline' : '']">
         O Jogo
       </router-link>
-      <router-link to="/dragons" class="font-sedan-sc font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-lg">
+      <router-link to="/dragons" :class="['font-sedan-sc', 'cursor-pointer', 'text-golden', 'hover:text-white', 'font-bold', 'transition-colors', 'duration-300', 'text-lg', this.route === '/dragons' ? 'underline' : '']">
         Dragões
       </router-link>
-      <router-link to="/news" class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-lg">
+      <router-link to="/news" :class="['font-sedan-sc', 'cursor-pointer', 'text-golden', 'hover:text-white', 'font-bold', 'transition-colors', 'duration-300', 'text-lg', this.route === '/news' ? 'underline' : '']">
         Notícias
       </router-link>
-      <router-link to="/community" class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-lg">
+      <router-link to="/community" :class="['font-sedan-sc', 'cursor-pointer', 'text-golden', 'hover:text-white', 'font-bold', 'transition-colors', 'duration-300', 'text-lg', this.route === '/community' ? 'underline' : '']">
         Comunidade
       </router-link>
-      <router-link to="/profile" class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-lg">
+      <router-link to="/profile" :class="['font-sedan-sc', 'cursor-pointer', 'text-golden', 'hover:text-white', 'font-bold', 'transition-colors', 'duration-300', 'text-lg', this.route === '/profile' ? 'underline' : '']">
         Perfil
       </router-link>
       <div
@@ -66,44 +66,51 @@
   >
     <ul class="flex flex-col items-center justify-center gap-4 lg:gap-8 h-full">
       <router-link
+        to="/"
+        @click="toggleMenu"
+        :class="['font-sedan-sc', 'cursor-pointer', 'text-golden', 'hover:text-white', 'font-bold', 'transition-colors', 'duration-300', 'text-xl', this.route === '/' ? 'underline' : '']"
+      >
+        Início
+      </router-link>
+      <router-link
         to="/gaming"
         @click="toggleMenu"
-        class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-xl"
+        :class="['font-sedan-sc', 'cursor-pointer', 'text-golden', 'hover:text-white', 'font-bold', 'transition-colors', 'duration-300', 'text-xl', this.route === '/gaming' ? 'underline' : '']"
       >
         O Jogo
       </router-link>
       <router-link
         to="/dragons"
         @click="toggleMenu"
-        class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-xl"
+        :class="['font-sedan-sc', 'cursor-pointer', 'text-golden', 'hover:text-white', 'font-bold', 'transition-colors', 'duration-300', 'text-xl', this.route === '/dragons' ? 'underline' : '']"
       >
         Dragões
       </router-link>
       <router-link
         to="/news"
         @click="toggleMenu"
-        class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-xl"
+        :class="['font-sedan-sc', 'cursor-pointer', 'text-golden', 'hover:text-white', 'font-bold', 'transition-colors', 'duration-300', 'text-xl', this.route === '/news' ? 'underline' : '']"
       >
         Notícias
       </router-link>
       <router-link
         to="/community"
         @click="toggleMenu"
-        class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-xl"
+        :class="['font-sedan-sc', 'cursor-pointer', 'text-golden', 'hover:text-white', 'font-bold', 'transition-colors', 'duration-300', 'text-xl', this.route === '/community' ? 'underline' : '']"
       >
         Comunidade
       </router-link>
       <router-link
         to="/profile"
         @click="toggleMenu"
-        class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-xl"
+        :class="['font-sedan-sc', 'cursor-pointer', 'text-golden', 'hover:text-white', 'font-bold', 'transition-colors', 'duration-300', 'text-xl', this.route === '/profile' ? 'underline' : '']"
       >
         Perfil
       </router-link>
       <div
         v-if="logged"
         @click="signOut"
-        class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-xl w-6"
+        class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-xl"
       >
         Sair
       </div>
@@ -131,7 +138,7 @@ import Logout from '@/components/logout.vue';
 import { authenticate } from '@/firebase/authenticate';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faRightFromBracket  } from '@fortawesome/free-solid-svg-icons';
-import { library } from '@fortawesome/fontawesome-svg-core'
+import { library } from '@fortawesome/fontawesome-svg-core';
 import { useRouter } from 'vue-router';
 library.add(faRightFromBracket );
 export default {
