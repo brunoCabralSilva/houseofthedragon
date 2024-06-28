@@ -24,25 +24,25 @@
       <p class="my-0 font-sedan-sc text-golden font-bold leading-none">Valyrian Wars</p>
     </div>
     <ul class="z-20 hidden md:flex justify-center gap-4 lg:gap-8">
-      <router-link to="/gaming" class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300">
+      <router-link to="/gaming" class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-lg">
         O Jogo
       </router-link>
-      <router-link to="/dragons" class="font-sedan-sc font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300">
+      <router-link to="/dragons" class="font-sedan-sc font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-lg">
         Dragões
       </router-link>
-      <router-link to="/news" class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300">
+      <router-link to="/news" class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-lg">
         Notícias
       </router-link>
-      <router-link to="/community" class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300">
+      <router-link to="/community" class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-lg">
         Comunidade
       </router-link>
-      <router-link to="/profile" class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300">
+      <router-link to="/profile" class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-lg">
         Perfil
       </router-link>
       <div
         v-if="logged"
         @click="signOut"
-        class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 w-6"
+        class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-lg w-6"
       >
         <FontAwesomeIcon :icon="['fass', 'right-from-bracket']" />
       </div>

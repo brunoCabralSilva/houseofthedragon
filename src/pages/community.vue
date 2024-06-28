@@ -10,14 +10,14 @@
           @input="updateText($event.target.value)"
           @keydown.enter.prevent="sendMessage"
           placeholder="Escreva aqui sua mensagem"
-          class="break-words bg-black border-none outline-none text-white text-sm rounded block w-full p-2.5 placeholder-gray-400 sm:text-left"
+          class="break-words bg-black border-none outline-none text-white text-lg rounded block w-full p-2.5 placeholder-gray-400 sm:text-left"
         />
       </div>
       <button 
         type="button"
         id="sendMessage"
         @click="sendMessage"
-        class="break-words bg-black border-2 border-prot-light transition-colors hover:border-golden text-white focus:ring-prot-light font-medium rounded text-sm px-3 text-center ml-1 flex items-center justify-center h-10"
+        class="break-words bg-black border-2 border-prot-light transition-colors hover:border-golden text-white focus:ring-prot-light font-medium rounded text-lg px-3 text-center ml-1 flex items-center justify-center h-10"
       >
         <FontAwesomeIcon :icon="['fa', 'paper-plane']" />
       </button>
@@ -29,7 +29,7 @@
         class="text-white bg-black w-full sm:pr-5 py-5"
         alt="Carta de campo"
         >
-        <div class="bg-hard-dark-golden text-sm rounded-xl w-full p-2 mb-2">
+        <div class="bg-hard-dark-golden text-lg rounded-xl w-full p-2 mb-2">
           <div class="capitalize font-bold flex items-center gap-2">
             <div class="w-8 h-8 rounded-full bg-white border-white border border-1.5">
               <img
@@ -41,12 +41,12 @@
             {{ message.user }}
           </div>
           <p class="pl-10">{{ message.message }}</p>
-          <p class="w-full text-xs sm:text-normal text-right">{{ message.date }}</p>
+          <p class="w-full text-lg sm:text-lg text-right">{{ message.date }}</p>
         </div>
         <div
           v-for="(response, index) in message.responses"
           :key="index"
-          class="bg-gray-whats text-sm text-center rounded-xl p-2 mb-2 ml-2 sm:ml-10"
+          class="bg-gray-whats text-lg text-center rounded-xl p-2 mb-2 ml-2 sm:ml-10"
         >
           <div class="w-full capitalize font-bold flex items-center gap-2">
             <div class="w-8 h-8 rounded-full bg-white border-white border border-1.5">
@@ -59,7 +59,7 @@
             {{ response.user }}
           </div>
           <p class="pl-10 text-left">{{ response.message }}</p>
-          <p class="w-full text-xs sm:text-normal text-right">{{ message.date }}</p>
+          <p class="w-full text-lg sm:text-lg text-right">{{ message.date }}</p>
         </div>
         <div class="flex mt-4 ml-2 sm:ml-10">
           <textArea
@@ -68,7 +68,7 @@
             @input="updateResponse($event.target.value, message.id)"
             @keydown.enter.prevent="sendResponse(message.id)"
             placeholder="Responda a esta mensagem aqui"
-            class="w-full bg-black text-white border border-white p-2 rounded"
+            class="w-full bg-black text-white border border-white p-2 rounded text-lg"
           />
           <button
             type="button"
