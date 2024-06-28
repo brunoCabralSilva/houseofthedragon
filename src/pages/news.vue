@@ -12,19 +12,19 @@
       <div
         v-for="(newPub, index) in news"
         :key="index"
-        class="border border-golden p-2 sm:p-10 my-2 w-full"
+        class="border border-golden p-2 sm:p-10 my-2 w-full px-4"
       >
-        <p class="text-xl sm:text-3xl font-sedan-sc break-all pr-4 leading-6">
+        <p class="text-xl sm:text-3xl py-5 sm:py-0 font-sedan-sc break-all pr-4 leading-6">
           {{ newPub.title }}
         </p>
         <img
           :src="newPub.imageURL"
-          class="w-full h-40vh object-cover my-2"
+          class="w-full h-40vh object-cover my-2 "
         />
         <div
           v-for="(text, index) in newPub.texts"
           :key="index"
-          class="px-4 sm:px-0"
+          class=""
         >
           <p class="break-all py-2">{{ text.text }}</p>
         </div>
