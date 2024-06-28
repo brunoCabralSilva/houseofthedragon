@@ -7,7 +7,10 @@ module.exports = {
       colors: {
         'golden': '#BE8E4A',
         'dark-golden': '#75501D',
+        'hard-dark-golden': '#473113',
         'light-golden': '#E2BA85',
+        'gray-whats': '#202C33',
+        'green-whats': '#005C4B',
       },
       height: {
         '40vh': '40vh',
