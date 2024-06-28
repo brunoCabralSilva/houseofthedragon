@@ -8,6 +8,7 @@ import Profile from '../pages/profile.vue';
 import Login from '../pages/login.vue';
 import Register from '../pages/register.vue';
 import Match from '../pages/matchs.vue';
+import EditProfile from '@/pages/editProfile.vue';
 
 const routes = [
   {
@@ -54,6 +55,11 @@ const routes = [
     path: '/matchs',
     name: 'Matchs',
     component: Match
+  },
+  {
+    path: '/edit-profile',
+    name: 'EditProfile',
+    component: EditProfile
   }
 ];
 

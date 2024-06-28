@@ -29,6 +29,7 @@ export const registerMessage = async (data) => {
       message: data.message,
       imageURL: user.imageURL,
       user: data.user.displayName,
+      email: data.user.email,
       date,
       responses: [],
     });
@@ -55,11 +56,13 @@ export const registerResponse = async (data) => {
         message: data.message,
         imageURL: user.imageURL,
         user: data.user.displayName,
+        email: data.user.email,
         date,
       }] : [{
         message: data.message,
         imageURL: user.imageURL,
         user: data.user.displayName,
+        email: data.user.email,
         date,
       }];
 

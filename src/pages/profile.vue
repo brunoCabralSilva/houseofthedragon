@@ -21,7 +21,6 @@
         Editar Perfil
       </p>
     </div>
-    <EditProfile v-if="edit" @edit-profile="edit = false" />
   </div>
   <Footer />
 </template>
@@ -29,7 +28,6 @@
 <script>
 import Navigation from '@/components/navigation.vue';
 import Footer from '@/components/footer.vue';
-import EditProfile from '@/components/editProfile.vue';
 import { getUserByEmail } from '@/firebase/user';
 import { authenticate } from '@/firebase/authenticate';
 import { useRouter } from 'vue-router';
@@ -40,9 +38,9 @@ export default {
     Footer,
     Loading,
     Navigation,
-    EditProfile,
   },
   data() {
+    const routerPage = useRouter();
     return {
       user: {
         id: '',
@@ -51,11 +49,10 @@ export default {
         imageURL: '',
       },
       showData: false,
-      edit: false,
+      router: routerPage,
     }
   },
   async created() {
-    const router = useRouter();
     const auth = await authenticate();
     if (auth) {
       const user = await getUserByEmail(auth.email);
@@ -66,11 +63,11 @@ export default {
         displayName: user.firstName + ' ' + user.lastName,
       }
       this.showData = true;
-    } else router.push('/login');
+    } else this.router.push('/login');
   },
   methods: {
     editProfile() {
-      this.edit = true;
+      this.router.push('/edit-profile');
     },
   }
 }

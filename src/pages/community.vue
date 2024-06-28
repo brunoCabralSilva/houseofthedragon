@@ -97,7 +97,8 @@ import { collection, getFirestore, onSnapshot } from 'firebase/firestore';
 import { initializeApp } from 'firebase/app';
 import { authenticate } from '@/firebase/authenticate';
 import { registerMessage, registerResponse } from '@/firebase/message';
-import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
+import { getUserByEmail } from '@/firebase/user';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faPaperPlane  } from '@fortawesome/free-solid-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { useRouter } from 'vue-router';
@@ -137,9 +138,24 @@ export default {
       const db = getFirestore(firebaseApp);
       onSnapshot(
         collection(db, 'community'),
-        (snapshot) => {
+        async (snapshot) => {
           const messages = [];
           snapshot.forEach((doc) => messages.push({ id: doc.id, ...doc.data(), provisory: '' }));
+          for (let i = 0; i < messages.length; i += 1) {
+            const urlItem = await this.checkImageRender(messages[i]?.imageURL);
+            if (!urlItem) {
+              const user = await getUserByEmail(messages[i].email);
+              messages[i].imageURL = user.imageURL;
+            }
+            const respList = messages[i]?.responses || [];
+            for(let j = 0; j < respList.length; j += 1) {
+              const urlItem2 = await this.checkImageRender(respList[j]?.imageURL);
+              if (!urlItem2) {
+                const user = await getUserByEmail(respList[j].email);
+                respList[j].imageURL = user.imageURL;
+              }
+            }
+          }
           messages.sort((a, b) => {
             const parseDate = (str) => {
               const [time, date] = str.split(', ');
@@ -155,6 +171,18 @@ export default {
     } else router.push('/login');
   },
   methods: {
+    async checkImageRender(url) {
+      return new Promise((resolve) => {
+        const img = new Image();
+        img.onload = () => resolve(true);
+        img.onerror = () => resolve(false);
+        img.src = url;
+      });
+    },
+    async getImageByEmail(emailUser) {
+      const user = await getUserByEmail(emailUser);
+      return user.imageURL;
+    },
     updateText(dataText) {
       this.text = dataText;
     },
