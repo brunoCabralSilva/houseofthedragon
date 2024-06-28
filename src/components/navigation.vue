@@ -119,6 +119,7 @@
   </div>
   <Logout v-if="close" @logout-user="close = false" />
   <img
+    v-if="route !== '/login'"
     :src="require(`@/assets/wallpaper-dragon.jpg`)"
     class="w-full object-cover object-center z-20 h-40vh"
     alt="Emblema dourado da cara Targaryen"
@@ -131,6 +132,7 @@ import { authenticate } from '@/firebase/authenticate';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faRightFromBracket  } from '@fortawesome/free-solid-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core'
+import { useRouter } from 'vue-router';
 library.add(faRightFromBracket );
 export default {
   name: 'NavigationComponent',
@@ -140,11 +142,13 @@ export default {
     else this.logged = false;
   },
   data() {
+    const router = useRouter();
     return {
       close: false,
       logged: false,
       showMenu: false,
       imageIcon: 'targaryen-icon.png',
+      route: router.currentRoute.value.path,
     }
   },
   components: {

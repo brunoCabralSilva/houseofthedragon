@@ -1,6 +1,10 @@
 <template>
   <Navigation />
-  <section class="bg-drogon bg-cover break-words bg-dice bg-center h-screen w-full items-center justify-center">
+  <div :class="['h-screen', 'bg-black', 'flex', 'justify-center', showData ? 'items-start' : 'items-center']">
+    <div v-if="!showData">
+      <Loading />
+    </div>
+    <div v-else class="bg-drogon bg-cover break-words bg-dice bg-center h-screen w-full items-center justify-center">
     <div class="break-words flex flex-col items-center justify-center sm:px-6 py-8 mx-auto h-full lg:py-0 bg-black/90">
       <div class="break-words p-1 bg-prot-light w-full rounded-lg shadow dark:border sm:max-w-md dark:border-gray-700 my-5">
         <div class="break-words rounded-lg shadow dark:border md:mt-0 w-full xl:p-0 dark:border-gray-700 ">
@@ -57,13 +61,15 @@
       </div>
     </div>
     <ForgotPassword v-if="forgot" @close-forgot-password="forgot = false" />
-  </section>
+    </div>
+  </div>
   <Footer />
 </template>
 
 <script>
 import Footer from '@/components/footer.vue';
 import Navigation from '@/components/navigation.vue';
+import Loading from '@/components/loading.vue';
 import ForgotPassword from '@/components/forgotPassword.vue';
 import { useRouter } from "vue-router";
 import { authenticate, signIn } from "../firebase/authenticate";
@@ -77,11 +83,13 @@ export default {
     loading: false,
     showData: false,
     forgot: false,
+    route: '',
     }
   },
   components: {
-    Navigation,
     Footer,
+    Loading,
+    Navigation,
     ForgotPassword,
   },
   async created() {
