@@ -24,25 +24,25 @@
       <p class="my-0 font-sedan-sc text-golden font-bold leading-none">Valyrian Wars</p>
     </div>
     <ul class="z-20 hidden md:flex justify-center gap-4 lg:gap-8">
-      <router-link to="/gaming" class="cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300">
+      <router-link to="/gaming" class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300">
         O Jogo
       </router-link>
-      <router-link to="/dragons" class="cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300">
+      <router-link to="/dragons" class="font-sedan-sc font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300">
         Dragões
       </router-link>
-      <router-link to="/news" class="cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300">
+      <router-link to="/news" class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300">
         Notícias
       </router-link>
-      <router-link to="/community" class="cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300">
+      <router-link to="/community" class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300">
         Comunidade
       </router-link>
-      <router-link to="/profile" class="cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300">
+      <router-link to="/profile" class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300">
         Perfil
       </router-link>
       <div
         v-if="logged"
         @click="signOut"
-        class="cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 w-6"
+        class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 w-6"
       >
         <FontAwesomeIcon :icon="['fass', 'right-from-bracket']" />
       </div>
@@ -68,42 +68,42 @@
       <router-link
         to="/gaming"
         @click="toggleMenu"
-        class="cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300"
+        class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-xl"
       >
         O Jogo
       </router-link>
       <router-link
         to="/dragons"
         @click="toggleMenu"
-        class="cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300"
+        class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-xl"
       >
         Dragões
       </router-link>
       <router-link
         to="/news"
         @click="toggleMenu"
-        class="cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300"
+        class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-xl"
       >
         Notícias
       </router-link>
       <router-link
         to="/community"
         @click="toggleMenu"
-        class="cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300"
+        class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-xl"
       >
         Comunidade
       </router-link>
       <router-link
         to="/profile"
         @click="toggleMenu"
-        class="cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300"
+        class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-xl"
       >
         Perfil
       </router-link>
       <div
         v-if="logged"
         @click="signOut"
-        class="cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 w-6"
+        class="font-sedan-sc cursor-pointer text-golden hover:text-white font-bold transition-colors duration-300 text-xl w-6"
       >
         Sair
       </div>

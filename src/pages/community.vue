@@ -1,6 +1,7 @@
 <template>
   <Navigation />
   <div class="min-h-screen flex flex-col items-start justify-start bg-black text-white pt-5 w-full gap-2 px-2">
+    <p class="text-2xl sm:text-3xl font-sedan-sc text-center sm:text-left">Bem vindos à Comunidade!</p>
     <div class="flex w-full mt-5">
       <div class="break-words border-2 border-prot-light rounded flex w-full">
         <textArea
@@ -9,7 +10,7 @@
           @input="updateText($event.target.value)"
           @keydown.enter.prevent="sendMessage"
           placeholder="Escreva aqui sua mensagem"
-          class="break-words bg-black border-none outline-none text-white text-sm rounded block w-full p-2.5 placeholder-gray-400 text-center sm:text-left"
+          class="break-words bg-black border-none outline-none text-white text-sm rounded block w-full p-2.5 placeholder-gray-400 sm:text-left"
         />
       </div>
       <button 
@@ -25,7 +26,7 @@
       <div
         v-for="(message, index) in messages"
         :key="index"
-        class="text-white bg-black w-full pl-3 pr-5 py-5"
+        class="text-white bg-black w-full sm:pr-5 py-5"
         alt="Carta de campo"
         >
         <div class="bg-hard-dark-golden text-sm rounded-xl w-full p-2 mb-2">
@@ -40,14 +41,14 @@
             {{ message.user }}
           </div>
           <p class="pl-10">{{ message.message }}</p>
-          <p class="w-full text-right">{{ message.date }}</p>
+          <p class="w-full text-xs sm:text-normal text-right">{{ message.date }}</p>
         </div>
         <div
           v-for="(response, index) in message.responses"
           :key="index"
-          class="bg-gray-whats text-sm text-center rounded-xl p-2 mb-2 ml-10"
+          class="bg-gray-whats text-sm text-center rounded-xl p-2 mb-2 ml-2 sm:ml-10"
         >
-          <div class="w-full capitalize font-bold flex items-center gap-2 mt-5">
+          <div class="w-full capitalize font-bold flex items-center gap-2">
             <div class="w-8 h-8 rounded-full bg-white border-white border border-1.5">
               <img
                 class="w-full h-full object-cover rounded-full"
@@ -58,9 +59,9 @@
             {{ response.user }}
           </div>
           <p class="pl-10 text-left">{{ response.message }}</p>
-          <p class="w-full text-right">{{ message.date }}</p>
+          <p class="w-full text-xs sm:text-normal text-right">{{ message.date }}</p>
         </div>
-        <div class="flex mt-4 ml-10">
+        <div class="flex mt-4 ml-2 sm:ml-10">
           <textArea
             id="response"
             :value="message.provisory"
@@ -186,3 +187,8 @@ export default {
   },
 }
 </script>
+<style>
+  .font-sedan-sc {
+    font-family: "Sedan SC", serif;
+  }
+</style>
