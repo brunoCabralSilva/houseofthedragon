@@ -1,6 +1,6 @@
 <template>
     <div class="break-words z-50 fixed top-0 left-0 w-full flex items-start justify-center bg-black/80 sm:px-0 h-full overflow-y-auto">
-      <div class="bg-black break-words w-full flex flex-col justify-center items-center relative border-golden border-2 pb-5">
+      <div class="bg-black break-words w-full h-full flex flex-col justify-center items-center relative border-golden border-2 pb-5">
         <div class="break-words pt-4 sm:pt-3 px-3 w-full flex justify-end top-0 right-0">
           <FontAwesomeIcon
             :icon="['fas', 'circle-xmark']"
