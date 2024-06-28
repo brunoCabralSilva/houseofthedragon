@@ -121,7 +121,7 @@
   <img
     v-if="route !== '/login'"
     :src="require(`@/assets/wallpaper-dragon.jpg`)"
-    class="w-full object-cover object-center z-20 h-40vh"
+    class="w-full object-cover object-center z-10 h-40vh"
     alt="Emblema dourado da cara Targaryen"
   >
 </template>
