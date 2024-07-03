@@ -134,7 +134,7 @@ import { authenticate, signIn } from '@/firebase/authenticate';
 library.add(faPlus );
 
 export default {
-  name: 'ForgotPassword',
+  name: 'CreateNews',
   components: {
     Footer,
     Loading,

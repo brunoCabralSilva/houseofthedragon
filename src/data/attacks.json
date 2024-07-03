@@ -1,0 +1,86 @@
+[
+  {
+    "name": "Chamas Restauradoras",
+    "description": "Restaura a vitalidade do usuário de 10% a 20%.",
+    "type": "advantage",
+    "attribute": "vitalidade",
+    "attack": ""
+  },
+  {
+    "name": "Irritar",
+    "description": "Aumenta a Rebeldia do Dragão em 5.",
+    "type": "disadvantage",
+    "attribute": "rebeldia",
+    "attack": ""
+  },
+  {
+    "name": "Golpe Destrutivo",
+    "description": "Concede desvantagem ao oponente no próximo teste de Carapaça.",
+    "type": "advantage",
+    "attribute": "carapaça",
+    "attack": ""
+  },
+  {
+    "name": "Corromper a Carapaça",
+    "description": "Concede vantagem no próximo teste de Carapaça.",
+    "type": "disadvantage",
+    "attribute": "carapaça",
+    "attack": ""
+  },
+  {
+    "name": "Aceleração Abrupta",
+    "description": "Concede vantagem no próximo teste de Velocidade.",
+    "type": "advantage",
+    "attribute": "velocidade",
+    "attack": ""
+  },
+  {
+    "name": "Lufada Paralisante",
+    "description": "Concede desvantagem no próximo teste de Velocidade.",
+    "type": "disadvantage",
+    "attribute": "velocidade",
+    "attack": ""
+  },
+  {
+    "name": "Escudo de Chamas",
+    "description": "Concede desvantagem no próximo teste de Dracarys.",
+    "type": "advantage",
+    "attribute": "",
+    "attack": "dracarys"
+  },
+  {
+    "name": "Fúria Valiriana",
+    "description": "Concede vantagem no próximo teste de Dracarys.",
+    "type": "disadvantage",
+    "attribute": "",
+    "attack": "dracarys"
+  },
+  {
+    "name": "Afiar Presas",
+    "description": "Concede vantagem no próximo teste de mordida.",
+    "type": "advantage",
+    "attribute": "",
+    "attack": "mordida"
+  },
+  {
+    "name": "Enfraquecer Mordida",
+    "description": "Concede desvantagem no próximo teste de mordida.",
+    "type": "disadvantage",
+    "attribute": "",
+    "attack": "mordida"
+  },
+  {
+    "name": "Afiar Garras",
+    "description": "Concede vantagem no próximo teste de garras.",
+    "type": "advantage",
+    "attribute": "",
+    "attack": "garras"
+  },
+  {
+    "name": "Enfraquecer Garras",
+    "description": "Concede desvantagem no próximo teste de garras.",
+    "type": "disadvantage",
+    "attribute": "",
+    "attack": "garras"
+  }
+]

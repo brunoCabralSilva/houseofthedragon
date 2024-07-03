@@ -10,6 +10,8 @@ import Register from '../pages/register.vue';
 import Match from '../pages/matchs.vue';
 import EditProfile from '@/pages/editProfile.vue';
 import CreateNews from '@/pages/createNews.vue';
+import AddDragon from '@/pages/addDragon.vue';
+import EditDragon from '@/pages/editDragon.vue';
 
 const routes = [
   {
@@ -66,6 +68,17 @@ const routes = [
     path: '/create-news',
     name: 'CreateNews',
     component: CreateNews
+  },
+  {
+    path: '/add-dragon',
+    name: 'AddDragon',
+    component: AddDragon
+  },
+  {
+    path: '/editDragon/:dragonId',
+    name: 'EditDragon',
+    component: EditDragon,
+    props: true
   }
 ];
 

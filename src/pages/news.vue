@@ -26,7 +26,7 @@
           :key="index"
           class=""
         >
-          <p class="break-all py-2">{{ text.text }}</p>
+          <p class="break-words py-2">{{ text.text }}</p>
         </div>
         <div class="text-golden flex justify-end items-center">
           <p>{{ newPub.displayName }}, {{newPub.date }}.</p>

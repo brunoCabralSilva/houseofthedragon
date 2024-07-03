@@ -15,8 +15,10 @@
     "core-js": "^3.8.3",
     "firebase": "^10.12.2",
     "postcss": "^8.4.38",
+    "swiper": "^8.4.7",
     "tailwindcss": "^3.4.4",
     "vue": "^3.2.13",
+    "vue-awesome-swiper": "^5.0.1",
     "vue-router": "^4.4.0"
   },
   "devDependencies": {
