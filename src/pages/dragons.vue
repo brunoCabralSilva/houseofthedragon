@@ -3,11 +3,11 @@
   <div class="min-h-screen flex flex-col justify-start items-center bg-black text-white pt-5 pr-5">
     <div v-if="isAdmin" class="w-full flex justify-between items-center cursor-pointer mb-4">
       <label htmlFor="select-sort" class="pl-4">
-        Ordenar por:
+        <span class="pl-1 sm:pl-0">Ordenar por:</span>
         <select
           id="select-sort"
           @change="sortDragons($event.target.value)"
-          class="bg-black pl-1"
+          class="bg-black sm:pl-1"
         >
           <option value="sum">Soma dos Atributos</option>
           <option value="vitalidade">Vitalidade</option>
