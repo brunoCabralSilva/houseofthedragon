@@ -33,42 +33,12 @@
             />
           </label>
           <label htmlFor="firstName" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
-            <p class="break-words w-full mb-3 sm:mb-1 text-white">Carapaça</p>
-            <input
-              type="number"
-              id="carapaca"
-              v-model="carapaca"
-              placeholder="Carapaça"
-              class="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
-            />
-          </label>
-          <label htmlFor="firstName" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
             <p class="break-words w-full mb-3 sm:mb-1 text-white">Velocidade</p>
             <input
               type="number"
               id="velocidade"
               v-model="velocidade"
               placeholder="Velocidade"
-              class="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
-            />
-          </label>
-          <label htmlFor="firstName" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
-            <p class="break-words w-full mb-3 sm:mb-1 text-white">Tamanho</p>
-            <input
-              type="number"
-              id="tamanho"
-              v-model="tamanho"
-              placeholder="Tamanho"
-              class="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
-            />
-          </label>
-          <label htmlFor="firstName" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
-            <p class="break-words w-full mb-3 sm:mb-1 text-white">Ataque</p>
-            <input
-              type="number"
-              id="ataque"
-              v-model="ataque"
-              placeholder="Ataque"
               class="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
             />
           </label>
@@ -157,16 +127,6 @@
             />
           </div>
         </label>
-        <label htmlFor="last-password" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
-          <p class="break-words w-full mb-3 sm:mb-1 text-white">Digite a senha para realizar a publicação</p>
-          <input
-            type="password"
-            id="last-password"
-            v-model="oldPassword"
-            placeholder="••••••"
-            class="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
-          />
-        </label>
         <button
           @click="updateDragon"
           class="break-words relative inline-flex items-center justify-center p-0.5 sm:mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-golden to-dark-golden hover:from-dark-golden hover:to-golden hover:text-white w-full sm:mt-3 cursor-pointer transition-colors duration-500 focus:outline-none"
@@ -189,102 +149,92 @@ import { faPlus  } from '@fortawesome/free-solid-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { useRouter } from 'vue-router';
 import { getUserByEmail } from '@/firebase/user';
-import { authenticate, signIn } from '@/firebase/authenticate';
+import { authenticate } from '@/firebase/authenticate';
 import { getDragonById, updateDragonById } from '@/firebase/dragons';
 library.add(faPlus);
 
 export default {
-name: 'EditDragon',
-components: {
-  Footer,
-  Loading,
-  Navigation,
-},
-props: {
-  dragonId: {
-    type: String,
-    required: true
-  }
-},
-data() {
-  const routerPage = useRouter();
-  return {
-    router: routerPage,
-    id: '',
-    loading: false,
-    showData: false,
-    changeImage: false,
-    ataque: 0,
-    garras: 0,
-    mordida: 0,
-    tamanho: 0,
-    carapaca: 0,
-    dracarys: 0,
-    rebeldia: 0,
-    vitalidade: 0,
-    velocidade: 0,
-    name: '',
-    image: null,
-    aparencia: '',
-    description: '',
-    oldPassword: '',
-  }
-},
-async created() {
-  const dragon = await getDragonById(this.dragonId);
-  this.id = dragon.id;
-  this.ataque = dragon.ataque;
-  this.garras = dragon.garras;
-  this.mordida = dragon.mordida;
-  this.tamanho = dragon.tamanho;
-  this.carapaca = dragon.carapaca;
-  this.dracarys = dragon.dracarys;
-  this.rebeldia = dragon.rebeldia;
-  this.vitalidade = dragon.vitalidade;
-  this.velocidade = dragon.velocidade;
-  this.name = dragon.name;
-  this.aparencia = dragon.aparencia;
-  this.description = dragon.description;
-  const auth = await authenticate();
-  if (auth) {
-    const user = await getUserByEmail(auth.email);
-    this.displayName = user.firstName + ' ' + user.lastName;
-    this.email = auth.email;
-    this.showData = true;
-  }
-  else this.router.push('/login');
-},
-methods: {
-  showChangeImage() {
-    this.changeImage = !this.changeImage;
+  name: 'EditDragon',
+  components: {
+    Footer,
+    Loading,
+    Navigation,
   },
-  updateText(dataText) {
-    this.description = dataText;
-  },
-  handleImage(e) {
-    if (e.target.files[0]) {
-      this.image = e.target.files[0];
+  props: {
+    dragonId: {
+      type: String,
+      required: true
     }
   },
-  async updateDragon() {
-    this.loading = true;
-    const log = await signIn(this.email, this.oldPassword);
-    if (!log) {
-      window.alert('Não foi possível validar a senha. Por favor, verifique suas credenciais e tente novamente.');
-    } else if (this.name < 3) {
-      window.alert('Necessário preencher um Nome com pelo menos três caracteres');
-    } else if(this.changeImage && (this.image.length === 0 || this.image === '')) {
-      window.alert('Necessário escolher uma imagem de publicação');
-    } else if (this.vitalidade <= 0 || this.carapaca <= 0 || this.velocidade <= 0 || this.tamanho <= 0 || this.ataque <= 0 || this.rebeldia <= 0 || this.dracarys <= 0 || this.mordida <= 0 || this.garras <= 0) {
-      window.alert('Todos os atributos devem ser maiores que zero');
-    } else if(this.aparencia.length < 7) {
-      window.alert('Necessário preencher uma Aparência com pelo menos sete caracteres');
-    } else {
-      await updateDragonById(this.id, this.name, this.image, this.vitalidade, this.carapaca, this.velocidade, this.tamanho, this.ataque, this.rebeldia, this.dracarys, this.mordida, this.garras, this.aparencia, this.description);
-      this.router.push('/dragons');
+  data() {
+    const routerPage = useRouter();
+    return {
+      router: routerPage,
+      id: '',
+      loading: false,
+      showData: false,
+      changeImage: false,
+      garras: 0,
+      mordida: 0,
+      dracarys: 0,
+      rebeldia: 0,
+      vitalidade: 0,
+      velocidade: 0,
+      name: '',
+      image: null,
+      aparencia: '',
+      description: '',
     }
-    this.loading = false;
   },
-}
+  async created() {
+    const dragon = await getDragonById(this.dragonId);
+    this.id = dragon.id;
+    this.garras = dragon.garras;
+    this.mordida = dragon.mordida;
+    this.dracarys = dragon.dracarys;
+    this.rebeldia = dragon.rebeldia;
+    this.vitalidade = dragon.vitalidade;
+    this.velocidade = dragon.velocidade;
+    this.name = dragon.name;
+    this.aparencia = dragon.aparencia;
+    this.description = dragon.description;
+    const auth = await authenticate();
+    if (auth) {
+      const user = await getUserByEmail(auth.email);
+      this.displayName = user.firstName + ' ' + user.lastName;
+      this.email = auth.email;
+      this.showData = true;
+    }
+    else this.router.push('/login');
+  },
+  methods: {
+    showChangeImage() {
+      this.changeImage = !this.changeImage;
+    },
+    updateText(dataText) {
+      this.description = dataText;
+    },
+    handleImage(e) {
+      if (e.target.files[0]) {
+        this.image = e.target.files[0];
+      }
+    },
+    async updateDragon() {
+      this.loading = true;
+      if (this.name < 3) {
+        window.alert('Necessário preencher um Nome com pelo menos três caracteres');
+      } else if(this.changeImage && (this.image.length === 0 || this.image === '')) {
+        window.alert('Necessário escolher uma imagem de publicação');
+      } else if (this.vitalidade <= 0 || this.velocidade <= 0 || this.rebeldia <= 0 || this.dracarys <= 0 || this.mordida <= 0 || this.garras <= 0) {
+        window.alert('Todos os atributos devem ser maiores que zero');
+      } else if(this.aparencia.length < 7) {
+        window.alert('Necessário preencher uma Aparência com pelo menos sete caracteres');
+      } else {
+        await updateDragonById(this.id, this.name, this.image, this.vitalidade, this.velocidade, this.rebeldia, this.dracarys, this.mordida, this.garras, this.aparencia, this.description);
+        this.router.push('/dragons');
+      }
+      this.loading = false;
+    },
+  }
 }
 </script>

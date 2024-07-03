@@ -1,17 +1,31 @@
 <template>
   <Navigation />
   <div class="min-h-screen flex flex-col justify-start items-center bg-black text-white pt-5 pr-5">
-    <div v-if="isAdmin" class="w-full flex justify-end items-center cursor-pointer mb-4">
+    <div v-if="isAdmin" class="w-full flex justify-between items-center cursor-pointer mb-4">
+      <label htmlFor="select-sort" class="pl-4">
+        Ordenar por:
+        <select
+          id="select-sort"
+          @change="sortDragons($event.target.value)"
+          class="bg-black pl-1"
+        >
+          <option value="sum">Soma dos Atributos</option>
+          <option value="vitalidade">Vitalidade</option>
+          <option value="velocidade">Velocidade</option>
+          <option value="rebeldia">Rebeldia</option>
+          <option value="dracarys">Dracarys</option>
+          <option value="mordida">Mordida</option>
+          <option value="garras">Garras</option>
+        </select>
+      </label>
       <FontAwesomeIcon
         @click="createDragon"
         :icon="['fa', 'circle-plus']"
         class="text-3xl text-golden"
       />
     </div>
-    <!-- <swiper -->
      <div
       :options="swiperOptions" class="w-full">
-      <!-- <swiper-slide -->
        <div
         v-for="(dragon, index) in dragons"
         :key="index"
@@ -21,7 +35,7 @@
           :src="dragon.imageURL"
           class="w-30vw h-50vh object-cover my-2"
         />
-        <div class="flex flex-col justify-center">
+        <div class="flex flex-col justify-start">
           <div class="text-xl sm:text-3xl py-5 sm:py-0 font-sedan-sc break-all pr-4 leading-6 flex items-center justify-between">
             {{ dragon.name }}
             <div
@@ -40,23 +54,17 @@
               />
             </div>
           </div>
-          <div class="grid grid-cols-3 my-4">
+          <div class="grid grid-cols-3 mt-4 mb-2">
             <p>Vitalidade: {{ dragon.vitalidade }}</p>
-            <p>Carapaça: {{ dragon.carapaca }}</p>
             <p>Velocidade: {{ dragon.velocidade }}</p>
-            <p>Tamanho: {{ dragon.tamanho }}</p>
-            <p>Ataque: {{ dragon.ataque }}</p>
             <p>Rebeldia: {{ dragon.rebeldia }}</p>
             <p>Dracarys: {{ dragon.dracarys }}</p>
             <p>Mordida: {{ dragon.mordida }}</p>
             <p>Garras: {{ dragon.garras }}</p>
-            <!-- <p>Aparência: {{ dragon.aparencia }}</p> -->
           </div>
           <p class="break-words text-justify py-2">{{ dragon.description }}</p>
         </div>
       </div>
-      <!-- </swiper-slide> -->
-    <!-- </swiper> -->
     </div>
     <DeleteDragon
       v-if="deleteDragon.show"
@@ -72,7 +80,6 @@ import Footer from '@/components/footer.vue';
 import Navigation from '@/components/navigation.vue';
 import DeleteDragon from '@/components/deleteDragon.vue';
 import { useRouter } from 'vue-router';
-// import { Swiper, SwiperSlide } from 'vue-awesome-swiper'
 import { authenticate } from '@/firebase/authenticate';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faTrash, faCirclePlus, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
@@ -87,9 +94,7 @@ export default {
   name: 'NewsPage',
   components: {
     Footer,
-    // Swiper,
     Navigation,
-    // SwiperSlide,
     DeleteDragon,
     FontAwesomeIcon,
   },
@@ -118,7 +123,8 @@ export default {
     const sortedDragons = dragons.sort((a, b) => {
       const sumA = this.calculateTotalStats(a);
       const sumB = this.calculateTotalStats(b);
-      return sumB - sumA;
+      if (sumB !== sumA) return sumB - sumA;
+      else return b.vitalidade - a.vitalidade;
     });
     this.dragons = sortedDragons;
     const auth = await authenticate();
@@ -127,9 +133,31 @@ export default {
     }
   },
   methods: {
+    sortDragons(field) {
+      if (field === 'sum') {
+        const sortedDragons = this.dragons.sort((a, b) => {
+          const sumA = this.calculateTotalStats(a);
+          const sumB = this.calculateTotalStats(b);
+          if (sumB !== sumA) return sumB - sumA;
+          else return b.vitalidade - a.vitalidade;
+        });
+        this.dragons = sortedDragons;
+      } else {
+        const newOrder = this.dragons.sort((a, b) => {
+          if (a[field] < b[field]) return 1;
+          if (a[field] > b[field]) return -1;
+          if (a[field] === b[field]) {
+            if (a.vitalidade < b.vitalidade) return 1;
+            if (a.vitalidade > b.vitalidade) return -1;
+          }
+          return 0;
+        });
+        this.dragons = newOrder;
+      }
+    },
     calculateTotalStats(dragon) {
-      const { vitalidade, carapaca, velocidade, tamanho, ataque, rebeldia } = dragon;
-      return vitalidade + carapaca + velocidade + tamanho + ataque + rebeldia;
+      const { vitalidade, velocidade, dracarys, mordida, garras } = dragon;
+      return vitalidade + velocidade + dracarys + mordida + garras;
     },
     removeDragon(idDragon) {
       this.deleteDragon = { show: true, id: idDragon };

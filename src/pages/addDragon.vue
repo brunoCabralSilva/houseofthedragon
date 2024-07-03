@@ -33,42 +33,12 @@
               />
             </label>
             <label htmlFor="firstName" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
-              <p class="break-words w-full mb-3 sm:mb-1 text-white">Carapaça</p>
-              <input
-                type="number"
-                id="carapaca"
-                v-model="carapaca"
-                placeholder="Carapaça"
-                class="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
-              />
-            </label>
-            <label htmlFor="firstName" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
               <p class="break-words w-full mb-3 sm:mb-1 text-white">Velocidade</p>
               <input
                 type="number"
                 id="velocidade"
                 v-model="velocidade"
                 placeholder="Velocidade"
-                class="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
-              />
-            </label>
-            <label htmlFor="firstName" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
-              <p class="break-words w-full mb-3 sm:mb-1 text-white">Tamanho</p>
-              <input
-                type="number"
-                id="tamanho"
-                v-model="tamanho"
-                placeholder="Tamanho"
-                class="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
-              />
-            </label>
-            <label htmlFor="firstName" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
-              <p class="break-words w-full mb-3 sm:mb-1 text-white">Ataque</p>
-              <input
-                type="number"
-                id="ataque"
-                v-model="ataque"
-                placeholder="Ataque"
                 class="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
               />
             </label>
@@ -193,11 +163,8 @@ export default {
     return {
       loading: false,
       showData: false,
-      ataque: 0,
       garras: 0,
       mordida: 0,
-      tamanho: 0,
-      carapaca: 0,
       dracarys: 0,
       rebeldia: 0,
       vitalidade: 0,
@@ -239,21 +206,18 @@ export default {
         window.alert('Necessário preencher um Nome com pelo menos três caracteres');
       } else if(this.image.length === 0 || this.image === '') {
         window.alert('Necessário escolher uma imagem de publicação');
-      } else if (this.vitalidade <= 0 || this.carapaca <= 0 || this.velocidade <= 0 || this.tamanho <= 0 || this.ataque <= 0 || this.rebeldia <= 0 || this.dracarys <= 0 || this.mordida <= 0 || this.garras <= 0) {
+      } else if (this.vitalidade <= 0 || this.velocidade <= 0 || this.rebeldia <= 0 || this.dracarys <= 0 || this.mordida <= 0 || this.garras <= 0) {
         window.alert('Todos os atributos devem ser maiores que zero');
       } else if(this.aparencia.length < 7) {
         window.alert('Necessário preencher uma Aparência com pelo menos sete caracteres');
       } else {
-        await registerDragon(this.name, this.image, this.vitalidade, this.carapaca, this.velocidade, this.tamanho, this.ataque, this.rebeldia, this.dracarys, this.mordida, this.garras, this.aparencia, this.description);
+        await registerDragon(this.name, this.image, this.vitalidade, this.velocidade, this.rebeldia, this.dracarys, this.mordida, this.garras, this.aparencia, this.description);
         this.image = null;
         this.loading = false;
         this.garras = 0;
-        this.ataque = 0;
         this.mordida = 0;
-        this.tamanho = 0;
         this.rebeldia = 0;
         this.dracarys = 0;
-        this.carapaca = 0;
         this.vitalidade = 0;
         this.velocidade = 0;
         this.name = '';
