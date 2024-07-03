@@ -29,14 +29,32 @@
        <div
         v-for="(dragon, index) in dragons"
         :key="index"
-        class="border border-golden p-2 sm:p-6 my-2 w-full px-4 flex gap-6"
+        class="border border-golden p-2 sm:p-6 my-2 w-full px-4 flex flex-col md:flex-row gap-6"
       >
+        <div class="md:hidden text-xl sm:text-3xl pt-5 sm:py-0 font-sedan-sc break-all md:pr-4 leading-6 flex items-center justify-between">
+          {{ dragon.name }}
+          <div
+            v-if="isAdmin"
+            class="flex gap-3"
+          >
+            <FontAwesomeIcon
+              @click="removeDragon(dragon.id)"
+              :icon="['fas', 'trash']"
+              class="text-2xl text-golden cursor-pointer"
+            />
+            <FontAwesomeIcon
+              @click="editDragon(dragon.id)"
+              :icon="['fas', 'pen-to-square']"
+              class="text-2xl text-golden cursor-pointer"
+            />
+          </div>
+        </div>
         <img
           :src="dragon.imageURL"
-          class="w-30vw h-50vh object-cover my-2"
+          class="md:w-30vw object-cover"
         />
-        <div class="flex flex-col justify-start">
-          <div class="text-xl sm:text-3xl py-5 sm:py-0 font-sedan-sc break-all pr-4 leading-6 flex items-center justify-between">
+        <div class="flex flex-col justify-start items-start">
+          <div class="text-xl sm:text-3xl py-5 sm:py-0 font-sedan-sc break-all leading-6 hidden md:flex items-center justify-between w-full">
             {{ dragon.name }}
             <div
               v-if="isAdmin"
@@ -54,7 +72,7 @@
               />
             </div>
           </div>
-          <div class="grid grid-cols-3 mt-4 mb-2">
+          <div class="w-full grid grid-cols-2 sm:grid-cols-3 md:mt-4 mb-2">
             <p>Vitalidade: {{ dragon.vitalidade }}</p>
             <p>Velocidade: {{ dragon.velocidade }}</p>
             <p>Rebeldia: {{ dragon.rebeldia }}</p>
@@ -62,7 +80,7 @@
             <p>Mordida: {{ dragon.mordida }}</p>
             <p>Garras: {{ dragon.garras }}</p>
           </div>
-          <p class="break-words text-justify py-2">{{ dragon.description }}</p>
+          <p class="break-words text-left md:text-justify py-2">{{ dragon.description }}</p>
         </div>
       </div>
     </div>
