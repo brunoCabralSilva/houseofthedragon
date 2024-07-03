@@ -2,12 +2,12 @@ import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, upda
 import { createDragonImage, updateDragonImage, deleteDragonDirectory } from "./storage";
 import firebaseConfig from "./connection";
 
-export const registerDragon = async (name, image, vitalidade, velocidade, rebeldia, dracarys, mordida, garras, aparencia, description) => {
+export const registerDragon = async (name, image, vitalidade, velocidade, rebeldia, dracarys, mordida, garras, aparencia, description, nameFont, linkFont) => {
   try {
     const db = getFirestore(firebaseConfig);
     const register = await addDoc(
       collection(db, 'dragons'), {
-        name, imageURL: '', vitalidade, velocidade, rebeldia, dracarys, mordida, garras, aparencia, description
+        name, imageURL: '', vitalidade, velocidade, rebeldia, dracarys, mordida, garras, aparencia, description, nameFont, linkFont
       }
     );
     const docId = register.id;
@@ -24,7 +24,7 @@ export const registerDragon = async (name, image, vitalidade, velocidade, rebeld
   }
 };
 
-export async function updateDragonById(id, name, image, vitalidade, velocidade, rebeldia, dracarys, mordida, garras, aparencia, description) {
+export async function updateDragonById(id, name, image, vitalidade, velocidade, rebeldia, dracarys, mordida, garras, aparencia, description, nameFont, linkFont) {
   try {
     const db = getFirestore(firebaseConfig);
     const dragonDocRef = doc(db, 'dragons', id);
@@ -42,7 +42,9 @@ export async function updateDragonById(id, name, image, vitalidade, velocidade, 
         mordida,
         garras,
         aparencia,
-        description
+        description,
+        nameFont,
+        linkFont
       };
       if (image) {
         const imageURL = await updateDragonImage(id, image);

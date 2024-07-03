@@ -10,6 +10,7 @@
           class="bg-black sm:pl-1"
         >
           <option value="sum">Soma dos Atributos</option>
+          <option value="alf">Ordem alfabética</option>
           <option value="vitalidade">Vitalidade</option>
           <option value="velocidade">Velocidade</option>
           <option value="rebeldia">Rebeldia</option>
@@ -51,36 +52,55 @@
         </div>
         <img
           :src="dragon.imageURL"
-          class="md:w-30vw object-cover"
+          @click="showImage(dragon.imageURL)"
+          class="w-full md:h-50vh md:w-30vw object-cover cursor-zoom-in"
         />
-        <div class="flex flex-col justify-start items-start">
-          <div class="text-xl sm:text-3xl py-5 sm:py-0 font-sedan-sc break-all leading-6 hidden md:flex items-center justify-between w-full">
-            {{ dragon.name }}
-            <div
-              v-if="isAdmin"
-              class="flex gap-3"
-            >
-              <FontAwesomeIcon
-                @click="removeDragon(dragon.id)"
-                :icon="['fas', 'trash']"
-                class="text-2xl text-golden cursor-pointer"
-              />
-              <FontAwesomeIcon
-                @click="editDragon(dragon.id)"
-                :icon="['fas', 'pen-to-square']"
-                class="text-2xl text-golden cursor-pointer"
-              />
+        <div class="flex flex-col justify-between items-start w-full">
+          <div>
+            <div class="text-xl sm:text-3xl py-5 sm:py-0 font-sedan-sc break-all leading-6 hidden md:flex items-center justify-between w-full">
+              {{ dragon.name }}
+              <div
+                v-if="isAdmin"
+                class="flex gap-3"
+              >
+                <FontAwesomeIcon
+                  @click="removeDragon(dragon.id)"
+                  :icon="['fas', 'trash']"
+                  class="text-2xl text-golden cursor-pointer"
+                />
+                <FontAwesomeIcon
+                  @click="editDragon(dragon.id)"
+                  :icon="['fas', 'pen-to-square']"
+                  class="text-2xl text-golden cursor-pointer"
+                />
+              </div>
             </div>
+            <div
+              v-if="dragon.vitalidade !== 1"
+              class="w-full grid grid-cols-2 sm:grid-cols-3 md:mt-4 mb-2"
+            >
+              <p>Vitalidade: {{ dragon.vitalidade }}</p>
+              <p>Velocidade: {{ dragon.velocidade }}</p>
+              <p>Rebeldia: {{ dragon.rebeldia }}</p>
+              <p>Dracarys: {{ dragon.dracarys }}</p>
+              <p>Mordida: {{ dragon.mordida }}</p>
+              <p>Garras: {{ dragon.garras }}</p>
+            </div>
+            <div v-else>
+              <p class="md:mt-4 mb-2 w-full">Indisponível no momento</p>
+            </div>
+            <p class="break-words text-left md:text-justify py-2">{{ dragon.description }}</p>
           </div>
-          <div class="w-full grid grid-cols-2 sm:grid-cols-3 md:mt-4 mb-2">
-            <p>Vitalidade: {{ dragon.vitalidade }}</p>
-            <p>Velocidade: {{ dragon.velocidade }}</p>
-            <p>Rebeldia: {{ dragon.rebeldia }}</p>
-            <p>Dracarys: {{ dragon.dracarys }}</p>
-            <p>Mordida: {{ dragon.mordida }}</p>
-            <p>Garras: {{ dragon.garras }}</p>
+          <div class="my-3 md:my-0">
+            <span class="pr-1">Fonte da Imagem:</span>
+            <a
+              target="_blank"
+              class="text-golden underline font-bold hover:text-blue-300 transition-colors duration-500"
+              :href="dragon.linkFont"
+            >
+              {{ dragon.nameFont }}
+            </a>
           </div>
-          <p class="break-words text-left md:text-justify py-2">{{ dragon.description }}</p>
         </div>
       </div>
     </div>
@@ -88,6 +108,11 @@
       v-if="deleteDragon.show"
       :id="deleteDragon.id"
       @delete-dragon="deleteDragon = { show: false, id: '' }"
+    />
+    <ZoomImage
+      v-if="zoomImage.show"
+      :link="zoomImage.link"
+      @zoom-image="zoomImage = { show: false, link: '' }"
     />
   </div>
   <Footer />
@@ -97,6 +122,7 @@
 import Footer from '@/components/footer.vue';
 import Navigation from '@/components/navigation.vue';
 import DeleteDragon from '@/components/deleteDragon.vue';
+import ZoomImage from '@/components/zoomImage.vue';
 import { useRouter } from 'vue-router';
 import { authenticate } from '@/firebase/authenticate';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -113,6 +139,7 @@ export default {
   components: {
     Footer,
     Navigation,
+    ZoomImage,
     DeleteDragon,
     FontAwesomeIcon,
   },
@@ -122,6 +149,7 @@ export default {
       router: routerPage,
       showData: false,
       dragons: [],
+      zoomImage: { show: false, link: '' },
       deleteDragon: { show: false, id: '' },
       isAdmin: false,
       swiperOptions: {
@@ -151,8 +179,18 @@ export default {
     }
   },
   methods: {
+    showImage(linkImage) {
+      this.zoomImage = { show: true, link: linkImage };
+    },
     sortDragons(field) {
-      if (field === 'sum') {
+      if(field === 'alf') {
+        const newOrder = this.dragons.sort((a, b) => {
+          if (a.name < b.name) return -1;
+          if (a.name > b.name) return 1;
+          return 0;
+        });
+        this.dragons = newOrder;
+      } else if (field === 'sum') {
         const sortedDragons = this.dragons.sort((a, b) => {
           const sumA = this.calculateTotalStats(a);
           const sumB = this.calculateTotalStats(b);

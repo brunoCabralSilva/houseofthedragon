@@ -127,6 +127,26 @@
             />
           </div>
         </label>
+        <label htmlFor="firstName" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
+          <p class="break-words w-full mb-3 sm:mb-1 text-white">Nome da Fonte</p>
+          <input
+            type="nameFont"
+            id="nameFont"
+            v-model="nameFont"
+            placeholder="Nome da Fonte"
+            class="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
+          />
+        </label>
+        <label htmlFor="firstName" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
+          <p class="break-words w-full mb-3 sm:mb-1 text-white">Link da Fonte</p>
+          <input
+            type="linkFont"
+            id="linkFont"
+            v-model="linkFont"
+            placeholder="Link da Fonte"
+            class="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
+          />
+        </label>
         <button
           @click="updateDragon"
           class="break-words relative inline-flex items-center justify-center p-0.5 sm:mb-2 overflow-hidden text-sm font-medium text-gray-900 rounded-lg group bg-gradient-to-br from-golden to-dark-golden hover:from-dark-golden hover:to-golden hover:text-white w-full sm:mt-3 cursor-pointer transition-colors duration-500 focus:outline-none"
@@ -180,6 +200,8 @@ export default {
       rebeldia: 0,
       vitalidade: 0,
       velocidade: 0,
+      linkFont: '',
+      nameFont: '',
       name: '',
       image: null,
       aparencia: '',
@@ -198,6 +220,8 @@ export default {
     this.name = dragon.name;
     this.aparencia = dragon.aparencia;
     this.description = dragon.description;
+    this.linkFont = dragon.linkFont;
+    this.nameFont = dragon.nameFont;
     const auth = await authenticate();
     if (auth) {
       const user = await getUserByEmail(auth.email);
@@ -229,11 +253,18 @@ export default {
         window.alert('Todos os atributos devem ser maiores que zero');
       } else if(this.aparencia.length < 7) {
         window.alert('Necessário preencher uma Aparência com pelo menos sete caracteres');
+      } else if(this.nameFont < 2) {
+        window.alert('Necessário preencher um nome para a fonte com pelo menos sete caracteres');
+      } else if(this.isLinkValid(this.linkFont)) {
+        window.alert('Necessário preencher um Link para a fonte válido');
       } else {
-        await updateDragonById(this.id, this.name, this.image, this.vitalidade, this.velocidade, this.rebeldia, this.dracarys, this.mordida, this.garras, this.aparencia, this.description);
+        await updateDragonById(this.id, this.name, this.image, this.vitalidade, this.velocidade, this.rebeldia, this.dracarys, this.mordida, this.garras, this.aparencia, this.description, this.nameFont, this.linkFont);
         this.router.push('/dragons');
       }
       this.loading = false;
+    },
+    isLinkValid(link) {
+      return /^http?:\/\//i.test(link);
     },
   }
 }

@@ -17,12 +17,14 @@ module.exports = {
         '30vh': '30vh',
         '40vh': '40vh',
         '50vh': '50vh',
+        '95vh': '95vh',
       },
       width: {
         '20vw': '20vw',
         '30vw': '30vw',
         '40vw': '40vw',
         '50vw': '50vw',
+        '95vw': '95vw',
       },
       backgroundImage: theme => ({
         'drogon': "url('@/assets/wallpaper-drogon.jpg')",

@@ -116,6 +116,26 @@
               />
             </div>
           </label>
+          <label htmlFor="firstName" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
+            <p class="break-words w-full mb-3 sm:mb-1 text-white">Nome da Fonte</p>
+            <input
+              type="nameFont"
+              id="nameFont"
+              v-model="nameFont"
+              placeholder="Nome da Fonte"
+              class="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
+            />
+          </label>
+          <label htmlFor="firstName" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
+            <p class="break-words w-full mb-3 sm:mb-1 text-white">Link da Fonte</p>
+            <input
+              type="linkFont"
+              id="linkFont"
+              v-model="linkFont"
+              placeholder="Link da Fonte"
+              class="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
+            />
+          </label>
           <label htmlFor="last-password" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
             <p class="break-words w-full mb-3 sm:mb-1 text-white">Digite a senha para realizar a publicação</p>
             <input
@@ -160,7 +180,9 @@ export default {
     Navigation,
   },
   data() {
+    const routerPage = useRouter();
     return {
+      router: routerPage,
       loading: false,
       showData: false,
       garras: 0,
@@ -170,6 +192,8 @@ export default {
       vitalidade: 0,
       velocidade: 0,
       name: '',
+      nameFont: '',
+      linkFont: '',
       image: '',
       password: '',
       aparencia: '',
@@ -178,7 +202,6 @@ export default {
     }
   },
   async created() {
-    const router = useRouter();
     const auth = await authenticate();
     if (auth) {
       const user = await getUserByEmail(auth.email);
@@ -186,7 +209,7 @@ export default {
       this.email = auth.email;
       this.showData = true;
     }
-    else router.push('/login');
+    else this.router.push('/login');
   },
   methods: {
     updateText(dataText) {
@@ -210,10 +233,13 @@ export default {
         window.alert('Todos os atributos devem ser maiores que zero');
       } else if(this.aparencia.length < 7) {
         window.alert('Necessário preencher uma Aparência com pelo menos sete caracteres');
+      } else if(this.nameFont < 2) {
+        window.alert('Necessário preencher um nome para a fonte com pelo menos sete caracteres');
+      } else if(this.isLinkValid(this.linkFont)) {
+        window.alert('Necessário preencher um Link para a fonte válido');
       } else {
-        await registerDragon(this.name, this.image, this.vitalidade, this.velocidade, this.rebeldia, this.dracarys, this.mordida, this.garras, this.aparencia, this.description);
+        await registerDragon(this.name, this.image, this.vitalidade, this.velocidade, this.rebeldia, this.dracarys, this.mordida, this.garras, this.aparencia, this.description, this.nameFont, this.linkFont);
         this.image = null;
-        this.loading = false;
         this.garras = 0;
         this.mordida = 0;
         this.rebeldia = 0;
@@ -221,10 +247,17 @@ export default {
         this.vitalidade = 0;
         this.velocidade = 0;
         this.name = '';
+        this.nameFont = '';
+        this.linkFont = '';
         this.aparencia = '';
         this.description = '';
         this.oldPassword = '';
+        this.router.push('/dragons');
       }
+      this.loading = false;
+    },
+    isLinkValid(link) {
+      return /^http?:\/\//i.test(link);
     },
   }
 }
