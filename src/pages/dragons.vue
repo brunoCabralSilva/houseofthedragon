@@ -1,6 +1,6 @@
 <template>
   <Navigation />
-  <div class="min-h-screen flex flex-col justify-start items-center bg-black text-white pt-5 pr-5">
+  <div class="min-h-screen flex flex-col justify-start items-center bg-black text-white pt-5 px-2 md:pr-5">
     <div v-if="isAdmin" class="w-full flex justify-between items-center cursor-pointer mb-4">
       <label htmlFor="select-sort" class="pl-4">
         <span class="pl-1 sm:pl-0">Ordenar por:</span>
@@ -29,7 +29,7 @@
        <div
         v-for="(dragon, index) in dragons"
         :key="index"
-        class="border border-golden p-2 sm:p-6 my-2 w-full px-4 flex flex-col md:flex-row gap-6"
+        class="border border-golden p-2 sm:p-6 md:my-2 w-full px-4 flex flex-col md:flex-row gap-6"
       >
         <div class="md:hidden text-xl sm:text-3xl pt-5 sm:py-0 font-sedan-sc break-all md:pr-4 leading-6 flex items-center justify-between">
           {{ dragon.name }}
