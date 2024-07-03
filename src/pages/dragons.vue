@@ -29,7 +29,7 @@
        <div
         v-for="(dragon, index) in dragons"
         :key="index"
-        class="border border-golden p-2 sm:p-6 md:my-2 w-full px-4 flex flex-col md:flex-row gap-6"
+        class="border border-golden p-2 sm:p-6 mb-2 md:mb-0 md:my-2 w-full px-4 flex flex-col md:flex-row gap-6"
       >
         <div class="md:hidden text-xl sm:text-3xl pt-5 sm:py-0 font-sedan-sc break-all md:pr-4 leading-6 flex items-center justify-between">
           {{ dragon.name }}
