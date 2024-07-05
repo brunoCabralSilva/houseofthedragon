@@ -153,7 +153,7 @@
               <img
                 :src="dragon.imageURL"
                 :alt="dragon.name"
-                class="w-full sm:w-28 sm:h-28 object-cover rounded sm:rounded-full border-2 border-golden mr-3"
+                class="w-full sm:w-28 sm:h-28 object-cover rounded border-2 border-golden mr-3"
               />
               <div class="flex flex-col">
                 <div class="text-xl text-light-golden flex items-center justify-between gap-1 w-full">
@@ -258,7 +258,7 @@
               <img
                 :src="dragon.imageURL"
                 :alt="dragon.name"
-                class="w-full sm:w-28 sm:h-28 object-cover rounded sm:rounded-full border-2 border-golden mr-3"
+                class="w-full sm:w-28 sm:h-28 object-cover rounded border-2 border-golden mr-3"
               />
               <div class="flex flex-col">
                 <div class="text-xl text-light-golden flex items-center justify-between gap-1 w-full">
