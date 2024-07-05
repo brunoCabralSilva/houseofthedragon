@@ -19,6 +19,14 @@
               {{ email }}
             </div>
           </label>
+          <label class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
+            <p class="break-words w-full mb-3 sm:mb-1 text-white">Seu Nickname</p>
+            <div
+              class="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
+            >
+              {{ nickname }}
+            </div>
+          </label>
           <label htmlFor="firstName" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
             <p class="break-words w-full mb-3 sm:mb-1 text-white">Primeiro Nome</p>
             <input
@@ -130,6 +138,7 @@ export default {
       id: '',
       email: '',
       image: '',
+      nickname: '',
       lastName: '',
       firstName: '',
       loading: false,
@@ -148,6 +157,7 @@ export default {
       this.email = user.email;
       this.firstName = user.firstName;
       this.lastName = user.lastName;
+      this.nickname = user.nickname;
       this.showData = true;
     } else router.push('/login');
   },

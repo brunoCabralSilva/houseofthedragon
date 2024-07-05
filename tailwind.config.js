@@ -4,6 +4,11 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      animation: {
+        'pulse-1': 'pulse 1s linear infinite',
+        'pulse-2': 'pulse 2s linear infinite',
+        'pulse-3': 'pulse 3s linear infinite',
+      },
       colors: {
         'golden': '#BE8E4A',
         'dark-golden': '#75501D',

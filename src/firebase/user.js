@@ -11,6 +11,7 @@ export async function registerUser(
   password,
   firstName,
   lastName,
+  nickname,
   image,
 ) {
   try {
@@ -21,7 +22,7 @@ export async function registerUser(
     const imageURL = await createProfileImage(user.uid, image);
 
     await setDoc(doc(db, 'users', user.uid), {
-      email, firstName, lastName, imageURL,
+      email, firstName, lastName, imageURL, nickname,
     });
 
     window.alert('Usuário registrado com sucesso!');
@@ -30,6 +31,19 @@ export async function registerUser(
     const errorCode = error.code;
     const errorMessage = error.message;
     window.alert('Erro ao registrar:' + errorCode + ' - ' + errorMessage);
+    return false;
+  }
+}
+
+export async function findNickByName(nickname) {
+  try {
+    const db = getFirestore(firebaseConfig);
+    const usersCollectionRef = collection(db, 'users');
+    const q = query(usersCollectionRef, where('nickname', '==', nickname));
+    const querySnapshot = await getDocs(q);
+    return querySnapshot.empty;
+  } catch (error) {
+    window.alert('Erro ao testar usuário Nickname: ' + error);
     return false;
   }
 }

@@ -1,6 +1,9 @@
 <template>
   <Navigation />
-  <div class="w-full min-h-screen grid grid-cols-1 lg:grid-cols-2 items-center justify-center bg-black text-white p-2 lg:pt-5">
+  <div v-if="!showData" class="w-full h-screen flex items-center justify-center">
+    <Loading />
+  </div>
+  <div v-else class="w-full min-h-screen grid grid-cols-1 lg:grid-cols-2 items-center justify-center bg-black text-white p-2 lg:pt-5">
     <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 h-full">
       <swiper
         effect="cube"
@@ -36,9 +39,7 @@
       </swiper>
       <div v-if="showDragonData" class="hidden sm:flex sm:flex-col lg:hidden sm:justify-center sm:items-center sm:h-full pl-4">
         <p class="py-5 text-3xl w-full">{{ dataDragon.name }}</p>
-        <div
-          class="w-full grid grid-cols-2 md:mt-4 mb-4 gap-3"
-        >
+        <div class="w-full grid grid-cols-2 md:mt-4 mb-4 gap-3">
           <p>Vitalidade: {{ dataDragon.vitalidade }}</p>
           <p>Velocidade: {{ dataDragon.velocidade }}</p>
           <p>Rebeldia: {{ dataDragon.rebeldia }}</p>
@@ -48,19 +49,17 @@
         </div>
       </div>
       <div v-else class="w-full h-full hidden sm:flex lg:hidden flex-col items-center justify-center lg:justify-center animate-pulse">
-      <img
-        :src="require('@/assets/targaryen-icon.png')"
-        class="w-8 sm:w-16 object-contain z-20"
-        alt="Emblema dourado da cara Targaryen"
-      >
-      <p class="text-xl sm:text-3xl mt-5 lg:mt-10 text-center lg:text-left">Escolhendo o seu oponente...</p>
-    </div>
+        <img
+          :src="require('@/assets/targaryen-icon.png')"
+          class="w-8 sm:w-16 object-contain z-20"
+          alt="Emblema dourado da cara Targaryen"
+        >
+        <p class="text-xl sm:text-3xl mt-5 lg:mt-10 text-center lg:text-left">Escolhendo o seu oponente...</p>
+      </div>
     </div>
     <div v-if="showDragonData" class="w-full h-full flex flex-col items-start justify-center sm:justify-start lg:justify-center text-white lg:pr-6">
       <p class="py-5 sm:py-0 text-2xl sm:text-3xl flex sm:hidden lg:flex">{{ dataDragon.name }}</p>
-      <div
-        class="w-full grid sm:hidden lg:grid grid-cols-2 sm:grid-cols-3 md:mt-4 mb-4"
-      >
+      <div class="w-full grid sm:hidden lg:grid grid-cols-2 sm:grid-cols-3 md:mt-4 mb-4">
         <p>Vitalidade: {{ dataDragon.vitalidade }}</p>
         <p>Velocidade: {{ dataDragon.velocidade }}</p>
         <p>Rebeldia: {{ dataDragon.rebeldia }}</p>
@@ -78,7 +77,6 @@
         </button>
       </div>
     </div>
-    
     <div v-else class="w-full h-full flex sm:hidden lg:flex flex-col items-center justify-start lg:justify-center animate-pulse">
       <img
         :src="require('@/assets/targaryen-icon.png')"
@@ -96,17 +94,21 @@ import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 import Footer from '@/components/footer.vue';
 import { getDragonsWithVitalityNotOne } from '@/firebase/dragons';
 import 'swiper/css';
-import { ref } from 'vue';
+import { ref, onMounted } from 'vue';
 import { Autoplay, EffectCube } from 'swiper';
 import Navigation from '@/components/navigation.vue';
+import Loading from '@/components/loading.vue';
+import { useRouter } from 'vue-router';
+import { authenticate } from '@/firebase/authenticate';
 
 export default {
   name: 'ChoosingIaOponent',
   components: {
     Swiper,
-    SwiperSlide,
-    Navigation,
     Footer,
+    Loading,
+    Navigation,
+    SwiperSlide,
   },
   setup() {
     const dragons = ref(null);
@@ -127,6 +129,7 @@ export default {
 
     const showDragonData = ref(false);
     const isAutoplaying = ref(true);
+    const showData = ref(false);
     const onSwiper = (swiper) => swiperInstance = swiper;
     const autoplayCompleteEvent = () => {
       autoplayLoops++;
@@ -144,28 +147,37 @@ export default {
       swiperInstance.on('autoplayStop', autoplayCompleteEvent);
     };
 
-    loadData();
-
-    const randomTimeout = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000;
-    setTimeout(() => {
-      if (!autoplayComplete) {
-        autoplayComplete = true;
-        swiperInstance.autoplay.stop();
-        const index = swiperInstance.realIndex;
-        const selectedDragon = dragons.value[index];
-        dataDragon.value = {
-          name: selectedDragon.name,
-          vitalidade: selectedDragon.vitalidade,
-          velocidade: selectedDragon.velocidade,
-          rebeldia: selectedDragon.rebeldia,
-          dracarys: selectedDragon.dracarys,
-          mordida: selectedDragon.mordida,
-          garras: selectedDragon.garras,
-          description: selectedDragon.description,
-        };
-        showDragonData.value = true;
+    onMounted(async () => {
+      const router = useRouter();
+      const auth = await authenticate();
+      if (auth) {
+        showData.value = true;
+        loadData();
+        const randomTimeout = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000;
+        setTimeout(async () => {
+          if (!autoplayComplete) {
+            autoplayComplete = true;
+            swiperInstance.autoplay.stop();
+            const index = swiperInstance.realIndex;
+            const selectedDragon = dragons.value[index];
+            // await chooseIaDragon(dragons.value[index]);
+            dataDragon.value = {
+              name: selectedDragon.name,
+              vitalidade: selectedDragon.vitalidade,
+              velocidade: selectedDragon.velocidade,
+              rebeldia: selectedDragon.rebeldia,
+              dracarys: selectedDragon.dracarys,
+              mordida: selectedDragon.mordida,
+              garras: selectedDragon.garras,
+              description: selectedDragon.description,
+            };
+            showDragonData.value = true;
+          }
+        }, randomTimeout);
+      } else {
+        router.push('/login');
       }
-    }, randomTimeout);
+    });
     return {
       dragons,
       modules,
@@ -173,8 +185,9 @@ export default {
       isAutoplaying,
       dataDragon,
       showDragonData,
+      showData,
     };
-  }
+  },
 };
 </script>
 

@@ -12,8 +12,9 @@
           :alt="'imagem de ' + user.displayName"
         />
       </div>
-      <p class="text-xl pt-5">{{ user.displayName }}</p>
-      <p class="text-sm break-all text-center px-3">{{ user.email }}</p>
+      <p class="text-xl pt-5 capitalize">{{ user.displayName }}</p>
+      <p class="text-sm">{{ user.nickname }}</p>
+      <p class="mt-4 text-sm break-all text-center px-3">{{ user.email }}</p>
       <p
         @click="editProfile"
         class="mt-5 border border-white px-3 py-2 rounded cursor-pointer hover:border-golden hover:text-golden mb-10"
@@ -45,6 +46,7 @@ export default {
       user: {
         id: '',
         displayName: '',
+        nickname: '',
         email: '',
         imageURL: '',
       },
@@ -60,6 +62,7 @@ export default {
         id: user.id,
         email: user.email,
         imageURL: user.imageURL,
+        nickname: user.nickname,
         displayName: user.firstName + ' ' + user.lastName,
       }
       this.showData = true;
