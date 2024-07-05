@@ -107,6 +107,13 @@
       >
         Perfil
       </router-link>
+      <router-link
+        @click="toggleMenu"
+        :to="logged ? '/matchs' :'/login'"
+        class="mt-10 flex bg-golden hover:bg-white rounded whitespace-nowrap px-3 py-2 text-black font-bold transition-colors duration-300"
+      >
+        Jogue Agora
+      </router-link>
       <div
         v-if="logged"
         @click="signOut"
@@ -114,14 +121,6 @@
       >
         Sair
       </div>
-      <router-link
-        v-else
-        @click="toggleMenu"
-        :to="logged ? '/matchs' :'/login'"
-        class="mt-10 flex bg-golden hover:bg-white rounded whitespace-nowrap px-3 py-2 text-black font-bold transition-colors duration-300"
-      >
-        Jogue Agora
-      </router-link>
     </ul>
   </div>
   <Logout v-if="close" @logout-user="close = false" />

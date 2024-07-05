@@ -5,6 +5,8 @@ import { collection, doc, getDoc, getDocs, getFirestore, query, setDoc, updateDo
 import { createProfileImage, updateProfileImage } from './storage';
 import firebaseConfig from "./connection";
 import { changeUserPassword } from './authenticate';
+import { getDragonByName } from './dragons';
+import { registerMount } from './mount';
 
 export async function registerUser(
   email,
@@ -24,7 +26,8 @@ export async function registerUser(
     await setDoc(doc(db, 'users', user.uid), {
       email, firstName, lastName, imageURL, nickname,
     });
-
+    const arrax = await getDragonByName('Arrax');
+    await registerMount(arrax, email);
     window.alert('Usuário registrado com sucesso!');
     return true;
   } catch (error) {

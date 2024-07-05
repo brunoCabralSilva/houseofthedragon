@@ -42,51 +42,63 @@
           <div class="col-span-2 flex flex-col py-5 sm:py-10 w-full">
             <div class="w-full">
               <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full ">
-                <img :src="dragons[0].imageURL" :alt="dragons[0].name" class="w-full sm:w-28 sm:h-28 object-cover rounded border-2 border-golden sm:mr-3" />
+                <img :src="selectedDragon.data.imageURL" :alt="selectedDragon.name" class="w-full sm:w-28 sm:h-28 object-cover rounded border-2 border-golden sm:mr-3" />
                 <div class="flex flex-col">
-                  <p class="text-xl text-light-golden">{{ dragons[0].name }} (Selecionado)</p>
+                  <p class="text-xl text-light-golden">{{ selectedDragon.name }} (Selecionado)</p>
                   <span class="text-normal sm:text-sm text-light-golden">nível 1</span>
                   <div class="grid grid-cols-1 sm:grid-cols-2 text-normal sm:text-sm w-full">
                     <div class="pr-5 flex gap-2 items-center">
-                      <span>Velocidade: {{ dragons[0].velocidade }}</span>
-                      <span class="text-light-golden text-normal sm:text-sm">
+                      <span>vitalidade: {{ selectedDragon.data.vitalidade.value }}</span>
+                      <span 
+                        v-if="selectedDragon.data.vitalidade.bonus > 0"
+                        class="text-light-golden text-normal sm:text-sm">
                         <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                        {{ 20 }}
+                        {{ selectedDragon.data.vitalidade.bonus }}
                       </span>
                     </div>
                     <div class="flex gap-2 items-center">
-                      <span>Dracarys: {{ dragons[0].dracarys }}</span>
-                      <span class="text-light-golden text-normal sm:text-sm">
+                      <span>Dracarys: {{ selectedDragon.data.dracarys.value }}</span>
+                      <span 
+                        v-if="selectedDragon.data.dracarys.bonus > 0"
+                        class="text-light-golden text-normal sm:text-sm">
                         <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                        {{ 20 }}
+                        {{ selectedDragon.data.dracarys.bonus }}
                       </span>
                     </div>
                     <div class="pr-5 flex gap-2 items-center">
-                      <span>Velocidade: {{ dragons[0].velocidade }}</span>
-                      <span class="text-light-golden text-normal sm:text-sm">
+                      <span>Velocidade: {{ selectedDragon.data.velocidade.value }}</span>
+                      <span 
+                        v-if="selectedDragon.data.velocidade.bonus > 0"
+                        class="text-light-golden text-normal sm:text-sm">
                         <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                        {{ 20 }}
+                        {{ selectedDragon.data.velocidade.bonus }}
                       </span>
                     </div>
                     <div class="flex gap-2 items-center">
-                      <span>Mordida: {{ dragons[0].mordida }}</span>
-                      <span class="text-light-golden text-normal sm:text-sm">
+                      <span>Mordida: {{ selectedDragon.data.mordida.value }}</span>
+                      <span 
+                        v-if="selectedDragon.data.mordida.bonus > 0"
+                        class="text-light-golden text-normal sm:text-sm">
                         <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                        {{ 20 }}
+                        {{ selectedDragon.data.mordida.bonus }}
                       </span>
                     </div>
                     <div class="flex gap-2 items-center">
-                      <span>Rebeldia: {{ dragons[0].rebeldia }}</span>
-                      <span class="text-light-golden text-normal sm:text-sm">
+                      <span>Rebeldia: {{ selectedDragon.data.rebeldia.value }}</span>
+                      <span 
+                        v-if="selectedDragon.data.rebeldia.bonus > 0"
+                        class="text-light-golden text-normal sm:text-sm">
                         <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                        {{ 20 }}
+                        {{ selectedDragon.data.rebeldia.bonus }}
                       </span>
                     </div>
                     <div class="flex gap-2 items-center">
-                      <span>Garras: {{ dragons[0].garras }}</span>
-                      <span class="text-light-golden text-normal sm:text-sm">
+                      <span>Garras: {{ selectedDragon.data.garras.value }}</span>
+                      <span 
+                        v-if="selectedDragon.data.garras.bonus > 0"
+                        class="text-light-golden text-normal sm:text-sm">
                         <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                        {{ 20 }}
+                        {{ selectedDragon.data.garras.bonus }}
                       </span>
                     </div>
                   </div>
@@ -125,7 +137,96 @@
           class="text-sm animate-pulse-3"
         />
       </div>
+      <div v-if="mounts.length === 1"
+        class="flex flex-col p-4 w-full sm:w-2/3 lg:w-1/2 border border-golden rounded cursor-pointer relative"
+      >
+        <div class="w-full">
+          <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full">
+            <img
+              :src="mounts[0].data.imageURL"
+              :alt="mounts[0].name"
+              class="w-full sm:w-28 sm:h-28 object-cover rounded border-2 border-golden mr-3"
+            />
+            <div class="flex flex-col">
+              <div class="text-xl text-light-golden flex items-center justify-between gap-1 w-full">
+                <p>{{ mounts[0].name }}</p>
+                <div
+                  v-if="!mounts[0].selected"
+                  @click="scrollToSelected"
+                  class="flex items-center justify-center p-2 bg-golden text-black rounded-full w-8 h-8 sm:absolute top-3 right-3 hover:bg-dark-golden hover:text-white border-2 border-golden hover:border-white transition-colors duration-500"
+                >
+                  <FontAwesomeIcon :icon="['fas', 'check']" />
+                </div>
+              </div>
+              <span class="text-sm text-light-golden">nível 1</span>
+              <div class="grid grid-cols-1 sm:grid-cols-2 text-sm w-full">
+                <div class="pr-5 flex gap-2 items-center">
+                  <span>Vitalidade: {{ mounts[0].data.vitalidade.value }}</span>
+                  <span
+                    v-if="mounts[0].data.vitalidade.bonus !== 0"
+                    class="text-light-golden text-sm"
+                  >
+                    <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
+                    {{ mounts[0].data.vitalidade.bonus }}
+                  </span>
+                </div>
+                <div class="flex gap-2 items-center">
+                  <span>Dracarys: {{ mounts[0].data.dracarys.value }}</span>
+                  <span
+                    v-if="mounts[0].data.dracarys.bonus !== 0"
+                    class="text-light-golden text-sm"
+                  >
+                    <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
+                    {{ mounts[0].data.dracarys.bonus }}
+                  </span>
+                </div>
+                <div class="pr-5 flex gap-2 items-center">
+                  <span>Velocidade: {{ mounts[0].data.velocidade.value }}</span>
+                  <span
+                    v-if="mounts[0].data.velocidade.bonus !== 0"
+                    class="text-light-golden text-sm"
+                  >
+                    <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
+                    {{ mounts[0].data.velocidade.bonus }}
+                  </span>
+                </div>
+                <div class="flex gap-2 items-center">
+                  <span>Mordida: {{ mounts[0].data.mordida.value }}</span>
+                  <span
+                    v-if="mounts[0].data.mordida.bonus !== 0"
+                    class="text-light-golden text-sm"
+                  >
+                    <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
+                    {{ mounts[0].data.mordida.bonus }}
+                  </span>
+                </div>
+                <div class="pr-5 flex gap-2 items-center">
+                  <span>Rebeldia: {{ mounts[0].data.rebeldia.value }}</span>
+                  <span
+                    v-if="mounts[0].data.rebeldia.bonus !== 0"
+                    class="text-light-golden text-sm"
+                  >
+                    <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
+                    {{ mounts[0].data.rebeldia.bonus }}
+                  </span>
+                </div>
+                <div class="flex gap-2 items-center">
+                  <span>Garras: {{ mounts[0].data.garras.value }}</span>
+                  <span
+                    v-if="mounts[0].data.garras.bonus !== 0"
+                    class="text-light-golden text-sm"
+                  >
+                    <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
+                    {{ mounts[0].data.garras.bonus }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
       <swiper
+        v-else
         :loop="true"
         class="w-full mt-5 flex"
         :breakpoints="{
@@ -147,11 +248,11 @@
           },
         }"
       >
-        <swiper-slide v-for="(dragon, index) in dragons" :key="index" class="flex flex-col p-4 w-full border border-golden rounded cursor-pointer relative">
+        <swiper-slide v-for="(dragon, index) in mounts" :key="index" class="flex flex-col p-4 w-full border border-golden rounded cursor-pointer relative">
           <div class="w-full">
             <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full">
               <img
-                :src="dragon.imageURL"
+                :src="dragon.data.imageURL"
                 :alt="dragon.name"
                 class="w-full sm:w-28 sm:h-28 object-cover rounded border-2 border-golden mr-3"
               />
@@ -159,6 +260,7 @@
                 <div class="text-xl text-light-golden flex items-center justify-between gap-1 w-full">
                   <p>{{ dragon.name }}</p>
                   <div
+                    v-if="!dragon.selected"
                     @click="scrollToSelected"
                     class="flex items-center justify-center p-2 bg-golden text-black rounded-full w-8 h-8 sm:absolute top-3 right-3 hover:bg-dark-golden hover:text-white border-2 border-golden hover:border-white transition-colors duration-500"
                   >
@@ -168,45 +270,63 @@
                 <span class="text-sm text-light-golden">nível 1</span>
                 <div class="grid grid-cols-1 sm:grid-cols-2 text-sm w-full">
                   <div class="pr-5 flex gap-2 items-center">
-                    <span>Velocidade: {{ dragon.velocidade }}</span>
-                    <span class="text-light-golden text-sm">
+                    <span>Vitalidade: {{ dragon.data.vitalidade.value }}</span>
+                    <span
+                      v-if="dragon.data.vitalidade.bonus !== 0"
+                      class="text-light-golden text-sm"
+                    >
                       <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                      {{ 20 }}
+                      {{ dragon.data.vitalidade.bonus }}
                     </span>
                   </div>
                   <div class="flex gap-2 items-center">
-                    <span>Dracarys: {{ dragon.dracarys }}</span>
-                    <span class="text-light-golden text-sm">
+                    <span>Dracarys: {{ dragon.data.dracarys.value }}</span>
+                    <span
+                      v-if="dragon.data.dracarys.bonus !== 0"
+                      class="text-light-golden text-sm"
+                    >
                       <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                      {{ 20 }}
+                      {{ dragon.data.dracarys.bonus }}
                     </span>
                   </div>
                   <div class="pr-5 flex gap-2 items-center">
-                    <span>Velocidade: {{ dragon.velocidade }}</span>
-                    <span class="text-light-golden text-sm">
+                    <span>Velocidade: {{ dragon.data.velocidade.value }}</span>
+                    <span
+                      v-if="dragon.data.velocidade.bonus !== 0"
+                      class="text-light-golden text-sm"
+                    >
                       <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                      {{ 20 }}
+                      {{ dragon.data.velocidade.bonus }}
                     </span>
                   </div>
                   <div class="flex gap-2 items-center">
-                    <span>Mordida: {{ dragon.mordida }}</span>
-                    <span class="text-light-golden text-sm">
+                    <span>Mordida: {{ dragon.data.mordida.value }}</span>
+                    <span
+                      v-if="dragon.data.mordida.bonus !== 0"
+                      class="text-light-golden text-sm"
+                    >
                       <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                      {{ 20 }}
+                      {{ dragon.data.mordida.bonus }}
                     </span>
                   </div>
                   <div class="pr-5 flex gap-2 items-center">
-                    <span>Rebeldia: {{ dragon.rebeldia }}</span>
-                    <span class="text-light-golden text-sm">
+                    <span>Rebeldia: {{ dragon.data.rebeldia.value }}</span>
+                    <span
+                      v-if="dragon.data.rebeldia.bonus !== 0"
+                      class="text-light-golden text-sm"
+                    >
                       <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                      {{ 20 }}
+                      {{ dragon.data.rebeldia.bonus }}
                     </span>
                   </div>
                   <div class="flex gap-2 items-center">
-                    <span>Garras: {{ dragon.garras }}</span>
-                    <span class="text-light-golden text-sm">
+                    <span>Garras: {{ dragon.data.garras.value }}</span>
+                    <span
+                      v-if="dragon.data.garras.bonus !== 0"
+                      class="text-light-golden text-sm"
+                    >
                       <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                      {{ 20 }}
+                      {{ dragon.data.garras.bonus }}
                     </span>
                   </div>
                 </div>
@@ -270,49 +390,24 @@
                     <FontAwesomeIcon :icon="['fas', 'check']" />
                   </div>
                 </div>
-                <span class="text-sm text-light-golden">nível 1</span>
                 <div class="grid grid-cols-1 sm:grid-cols-2 text-sm w-full">
                   <div class="pr-5 flex gap-2 items-center">
                     <span>Velocidade: {{ dragon.velocidade }}</span>
-                    <span class="text-light-golden text-sm">
-                      <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                      {{ 20 }}
-                    </span>
                   </div>
                   <div class="flex gap-2 items-center">
                     <span>Dracarys: {{ dragon.dracarys }}</span>
-                    <span class="text-light-golden text-sm">
-                      <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                      {{ 20 }}
-                    </span>
                   </div>
                   <div class="pr-5 flex gap-2 items-center">
                     <span>Velocidade: {{ dragon.velocidade }}</span>
-                    <span class="text-light-golden text-sm">
-                      <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                      {{ 20 }}
-                    </span>
                   </div>
                   <div class="flex gap-2 items-center">
                     <span>Mordida: {{ dragon.mordida }}</span>
-                    <span class="text-light-golden text-sm">
-                      <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                      {{ 20 }}
-                    </span>
                   </div>
                   <div class="pr-5 flex gap-2 items-center">
                     <span>Rebeldia: {{ dragon.rebeldia }}</span>
-                    <span class="text-light-golden text-sm">
-                      <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                      {{ 20 }}
-                    </span>
                   </div>
                   <div class="flex gap-2 items-center">
                     <span>Garras: {{ dragon.garras }}</span>
-                    <span class="text-light-golden text-sm">
-                      <FontAwesomeIcon :icon="['fas', 'arrow-up']" class="text-xs" />
-                      {{ 20 }}
-                    </span>
                   </div>
                 </div>
               </div>
@@ -341,6 +436,7 @@ library.add(faArrowUp);
 library.add(faChevronRight);
 library.add(faCheck);
 import 'swiper/css';
+import { getMountsByEmail } from '@/firebase/mount';
 
 export default {
   name: 'GamingPage',
@@ -354,12 +450,30 @@ export default {
   },
   data() {
     return {
-      showData: false,
-      dragons: [ { imageURL: '' }],
-      user: {
-        nickname: '',
+      selectedDragon: {
+        email: '',
+        dragonId: '',
+        name: '',
+        data: {
+          vitalidade: { value: 0, bonus: 0 },
+          velocidade: { value: 0, bonus: 0 },
+          rebeldia: { value: 0, bonus: 0 },
+          dracarys: { value: 0, bonus: 0 },
+          mordida: { value: 0, bonus: 0 },
+          garras: { value: 0, bonus: 0 },
+          imageURL: '',
+          nameFont: '',
+          linkFont: '',
+          aparencia: '',
+          description: '',
+        },
       },
-    };
+      showData: false,
+      mounts: [],
+      dragons: [ { imageURL: '' }],
+      user: { value: 0, bonus: 0 },
+      nickname: '',
+    }
   },
   async created() {
     const router = useRouter();
@@ -367,20 +481,21 @@ export default {
     if (auth) {
       this.showData = true;
       const user = await getUserByEmail(auth.email);
+      const mounts = await getMountsByEmail(auth.email);
+      this.mounts = mounts;
+      this.selectedDragon = mounts.find((mount) => mount.selected === true);
       this.user = user;
       const dragons = await getDragonsWithVitalityNotOne();
       this.dragons = dragons;
-    } else {
-      router.push('/login');
-    }
+    } else router.push('/login');
   },
   methods: {
-  scrollToSelected() {
-    const selectedElement = document.querySelector('.selected');
-    if (selectedElement) {
-      selectedElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    scrollToSelected() {
+      const selectedElement = document.querySelector('.selected');
+      if (selectedElement) {
+        selectedElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }
   }
-}
 };
 </script>

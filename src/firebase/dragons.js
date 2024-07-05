@@ -1,6 +1,7 @@
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
 import { createDragonImage, updateDragonImage, deleteDragonDirectory } from "./storage";
 import firebaseConfig from "./connection";
+import { updateMountsById } from "./mount";
 
 export const registerDragon = async (name, image, vitalidade, velocidade, rebeldia, dracarys, mordida, garras, aparencia, description, nameFont, linkFont) => {
   try {
@@ -51,6 +52,7 @@ export async function updateDragonById(id, name, image, vitalidade, velocidade, 
         userData.imageURL = imageURL;
       }
       await updateDoc(dragonDocRef, userData);
+      await updateMountsById(id, userData);
       window.alert('Dragão atualizado com sucesso!');
       return true;
     }
@@ -104,6 +106,29 @@ export const getDragonsWithVitalityNotOne = async() => {
   } catch (error) {
     window.alert('Erro ao buscar dragões: ' + error);
     return [];
+  }
+}
+
+export async function getDragonByName(name) {
+  try {
+    const db = getFirestore(firebaseConfig);
+    const usersCollectionRef = collection(db, 'dragons');
+    const q = query(usersCollectionRef, where('name', '==', name));
+    const querySnapshot = await getDocs(q);
+    
+    if (querySnapshot.empty) {
+      window.alert('Dragão com o Nome fornecido não encontrado.');
+    } else {
+      let dragon;
+      querySnapshot.forEach((doc) => {
+        dragon = doc.data();
+        dragon.id = doc.id;
+      });
+      return dragon;
+    }
+  } catch (error) {
+    window.alert('Erro ao obter Dragão pelo Nome: ' + error);
+    return false;
   }
 }
 
