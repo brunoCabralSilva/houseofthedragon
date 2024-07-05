@@ -101,7 +101,6 @@ import Loading from '@/components/loading.vue';
 import { useRouter } from 'vue-router';
 import { authenticate } from '@/firebase/authenticate';
 import { chooseIaDragon, verifyBattle } from '@/firebase/battle';
-import router from '@/routes';
 
 export default {
   name: 'ChoosingIaOponent',
@@ -114,8 +113,6 @@ export default {
   },
   props: { battleId: { type: String, required: true } },
   setup(props) {
-    const verify = await verifyBattle(props.battleId);
-    if (verify) router.push('/home');
     const dragons = ref(null);
     const modules = [Autoplay, EffectCube];
     let swiperInstance = null;
@@ -156,6 +153,8 @@ export default {
       const router = useRouter();
       const auth = await authenticate();
       if (auth) {
+        const verify = await verifyBattle(props.battleId);
+        if (verify) router.push('/home');
         showData.value = true;
         loadData();
         const randomTimeout = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000;
