@@ -100,6 +100,8 @@ import Navigation from '@/components/navigation.vue';
 import Loading from '@/components/loading.vue';
 import { useRouter } from 'vue-router';
 import { authenticate } from '@/firebase/authenticate';
+import { chooseIaDragon, verifyBattle } from '@/firebase/battle';
+import router from '@/routes';
 
 export default {
   name: 'ChoosingIaOponent',
@@ -110,7 +112,10 @@ export default {
     Navigation,
     SwiperSlide,
   },
-  setup() {
+  props: { battleId: { type: String, required: true } },
+  setup(props) {
+    const verify = await verifyBattle(props.battleId);
+    if (verify) router.push('/home');
     const dragons = ref(null);
     const modules = [Autoplay, EffectCube];
     let swiperInstance = null;
@@ -160,7 +165,7 @@ export default {
             swiperInstance.autoplay.stop();
             const index = swiperInstance.realIndex;
             const selectedDragon = dragons.value[index];
-            // await chooseIaDragon(dragons.value[index]);
+            await chooseIaDragon(dragons.value[index], props.battleId);
             dataDragon.value = {
               name: selectedDragon.name,
               vitalidade: selectedDragon.vitalidade,

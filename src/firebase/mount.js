@@ -84,6 +84,31 @@ export const getMountsByEmail = async (email) => {
   }
 }
 
+export const changeSelectedDragon = async (email, name) => {
+  try {
+    const db = getFirestore(firebaseConfig);
+    const mountsCollectionRef = collection(db, 'mounts');
+    const q = query(mountsCollectionRef, where('email', '==', email));
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      window.alert('Não foi encontrado nenhum dragão para o usuário com o email fornecido.');
+      return;
+    }
+    querySnapshot.forEach(async (docSnapshot) => {
+      const mountData = docSnapshot.data();
+      const mountRef = doc(db, 'mounts', docSnapshot.id);
+      if (mountData.name === name) await updateDoc(mountRef, { selected: true });
+      else await updateDoc(mountRef, { selected: false });
+    });
+    window.alert('Você selecionou ' + name + ' como sua montaria para a batalha!');
+  } catch (error) {
+    const errorCode = error.code;
+    const errorMessage = error.message;
+    window.alert('Erro ao alterar seleção do dragão: ' + errorCode + ' - ' + errorMessage);
+    return false;
+  }
+};
+
 export const registerMount = async (dragon, email) => {
   try {
     const db = getFirestore(firebaseConfig);
@@ -92,6 +117,10 @@ export const registerMount = async (dragon, email) => {
       dragonId: dragon.id,
       name: dragon.name,
       selected: true,
+      winsPVP: 0,
+      lossesPVP: 0,
+      winsIA: 0,
+      lossesIA: 0,
       data: {
         vitalidade: { value: dragon.vitalidade, bonus: 0 },
         velocidade: { value: dragon.velocidade, bonus: 0 },

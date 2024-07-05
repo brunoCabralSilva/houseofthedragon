@@ -146,7 +146,6 @@
         this.loading = true;
         const validate = /\S+@\S+\.\S+/;
         const nickRegex = /[!#$%^&*(),.?":{}|<>]/;
-        console.log(nickRegex.test(this.nickname));
         const sameNick = await findNickByName(this.nickname.toLowerCase());
         const vEmail = !this.email || !validate.test(this.email) || this.email === '';
         if (this.firstName.length < 2) {

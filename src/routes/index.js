@@ -83,9 +83,10 @@ const routes = [
     props: true
   },
   {
-    path: '/choosing-ia-oponent',
+    path: '/choosing-ia-oponent/:battleId',
     name: 'ChoosingIaOponent',
     component: ChoosingIaOponent,
+    props: true
   },
   {
     path: '/calculate',

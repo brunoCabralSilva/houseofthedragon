@@ -199,7 +199,6 @@ export default {
         }
         this.texts.push({ text: this.text, number: maxNumber + 1 });
         this.text = '';
-        console.log(this.texts);
       }
     },
     updateText(dataText) {
