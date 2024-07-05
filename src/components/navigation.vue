@@ -126,7 +126,7 @@
   </div>
   <Logout v-if="close" @logout-user="close = false" />
   <img
-    v-if="route !== '/login'"
+    v-if="route !== '/login' && route !== '/choosing-ia-oponent'"
     :src="require(`@/assets/wallpaper-dragon.jpg`)"
     class="w-full object-cover object-center z-5 h-40vh"
     alt="Emblema dourado da cara Targaryen"

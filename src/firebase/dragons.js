@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, updateDoc } from "firebase/firestore";
+import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
 import { createDragonImage, updateDragonImage, deleteDragonDirectory } from "./storage";
 import firebaseConfig from "./connection";
 
@@ -90,6 +90,22 @@ export const getDragonById = async (dragonId) => {
     return null;
   }
 };
+
+export const getDragonsWithVitalityNotOne = async() => {
+  try {
+    const db = getFirestore(firebaseConfig);
+    const q = query(collection(db, 'dragons'), where('vitalidade', '!=', 1));
+    const querySnapshot = await getDocs(q);
+    const dragons = [];
+    querySnapshot.forEach((doc) => {
+      dragons.push({ id: doc.id, ...doc.data() });
+    });
+    return dragons;
+  } catch (error) {
+    window.alert('Erro ao buscar dragões: ' + error);
+    return [];
+  }
+}
 
 export const deleteDragon = async(id) => {
   try {

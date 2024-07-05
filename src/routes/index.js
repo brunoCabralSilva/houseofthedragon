@@ -12,6 +12,8 @@ import EditProfile from '@/pages/editProfile.vue';
 import CreateNews from '@/pages/createNews.vue';
 import AddDragon from '@/pages/addDragon.vue';
 import EditDragon from '@/pages/editDragon.vue';
+import ChoosingIaOponent from '@/pages/choosingIaOponent.vue';
+import Calc from '@/pages/calc.vue';
 
 const routes = [
   {
@@ -79,6 +81,16 @@ const routes = [
     name: 'EditDragon',
     component: EditDragon,
     props: true
+  },
+  {
+    path: '/choosing-ia-oponent',
+    name: 'ChoosingIaOponent',
+    component: ChoosingIaOponent,
+  },
+  {
+    path: '/calculate',
+    name: 'CalcAttack',
+    component: Calc,
   }
 ];
 
