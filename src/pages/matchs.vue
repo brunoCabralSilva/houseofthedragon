@@ -4,7 +4,7 @@
     <div v-if="!showData" class="pt-20 w-full flex items-start justify-center bg-black">
       <Loading />
     </div>
-    <div v-else class="px-2 sm:px-5 w-full">
+    <div v-else class="px-4 sm:px-5 w-full">
       <p class="text-3xl">{{ user.nickname }}</p>
       <div class="w-full h-2 border border-golden rounded my-2">
         <div class="bg-golden w-1/2 h-full rounded"></div>
@@ -165,15 +165,22 @@
           },
         }"
       >
-        <swiper-slide v-for="(dragon, index) in mounts" :key="index" class="flex flex-col pl-4 py-4 w-full border border-golden rounded cursor-pointer relative">
-          <div class="w-full">
+        <swiper-slide v-for="(dragon, index) in mounts" :key="index" class="flex flex-col py-4 w-full border border-golden rounded cursor-pointer relative">
+          <div class="w-full" @click="scrollToSelected(dragon)">
             <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full">
+              <div class="flex sm:hidden items-center justify-center w-full sm:mr-3 px-2">
+                <img
+                  :src="dragon.data.imageURL"
+                  :alt="dragon.name"
+                  class="w-full sm:w-28 sm:h-28 object-cover rounded border-2 border-golden"
+                />
+              </div>
               <img
                 :src="dragon.data.imageURL"
                 :alt="dragon.name"
-                class="w-full sm:w-28 sm:h-28 object-cover rounded border-2 border-golden mr-3"
+                class="hidden sm:flex w-full sm:w-28 sm:h-28 object-cover rounded border-2 border-golden ml-4"
               />
-              <div class="flex flex-col">
+              <div class="flex flex-col pl-4">
                 <div class="text-xl text-light-golden flex items-center justify-between gap-1 w-full">
                   <p>{{ dragon.name }}</p>
                   <div
@@ -181,13 +188,6 @@
                     class="flex items-center justify-center p-2 text-golden rounded-full w-8 h-8 sm:absolute top-3 right-3 transition-colors duration-500"
                   >
                     <FontAwesomeIcon :icon="['fas', 'check']" />
-                  </div>
-                  <div
-                    v-else
-                    @click="scrollToSelected(dragon)"
-                    class="flex items-center justify-center p-2 bg-black hover:bg-white text-golden rounded-full w-8 h-8 sm:absolute top-3 right-3 hover:text-dark-golden transition-colors duration-500"
-                  >
-                    <FontAwesomeIcon :icon="['fa', 'circle-plus']" class="text-3xl" />
                   </div>
                 </div>
                 <span class="text-sm text-light-golden">nível 1</span>
@@ -465,34 +465,36 @@ export default {
       return vitalidade + velocidade + dracarys + mordida + garras;
     },
     async scrollToSelected(dataDragon) {
-      await changeSelectedDragon(this.email, dataDragon.name);
-      dataDragon.selected = true;
-      this.selectedDragon = dataDragon;
-      const mounts = this.mounts.filter((mount) => mount.name !== dataDragon.name);
-      const mountsNotSelected = mounts.map((mount) => {
-        return { ...mount, selected: false }
-      });
+    if(dataDragon.name !== this.selectedDragon.name) {
+        await changeSelectedDragon(this.email, dataDragon.name);
+        dataDragon.selected = true;
+        this.selectedDragon = dataDragon;
+        const mounts = this.mounts.filter((mount) => mount.name !== dataDragon.name);
+        const mountsNotSelected = mounts.map((mount) => {
+          return { ...mount, selected: false }
+        });
 
-      const updatedMounts = [ dataDragon, ...mountsNotSelected ];
-      this.mounts = updatedMounts.sort((a, b) => {
-        if (a.name < b.name) return -1;
-        if (a.name > b.name) return 1;
-        return 0;
-      });
-      
-      const mountNames = this.mounts.map(mount => mount.name);
-      this.dragons = this.dragons
-      .filter(dragon => !mountNames.includes(dragon.name))
-      .sort((a, b) => {
-        const sumA = this.calculateTotalStats(a);
-        const sumB = this.calculateTotalStats(b);
-        if (sumB !== sumA) return sumA - sumB;
-        else return b.vitalidade - a.vitalidade;
-      });
+        const updatedMounts = [ dataDragon, ...mountsNotSelected ];
+        this.mounts = updatedMounts.sort((a, b) => {
+          if (a.name < b.name) return -1;
+          if (a.name > b.name) return 1;
+          return 0;
+        });
+        
+        const mountNames = this.mounts.map(mount => mount.name);
+        this.dragons = this.dragons
+        .filter(dragon => !mountNames.includes(dragon.name))
+        .sort((a, b) => {
+          const sumA = this.calculateTotalStats(a);
+          const sumB = this.calculateTotalStats(b);
+          if (sumB !== sumA) return sumA - sumB;
+          else return b.vitalidade - a.vitalidade;
+        });
 
-      const selectedElement = document.querySelector('.selected');
-      if (selectedElement) {
-        selectedElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const selectedElement = document.querySelector('.selected');
+        if (selectedElement) {
+          selectedElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
       }
     }
   }

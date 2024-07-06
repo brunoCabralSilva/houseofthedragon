@@ -3,7 +3,7 @@
   <div v-if="!showData" class="w-full h-screen flex items-center justify-center">
     <Loading />
   </div>
-  <div v-else class="w-full min-h-screen grid grid-cols-1 lg:grid-cols-2 items-center justify-center bg-black text-white p-2 lg:pt-5">
+  <div v-else class="w-full min-h-screen grid grid-cols-1 lg:grid-cols-2 items-center justify-center bg-black text-white px-4 p-2 lg:pt-5">
     <div class="w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 h-full">
       <swiper
         effect="cube"
@@ -23,7 +23,7 @@
         :loop="true"
         :autoplay="{ delay: 0, disableOnInteraction: false }"
         @swiper="onSwiper"
-        class="w-full sm:w-full lg:w-40vw sm:h-full relative z-5"
+        class="w-full lg:w-40vw sm:h-full relative z-5"
       >
         <swiper-slide
           v-for="(dragon, index) in dragons"
