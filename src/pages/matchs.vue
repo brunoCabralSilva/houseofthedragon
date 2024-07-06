@@ -349,6 +349,7 @@ import { authenticate } from '@/firebase/authenticate';
 import Loading from '@/components/loading.vue';
 import { getUserByEmail } from '@/firebase/user';
 import { changeSelectedDragon, getMountsByEmail } from '@/firebase/mount';
+import { createIaBattle } from '@/firebase/battle';
 import { getDragonsWithVitalityNotOne } from '@/firebase/dragons';
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -358,10 +359,28 @@ library.add(faArrowUp);
 library.add(faChevronRight);
 library.add(faCheck);
 import 'swiper/css';
-import { createBattle } from '@/firebase/battle';
+
+const objectDragon = {
+  email: '',
+  dragonId: '',
+  name: '',
+  data: {
+    vitalidade: { value: 0, bonus: 0 },
+    velocidade: { value: 0, bonus: 0 },
+    rebeldia: { value: 0, bonus: 0 },
+    dracarys: { value: 0, bonus: 0 },
+    mordida: { value: 0, bonus: 0 },
+    garras: { value: 0, bonus: 0 },
+    imageURL: '',
+    nameFont: '',
+    linkFont: '',
+    aparencia: '',
+    description: '',
+  },
+}
 
 export default {
-  name: 'GamingPage',
+  name: 'MatchsPage',
   components: {
     Swiper,
     SwiperSlide,
@@ -380,26 +399,9 @@ export default {
       winsPVP: 0,
       lossesIA: 0,
       lossesPVP: 0,
-      selectedDragon: {
-        email: '',
-        dragonId: '',
-        name: '',
-        data: {
-          vitalidade: { value: 0, bonus: 0 },
-          velocidade: { value: 0, bonus: 0 },
-          rebeldia: { value: 0, bonus: 0 },
-          dracarys: { value: 0, bonus: 0 },
-          mordida: { value: 0, bonus: 0 },
-          garras: { value: 0, bonus: 0 },
-          imageURL: '',
-          nameFont: '',
-          linkFont: '',
-          aparencia: '',
-          description: '',
-        },
-      },
+      selectedDragon: objectDragon,
       showData: false,
-      mounts: [],
+      mounts: [ objectDragon ],
       dragons: [ { imageURL: '' }],
       user: { value: 0, bonus: 0 },
       nickname: '',
@@ -415,7 +417,11 @@ export default {
       this.profileImage = user.imageURL;
       this.displayName = user.firstName + ' ' + user.lastName;
       const mounts = await getMountsByEmail(auth.email);
-      this.mounts = mounts;
+      this.mounts = mounts.sort((a, b) => {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+      });
       this.selectedDragon = mounts.find((mount) => mount.selected === true);
       const totals = this.mounts.reduce((acc, mount) => {
         acc.winsIA += mount.winsIA;
@@ -445,14 +451,14 @@ export default {
   },
   methods: {
     async startGame() {
-      const battleId = await createBattle(
+      const battleId = await createIaBattle(
         'ia',
         this.email,
         this.displayName,
         this.profileImage,
         this.selectedDragon,
       );
-      this.router.push('/choosing-ia-oponent/' + battleId);
+      this.router.push('/choosing-ia-dragon/' + battleId);
     },
     calculateTotalStats(dragon) {
       const { vitalidade, velocidade, dracarys, mordida, garras } = dragon;
@@ -460,19 +466,31 @@ export default {
     },
     async scrollToSelected(dataDragon) {
       await changeSelectedDragon(this.email, dataDragon.name);
-      const selectedElement = document.querySelector('.selected');
-      const mounts = await getMountsByEmail(this.email);
-      this.mounts = mounts;
-      const mountNames = mounts.map(mount => mount.name);
+      dataDragon.selected = true;
+      this.selectedDragon = dataDragon;
+      const mounts = this.mounts.filter((mount) => mount.name !== dataDragon.name);
+      const mountsNotSelected = mounts.map((mount) => {
+        return { ...mount, selected: false }
+      });
+
+      const updatedMounts = [ dataDragon, ...mountsNotSelected ];
+      this.mounts = updatedMounts.sort((a, b) => {
+        if (a.name < b.name) return -1;
+        if (a.name > b.name) return 1;
+        return 0;
+      });
+      
+      const mountNames = this.mounts.map(mount => mount.name);
       this.dragons = this.dragons
-        .filter(dragon => !mountNames.includes(dragon.name))
-        .sort((a, b) => {
-          const sumA = this.calculateTotalStats(a);
-          const sumB = this.calculateTotalStats(b);
-          if (sumB !== sumA) return sumA - sumB;
-          else return b.vitalidade - a.vitalidade;
-        });
-      this.selectedDragon = mounts.find((mount) => mount.selected === true);
+      .filter(dragon => !mountNames.includes(dragon.name))
+      .sort((a, b) => {
+        const sumA = this.calculateTotalStats(a);
+        const sumB = this.calculateTotalStats(b);
+        if (sumB !== sumA) return sumA - sumB;
+        else return b.vitalidade - a.vitalidade;
+      });
+
+      const selectedElement = document.querySelector('.selected');
       if (selectedElement) {
         selectedElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
       }

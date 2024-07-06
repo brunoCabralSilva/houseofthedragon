@@ -71,6 +71,7 @@
       <div class="w-full lg:w-20 flex items-center justify-center">
         <button
           type="button"
+          @click="startGame"
           class="bg-hard-dark-golden px-4 py-2 font-bolder mt-6 mb-6 lg:mb-0 border-2 border-transparent hover:border-white rounded w-full flex items-center justify-center"
         >
           Iniciar
@@ -118,6 +119,7 @@ export default {
     let swiperInstance = null;
     let autoplayComplete = false;
     let autoplayLoops = 0;
+    const router = useRouter();
     const dataDragon = ref({
       name: '',
       vitalidade: '',
@@ -149,47 +151,53 @@ export default {
       swiperInstance.on('autoplayStop', autoplayCompleteEvent);
     };
 
+    const startGame = () => {
+      router.push('/match/' + props.battleId);
+    }
+
     onMounted(async () => {
-      const router = useRouter();
       const auth = await authenticate();
       if (auth) {
         const verify = await verifyBattle(props.battleId);
-        if (verify) router.push('/home');
-        showData.value = true;
-        loadData();
-        const randomTimeout = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000;
-        setTimeout(async () => {
-          if (!autoplayComplete) {
-            autoplayComplete = true;
-            swiperInstance.autoplay.stop();
-            const index = swiperInstance.realIndex;
-            const selectedDragon = dragons.value[index];
-            await chooseIaDragon(dragons.value[index], props.battleId);
-            dataDragon.value = {
-              name: selectedDragon.name,
-              vitalidade: selectedDragon.vitalidade,
-              velocidade: selectedDragon.velocidade,
-              rebeldia: selectedDragon.rebeldia,
-              dracarys: selectedDragon.dracarys,
-              mordida: selectedDragon.mordida,
-              garras: selectedDragon.garras,
-              description: selectedDragon.description,
-            };
-            showDragonData.value = true;
-          }
-        }, randomTimeout);
+        if (verify) router.push('/match/' + props.battleId);
+        else {
+          showData.value = true;
+          loadData();
+          const randomTimeout = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000;
+          setTimeout(async () => {
+            if (!autoplayComplete) {
+              autoplayComplete = true;
+              swiperInstance.autoplay.stop();
+              const index = swiperInstance.realIndex;
+              const selectedDragon = dragons.value[index];
+              await chooseIaDragon(dragons.value[index], props.battleId);
+              dataDragon.value = {
+                name: selectedDragon.name,
+                vitalidade: selectedDragon.vitalidade,
+                velocidade: selectedDragon.velocidade,
+                rebeldia: selectedDragon.rebeldia,
+                dracarys: selectedDragon.dracarys,
+                mordida: selectedDragon.mordida,
+                garras: selectedDragon.garras,
+                description: selectedDragon.description,
+              };
+              showDragonData.value = true;
+            }
+          }, randomTimeout);
+        }
       } else {
         router.push('/login');
       }
     });
     return {
+      onSwiper,
       dragons,
       modules,
-      onSwiper,
       isAutoplaying,
       dataDragon,
       showDragonData,
       showData,
+      startGame,
     };
   },
 };

@@ -7,13 +7,14 @@ import Community from '../pages/community.vue';
 import Profile from '../pages/profile.vue';
 import Login from '../pages/login.vue';
 import Register from '../pages/register.vue';
-import Match from '../pages/matchs.vue';
+import Matchs from '../pages/matchs.vue';
 import EditProfile from '@/pages/editProfile.vue';
 import CreateNews from '@/pages/createNews.vue';
 import AddDragon from '@/pages/addDragon.vue';
 import EditDragon from '@/pages/editDragon.vue';
 import ChoosingIaOponent from '@/pages/choosingIaOponent.vue';
 import Calc from '@/pages/calc.vue';
+import Match from '@/pages/match.vue';
 
 const routes = [
   {
@@ -59,7 +60,7 @@ const routes = [
   {
     path: '/matchs',
     name: 'Matchs',
-    component: Match
+    component: Matchs
   },
   {
     path: '/edit-profile',
@@ -83,9 +84,15 @@ const routes = [
     props: true
   },
   {
-    path: '/choosing-ia-oponent/:battleId',
+    path: '/choosing-ia-dragon/:battleId',
     name: 'ChoosingIaOponent',
     component: ChoosingIaOponent,
+    props: true
+  },
+  {
+    path: '/match/:battleId',
+    name: 'playMatch',
+    component: Match,
     props: true
   },
   {

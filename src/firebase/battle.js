@@ -1,7 +1,7 @@
 import { addDoc, collection, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
 import firebaseConfig from "./connection";
 
-export const createBattle = async (
+export const createIaBattle = async (
   type,
   email,
   displayName,
@@ -10,7 +10,7 @@ export const createBattle = async (
 ) => {
   try {
     const db = getFirestore(firebaseConfig);
-    const battleId = await findEmptyInvitedBattle(type);
+    const battleId = await findIaBattle(email);
     if (battleId) return battleId;
     else {
       const register = await addDoc(
@@ -30,8 +30,8 @@ export const createBattle = async (
             },
           },
           userInvited: {
-            email: '',
-            displayName: '',
+            email: 'ia',
+            displayName: 'IA',
             profileImage: '',
             dragon: { },
           },
@@ -47,21 +47,23 @@ export const createBattle = async (
   }
 };
 
-export const findEmptyInvitedBattle = async (type) => {
+export const findIaBattle = async (email) => {
   try {
     const db = getFirestore(firebaseConfig);
     const battlesCollectionRef = collection(db, 'battles');
-    const q = query(battlesCollectionRef, where('type', '==', type));
+    const q = query(battlesCollectionRef, where('type', '==', 'ia'));
     const querySnapshot = await getDocs(q);
-    if (querySnapshot.empty) return null;
-    const doc = querySnapshot.docs[0];
-    const data = doc.data();
-    if (data.userInvited.email === '' && data.userInvited.displayName === '' && data.userInvited.profileImage === '') return doc.id;
-    else return null;
+    let battleId = null;
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      if (data.userInviting.email === email) battleId = doc.id;
+    });
+    return battleId;
   } catch (error) {
-    window.alert('Erro ao buscar batalha vazia:', error);
+    window.alert('Erro ao buscar batalha vazia:', error.message);
+    return null;
   }
-};
+}
 
 export const chooseIaDragon = async (dragon, id) => {
   const userInvited = {
@@ -84,11 +86,15 @@ export const verifyBattle = async (battleId) => {
     const battleDocRef = doc(db, 'battles', battleId);
     const battleDoc = await getDoc(battleDocRef);
     if (battleDoc.exists()) {
-      const battle = { ...battleDoc.userInvited };
-      if (battle.email === '' && battle.displayName === '' && battle.profileImage === '') return true;
+      const battleData = battleDoc.data();
+      if (battleData.userInvited && battleData.userInvited.dragon && battleData.userInvited.dragon.name) return true;
       return false;
-    } else window.alert('Batalha não encontrad(a). Por favor, atualize a página e tente novamente.');
+    } else {
+      window.alert('Batalha não encontrada. Por favor, atualize a página e tente novamente.');
+      return false;
+    }
   } catch (error) {
-    window.alert('Erro ao buscar batalha vazia:', error);
+    window.alert('Erro ao verificar batalha:', error.message);
+    return false;
   }
 }
