@@ -36,6 +36,38 @@ export const updateMountsById = async (id, dragonData) => {
   }
 }
 
+export const updateMountsByName = async (nameParam, dragonData) => {
+  try {
+    const db = getFirestore(firebaseConfig);
+    const mountsCollection = collection(db, 'mounts');
+    const q = query(mountsCollection, where("name", "==", nameParam));
+    const querySnapshot = await getDocs(q);
+    const promises = [];
+    querySnapshot.forEach((document) => {
+      const docRef = doc(db, 'mounts', document.id);
+      const updatedData = {
+        "data.vitalidade.value": dragonData.Vitalidade,
+        "data.velocidade.value": dragonData.Velocidade,
+        "data.rebeldia.value": dragonData.Rebeldia,
+        "data.dracarys.value": dragonData.Dracarys,
+        "data.mordida.value": dragonData.Mordida,
+        "data.garras.value": dragonData.Garras,
+        // "data.nameFont": dragonData.nameFont,
+        // "data.linkFont": dragonData.linkFont,
+        // "data.aparencia": dragonData.aparencia,
+        // "data.description": dragonData.description
+      };      
+      promises.push(updateDoc(docRef, updatedData));
+    });
+    
+    await Promise.all(promises);
+    return true;
+  } catch (error) {
+    window.alert('Erro ao atualizar: ' + error);
+    return false;
+  }
+}
+
 export const getSelectedMount = async (email) => {
   try {
     const db = getFirestore(firebaseConfig);
@@ -100,7 +132,7 @@ export const changeSelectedDragon = async (email, name) => {
       if (mountData.name === name) await updateDoc(mountRef, { selected: true });
       else await updateDoc(mountRef, { selected: false });
     });
-    window.alert('Você selecionou ' + name + ' como sua montaria para a batalha!');
+    window.alert('Você reivindicou ' + name + ' para a batalha!');
   } catch (error) {
     const errorCode = error.code;
     const errorMessage = error.message;

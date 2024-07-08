@@ -1,7 +1,7 @@
 <template>
   <Navigation />
   <div class="min-h-screen flex flex-col justify-start items-center bg-black text-white pt-5 px-2 md:pr-5">
-    <div v-if="isAdmin" class="w-full flex justify-between items-center cursor-pointer mb-4">
+    <div class="w-full flex justify-between items-center cursor-pointer mb-4">
       <label htmlFor="select-sort" class="pl-4">
         <span class="pl-1 sm:pl-0">Ordenar por:</span>
         <select
@@ -19,11 +19,18 @@
           <option value="garras">Garras</option>
         </select>
       </label>
-      <FontAwesomeIcon
-        @click="createDragon"
-        :icon="['fa', 'circle-plus']"
-        class="text-3xl text-golden"
-      />
+      <div v-if="isAdmin" class="flex gap-2">
+        <FontAwesomeIcon
+          @click="uploadMassive"
+          :icon="['fas', 'file-excel']"
+          class="text-3xl text-golden"
+        />
+        <FontAwesomeIcon
+          @click="createDragon"
+          :icon="['fa', 'circle-plus']"
+          class="text-3xl text-golden"
+        />
+      </div>
     </div>
      <div
       :options="swiperOptions" class="w-full">
@@ -114,6 +121,10 @@
       :link="zoomImage.link"
       @zoom-image="zoomImage = { show: false, link: '' }"
     />
+    <UpdateDragons
+      v-if="showUpload"
+      @update-massive="showUpload = false"
+    />
   </div>
   <Footer />
 </template>
@@ -122,16 +133,18 @@
 import Footer from '@/components/footer.vue';
 import Navigation from '@/components/navigation.vue';
 import DeleteDragon from '@/components/deleteDragon.vue';
+import UpdateDragons from '@/components/updateDragons.vue';
 import ZoomImage from '@/components/zoomImage.vue';
 import { useRouter } from 'vue-router';
 import { authenticate } from '@/firebase/authenticate';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faTrash, faCirclePlus, faPenToSquare } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faCirclePlus, faPenToSquare, faFileExcel } from '@fortawesome/free-solid-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { getAllDragons } from '@/firebase/dragons';
 import 'swiper/swiper-bundle.css';
 library.add(faTrash);
 library.add(faCirclePlus);
+library.add(faFileExcel);
 library.add(faPenToSquare);
 
 export default {
@@ -141,6 +154,7 @@ export default {
     Navigation,
     ZoomImage,
     DeleteDragon,
+    UpdateDragons,
     FontAwesomeIcon,
   },
   data() {
@@ -149,6 +163,7 @@ export default {
       router: routerPage,
       showData: false,
       dragons: [],
+      showUpload: false,
       zoomImage: { show: false, link: '' },
       deleteDragon: { show: false, id: '' },
       isAdmin: false,
@@ -179,6 +194,9 @@ export default {
     }
   },
   methods: {
+    uploadMassive() {
+      this.showUpload = true;
+    },
     showImage(linkImage) {
       this.zoomImage = { show: true, link: linkImage };
     },

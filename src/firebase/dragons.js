@@ -1,7 +1,7 @@
 import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
 import { createDragonImage, updateDragonImage, deleteDragonDirectory } from "./storage";
 import firebaseConfig from "./connection";
-import { updateMountsById } from "./mount";
+import { updateMountsById, updateMountsByName } from "./mount";
 
 export const registerDragon = async (name, image, vitalidade, velocidade, rebeldia, dracarys, mordida, garras, aparencia, description, nameFont, linkFont) => {
   try {
@@ -150,3 +150,36 @@ export const deleteDragon = async(id) => {
     return false;
   }
 }
+
+export const updateListOfDragons = async (list) => {
+  try {
+    const db = getFirestore(firebaseConfig);
+    const dragonsCollection = collection(db, 'dragons');
+    for (const dragon of list) {
+      const dragonQuery = query(dragonsCollection, where('name', '==', dragon.Dragão));
+      const querySnapshot = await getDocs(dragonQuery);
+      if (!querySnapshot.empty) {
+        querySnapshot.forEach(async (dragonDoc) => {
+          const dragonDocRef = dragonDoc.ref;
+          const dragonData = {
+            vitalidade: dragon.Vitalidade,
+            velocidade: dragon.Velocidade,
+            rebeldia: dragon.Rebeldia,
+            dracarys: dragon.Dracarys,
+            mordida: dragon.Mordida,
+            garras: dragon.Garras,
+            // aparencia: dragon.Aparencia,
+            // description: dragon.Description,
+            // nameFont: dragon.NameFont,
+            // linkFont: dragon.LinkFont,
+          };
+          await updateDoc(dragonDocRef, dragonData);
+        });
+        await updateMountsByName(dragon.Dragão, dragon);
+      }
+    }
+    window.alert("Atualização em massa concluída com sucesso!");
+  } catch (error) {
+    window.alert(`Erro ao realizar a atualização em massa: ${error}`);
+  }
+};

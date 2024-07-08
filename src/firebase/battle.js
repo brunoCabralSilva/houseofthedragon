@@ -66,8 +66,27 @@ export const findIaBattle = async (email) => {
 }
 
 export const chooseIaDragon = async (dragon, id) => {
+  const objDragon = {};
+  objDragon.vitalidade = { value: dragon.vitalidade, bonus: 0 };
+  objDragon.velocidade = { value: dragon.velocidade, bonus: 0 };
+  objDragon.rebeldia = { value: dragon.rebeldia, bonus: 0 };
+  objDragon.dracarys = { value: dragon.dracarys, bonus: 0 };
+  objDragon.mordida = { value: dragon.mordida, bonus: 0 };
+  objDragon.garras = { value: dragon.garras, bonus: 0 };
+  objDragon.aparencia = dragon.aparencia;
+  objDragon.description = dragon.description;
+  objDragon.id = dragon.id;
+  objDragon.imageURL = dragon.imageURL;
+  objDragon.linkFont = dragon.linkFont;
+  objDragon.name = dragon.name;
+  objDragon.nameFont = dragon.nameFont;
   const userInvited = {
-    userInvited: { email: 'ia', displayName: 'IA', profileImage: '', dragon},
+    userInvited: {
+      email: 'ia',
+      displayName: 'IA',
+      profileImage: '',
+      dragon: objDragon,
+    },
   };
   try {
     const db = getFirestore(firebaseConfig);
