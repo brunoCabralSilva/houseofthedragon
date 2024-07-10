@@ -24,8 +24,9 @@
         </div>
       </div>
     </div>
-    <div class="w-full h-full flex items-center justify-center text-5xl text-golden">
+    <div class="w-full h-full flex flex-col items-center justify-center text-5xl text-golden">
       x
+    <p v-if="challengedUser.dragon.name !== ''" class="text-2xl pt-10">Começando...</p>
     </div>
     <div v-if="challengedUser.dragon.name !== ''" class="col-span-5 w-full grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 h-full">
       <div class="w-full h-full relative z-5 flex items-center justify-center">
