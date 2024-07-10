@@ -1,6 +1,5 @@
 import { deleteDoc, doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
 import { applyVictoryOrDefeat } from "./mount";
-import { authenticate } from "./authenticate";
 import firebaseConfig from "./connection";
 
 export const attack = async (attacker, defender, matchId) => {
@@ -100,22 +99,16 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, text) => {
       const defenderUser = currDt.users.find((user) => user.email === defender.email);
       defenderUser.dragon.vitalidade.actual -= finalDamage;
       let message = '';
-      if (!text.includes('Errou')) {
-        if (defenderUser.dragon.vitalidade.actual <= 0) {
-          defenderUser.dragon.vitalidade.actual = 0;
-          message = ' ' + attackerUser.displayName + ' venceu o combate!';
-          await updateDoc(battleDocRef, { winner: attackerUser.email, userTurn: '', timeTurn: Date.now(), message: text + message, users: [ attackerUser, defenderUser ] });
-          const auth = await authenticate();
-          if (currDt.type === 'pvp') {
-            if (auth.email === attackerUser.email) await applyVictoryOrDefeat(attackerUser, 'winsPVP');
-            else await applyVictoryOrDefeat(defenderUser, 'lossesPVP');
-          } else {
-            if (auth.email === attackerUser.email) await applyVictoryOrDefeat(attackerUser, 'winsIA');
-            else await applyVictoryOrDefeat(defenderUser, 'lossesPVP');
-          }
+      if (defenderUser.dragon.vitalidade.actual <= 0) {
+        defenderUser.dragon.vitalidade.actual = 0;
+        message = ' ' + attackerUser.displayName + ' venceu o combate!';
+        await updateDoc(battleDocRef, { winner: attackerUser.email, userTurn: '', timeTurn: Date.now(), message: text + message, users: [ attackerUser, defenderUser ] });
+        if (currDt.type === 'pvp') {
+            await applyVictoryOrDefeat(attackerUser, 'winsPVP');
+            await applyVictoryOrDefeat(defenderUser, 'lossesPVP');
         } else {
-          message = ' Vez de ' + defenderUser.displayName + '!';
-          await updateDoc(battleDocRef, { userTurn, timeTurn: Date.now(), message: text + message, users: [ attackerUser, defenderUser ] });
+          await applyVictoryOrDefeat(attackerUser, 'winsIA');
+          await applyVictoryOrDefeat(defenderUser, 'lossesIA');
         }
       } else {
         message = ' Vez de ' + defenderUser.displayName + '!';
@@ -149,7 +142,6 @@ export const endMatch = async (matchId, emailUser) => {
       if (data.type === 'ia') await deleteDoc(battleDocRef);
       else {
         const endList = data.end;
-        console.log(endList);
         const findEnd = endList.find((dataEnd) => dataEnd === emailUser);
         if (!findEnd) {
           endList.push(emailUser);
