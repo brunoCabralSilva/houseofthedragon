@@ -14,6 +14,7 @@ import AddDragon from '@/pages/addDragon.vue';
 import EditDragon from '@/pages/editDragon.vue';
 import ChoosingIaOponent from '@/pages/choosingIaOponent.vue';
 import Match from '@/pages/match.vue';
+import FindOpponent from '@/pages/FindOpponent.vue';
 
 const routes = [
   {
@@ -93,7 +94,13 @@ const routes = [
     name: 'playMatch',
     component: Match,
     props: true
-  }
+  },
+  {
+    path: '/choosing-pvp-battle/:battleId',
+    name: 'FindOponent',
+    component: FindOpponent,
+    props: true
+  },
 ];
 
 const router = createRouter({

@@ -42,7 +42,7 @@
           <div class="col-span-2 flex flex-col py-5 sm:py-10 w-full">
             <div class="w-full">
               <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full ">
-                <img :src="selectedDragon.data.imageURL" :alt="selectedDragon.name" class="w-full sm:w-28 sm:h-28 object-cover rounded border-2 border-golden sm:mr-3" />
+                <img :src="selectedDragon.data.imageIconURL" :alt="selectedDragon.name" class="w-full sm:w-28 sm:h-28 object-cover rounded border-2 border-golden sm:mr-3" />
                 <div class="flex flex-col">
                   <p class="text-xl text-light-golden">{{ selectedDragon.name }} (Selecionado)</p>
                   <span class="text-normal sm:text-sm text-light-golden">nível 1</span>
@@ -110,6 +110,7 @@
         <div class="col-span-1 md:w-full flex flex-col items-end justify-start">
           <button
             type="button"
+            @click="redirectToFindOpponent"
             class="bg-golden text-black font-bold px-4 py-2 font-bolder sm:my-6 my-2 lg:mb-0 border-2 border-transparent hover:border-white rounded flex items-center justify-center w-full sm:w-1/2"
           >
             Buscar Oponente
@@ -170,13 +171,13 @@
             <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full">
               <div class="flex sm:hidden items-center justify-center w-full sm:mr-3 px-2">
                 <img
-                  :src="dragon.data.imageURL"
+                  :src="dragon.data.imageIconURL"
                   :alt="dragon.name"
                   class="w-full sm:w-28 sm:h-28 object-cover rounded border-2 border-golden"
                 />
               </div>
               <img
-                :src="dragon.data.imageURL"
+                :src="dragon.data.imageIconURL"
                 :alt="dragon.name"
                 class="hidden sm:flex w-full sm:w-28 sm:h-28 object-cover rounded border-2 border-golden ml-4"
               />
@@ -303,7 +304,7 @@
           <div class="w-full">
             <div class="flex flex-col sm:flex-row sm:items-center gap-3 w-full">
               <img
-                :src="dragon.imageURL"
+                :src="dragon.imageIconURL"
                 :alt="dragon.name"
                 class="w-full sm:w-28 sm:h-28 object-cover rounded border-2 border-golden mr-3"
               />
@@ -359,6 +360,7 @@ library.add(faChevronRight);
 library.add(faCheck);
 import 'swiper/css';
 import { createIaBattle } from '@/firebase/battleIa';
+import { createPVPBattle } from '@/firebase/battlePVP';
 
 const objectDragon = {
   email: '',
@@ -371,6 +373,7 @@ const objectDragon = {
     dracarys: { value: 0, bonus: 0 },
     mordida: { value: 0, bonus: 0 },
     garras: { value: 0, bonus: 0 },
+    imageIconURL: '',
     imageURL: '',
     nameFont: '',
     linkFont: '',
@@ -450,6 +453,16 @@ export default {
     } else router.push('/login');
   },
   methods: {
+    async redirectToFindOpponent() {
+      const battleId = await createPVPBattle(
+        'pvp',
+        this.email,
+        this.displayName,
+        this.profileImage,
+        this.selectedDragon,
+      );
+      this.router.push('/choosing-pvp-battle/' + battleId);
+    },
     async startGame() {
       const battleId = await createIaBattle(
         'ia',

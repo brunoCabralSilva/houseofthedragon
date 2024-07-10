@@ -1,5 +1,5 @@
-import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
-import { applyIaDefeat, applyIaVictory } from "./mount";
+import { deleteDoc, doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
+import { applyVictoryOrDefeat } from "./mount";
 import { authenticate } from "./authenticate";
 import firebaseConfig from "./connection";
 
@@ -106,8 +106,13 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, text) => {
           message = ' ' + attackerUser.displayName + ' venceu o combate!';
           await updateDoc(battleDocRef, { winner: attackerUser.email, userTurn: '', timeTurn: Date.now(), message: text + message, users: [ attackerUser, defenderUser ] });
           const auth = await authenticate();
-          if (auth.email === attackerUser.email) await applyIaVictory(attackerUser);
-          else await applyIaDefeat(defenderUser);
+          if (currDt.type === 'pvp') {
+            if (auth.email === attackerUser.email) await applyVictoryOrDefeat(attackerUser, 'winsPVP');
+            else await applyVictoryOrDefeat(defenderUser, 'lossesPVP');
+          } else {
+            if (auth.email === attackerUser.email) await applyVictoryOrDefeat(attackerUser, 'winsIA');
+            else await applyVictoryOrDefeat(defenderUser, 'lossesPVP');
+          }
         } else {
           message = ' Vez de ' + defenderUser.displayName + '!';
           await updateDoc(battleDocRef, { userTurn, timeTurn: Date.now(), message: text + message, users: [ attackerUser, defenderUser ] });
@@ -133,4 +138,28 @@ export const updateMessage = async (matchId, message) => {
     return false;
   }
 }
-  
+
+export const endMatch = async (matchId, emailUser) => {
+  try {
+    const db = getFirestore(firebaseConfig);
+    const battleDocRef = doc(db, 'battles', matchId);
+    const battleDocSnapshot = await getDoc(battleDocRef);
+    if (battleDocSnapshot.exists()) {
+      const data = battleDocSnapshot.data();
+      if (data.type === 'ia') await deleteDoc(battleDocRef);
+      else {
+        const endList = data.end;
+        console.log(endList);
+        const findEnd = endList.find((dataEnd) => dataEnd === emailUser);
+        if (!findEnd) {
+          endList.push(emailUser);
+          await updateDoc(battleDocRef, { end: endList });
+        }
+        if (endList.length === 2) await deleteDoc(battleDocRef);
+      }
+      return true;
+    }
+  } catch (error) {
+    window.alert('Erro ao encerrar batalha:', error.message);
+  }
+}

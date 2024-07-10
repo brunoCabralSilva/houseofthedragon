@@ -46,7 +46,7 @@
         <div class="flex justify-start absolute top-0 left-0 p-2 pb-3 pr-3 bg-black/80 rounded-r">
           <div class="relative flex items-end">
             <img
-            src="@/assets/Daemon.png"
+            :src="userOponent.profileImage !== '' ? userOponent.profileImage : '@/assets/Daemon.png'"
             class="h-10 w-10 object-cover rounded-full absolute z-20 top-0 left-0 bg-black border-2 border-golden"
             />
             <img
@@ -182,8 +182,9 @@ import { authenticate } from '@/firebase/authenticate';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faInfo, faCaretUp, faCaretDown, faCaretRight, faCaretLeft, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
-import { attack } from '@/firebase/battle';
-import { endIaMatch, rollIaTurn } from '@/firebase/battleIa';
+import { attack, endMatch } from '@/firebase/battle';
+import { rollIaTurn } from '@/firebase/battleIa';
+
 library.add(faCircleXmark);
 library.add(faCaretRight);
 library.add(faCaretDown);
@@ -202,9 +203,9 @@ export default {
   data() {
     const router = useRouter();
     return {
+      chatSnapShot: null,
       showData: false,
       router: router,
-      intervalId: null,
       matchId: router.currentRoute.value.params.battleId,
       type: '',
       winner: null,
@@ -271,16 +272,14 @@ export default {
       appId: "1:719626971606:web:85eac82dd4166fdbce5c77",
       measurementId: "G-FZM2Y82780"
     };
-    const router = useRouter();
     const auth = await authenticate();
     if (auth) {
       const firebaseApp = initializeApp(firebaseConfig);
       const db = getFirestore(firebaseApp);
-      const chatSnapShot = onSnapshot(
+      this.chatSnapShot = onSnapshot(
         doc(db, 'battles', this.matchId),
         async (snapshot) => {
           if (snapshot.data()) {
-            this.intervalId = null;
             const data = snapshot.data();
             this.type = data.type;
             this.winner = data.winner;
@@ -339,18 +338,22 @@ export default {
           }
         }
       );
-      onUnmounted(chatSnapShot);
+      onUnmounted(this.chatSnapShot);
       this.showData = true;
-    } else router.push("/login");
+    } else this.router.push("/login");
+  },
+  beforeUnmount() {
+    if (this.chatSnapShot) {
+      this.chatSnapShot();
+    }
   },
   methods: {
     async endGame() {
-      await endIaMatch(this.matchId);
-      this.router.push('/matchs')
+      await endMatch(this.matchId, this.userLogged.email);
+      this.$router.push('/matchs');
     },
     updateMessage() { this.message = '' },
     async attackOponent() {
-      clearInterval(this.intervalId);
       await attack(this.userLogged, this.userOponent, this.matchId);
     },
     previousAttack() {

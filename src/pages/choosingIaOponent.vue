@@ -97,7 +97,7 @@ import { getDragonsWithVitalityNotOne } from '@/firebase/dragons';
 import 'swiper/css';
 import { ref, onMounted } from 'vue';
 import { Autoplay, EffectCube } from 'swiper';
-import Navigation from '@/components/navigation.vue';
+import Navigation from '@/components/navigationBattle.vue';
 import Loading from '@/components/loading.vue';
 import { useRouter } from 'vue-router';
 import { authenticate } from '@/firebase/authenticate';

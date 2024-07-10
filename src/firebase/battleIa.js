@@ -1,4 +1,4 @@
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
 import firebaseConfig from "./connection";
 import { attack } from "./battle";
 
@@ -175,16 +175,5 @@ export const verifyIaBattle = async (battleId) => {
   } catch (error) {
     window.alert('Erro ao verificar batalha:', error.message);
     return false;
-  }
-}
-
-export const endIaMatch = async (matchId) => {
-  try {
-    const db = getFirestore(firebaseConfig);
-    const battleDocRef = doc(db, 'battles', matchId);
-    const battleDocSnapshot = await getDoc(battleDocRef);
-    if (battleDocSnapshot.exists()) await deleteDoc(battleDocRef);
-  } catch (error) {
-    window.alert('Erro ao encerrar batalha:', error.message);
   }
 }

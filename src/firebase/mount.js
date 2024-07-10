@@ -177,7 +177,7 @@ export const registerMount = async (dragon, email) => {
   }
 }
 
-export const applyIaVictory = async (dataUser) => {
+export const applyVictoryOrDefeat = async (dataUser, type) => {
   const db = getFirestore(firebaseConfig);
   const mountsCollectionRef = collection(db, 'mounts');
   const q = query(
@@ -185,38 +185,16 @@ export const applyIaVictory = async (dataUser) => {
     where('email', '==', dataUser.email),
     where('dragonId', '==', dataUser.dragon.id),
   );
-
   const querySnapshot = await getDocs(q);
   if (querySnapshot.empty) {
     window.alert('Não foi encontrado nenhum dragão para o usuário com o email fornecido.');
   } else {
     querySnapshot.forEach(async (docSnapshot) => {
       const mountRef = doc(db, 'mounts', docSnapshot.id);
-      await updateDoc(mountRef, {
-        winsIA: increment(1)
-      });
-    });
-  }
-}
-
-export const applyIaDefeat = async (dataUser) => {
-  const db = getFirestore(firebaseConfig);
-  const mountsCollectionRef = collection(db, 'mounts');
-  const q = query(
-    mountsCollectionRef,
-    where('email', '==', dataUser.email),
-    where('dragonId', '==', dataUser.dragon.id),
-  );
-
-  const querySnapshot = await getDocs(q);
-  if (querySnapshot.empty) {
-    window.alert('Não foi encontrado nenhum dragão para o usuário com o email fornecido.');
-  } else {
-    querySnapshot.forEach(async (docSnapshot) => {
-      const mountRef = doc(db, 'mounts', docSnapshot.id);
-      await updateDoc(mountRef, {
-        lossesIA: increment(1)
-      });
+      if (type === 'winsIA') await updateDoc(mountRef, { winsIA: increment(1) });
+      else if (type === 'winsPVP') await updateDoc(mountRef, { winsPVP: increment(1) });
+      else if (type === 'lossesPVP') await updateDoc(mountRef, { lossesPVP: increment(1) });
+      else await updateDoc(mountRef, { lossesIA: increment(1) });
     });
   }
 }
