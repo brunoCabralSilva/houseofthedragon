@@ -53,7 +53,7 @@
         class="w-8 sm:w-16 object-contain z-20"
         alt="Emblema dourado da casa Targaryen"
       >
-      <p class="text-xl sm:text-3xl mt-5 lg:mt-10 text-center lg:text-left">Escolhendo o seu oponente...</p>
+      <p class="text-xl sm:text-3xl mt-5 lg:mt-10 text-center lg:text-left">Buscando oponente...</p>
     </div>
   </div>
   <Footer />
@@ -144,7 +144,9 @@ async mounted() {
             const challengedUser = data.users.find((user) => user.email !== data.userTurn);
             this.challengerUser = challengerUser;
             if (challengedUser) this.challengedUser = challengedUser;
-            if (data.users.length === 2) this.route.push('/match/' + this.matchId);
+            if (data.users.length === 2) {
+              setTimeout(() => this.route.push('/match/' + this.matchId), 4000);
+            }
           }
         }
       }
