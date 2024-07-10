@@ -1,4 +1,4 @@
-import { addDoc, collection, doc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDocs, getFirestore, increment, query, updateDoc, where } from "firebase/firestore";
 import firebaseConfig from "./connection";
 
 export const updateMountsById = async (id, dragonData) => {
@@ -24,6 +24,7 @@ export const updateMountsById = async (id, dragonData) => {
         "data.description": dragonData.description
       };
       if (dragonData.imageURL) updatedData["data.imageURL"] = dragonData.imageURL;
+      if (dragonData.imageIconURL) updatedData["data.imageIconURL"] = dragonData.imageIconURL;
       promises.push(updateDoc(docRef, updatedData));
     });
     await Promise.all(promises);
@@ -161,6 +162,7 @@ export const registerMount = async (dragon, email) => {
         mordida: { value: dragon.mordida, bonus: 0 },
         garras: { value: dragon.garras, bonus: 0 },
         imageURL: dragon.imageURL,
+        imageIconURL: dragon.imageIconURL,
         nameFont: dragon.nameFont,
         linkFont: dragon.linkFont,
         aparencia: dragon.aparencia,
@@ -175,6 +177,46 @@ export const registerMount = async (dragon, email) => {
   }
 }
 
-// export const getMountByEmail = async (email) => {
+export const applyIaVictory = async (dataUser) => {
+  const db = getFirestore(firebaseConfig);
+  const mountsCollectionRef = collection(db, 'mounts');
+  const q = query(
+    mountsCollectionRef,
+    where('email', '==', dataUser.email),
+    where('dragonId', '==', dataUser.dragon.id),
+  );
 
-// }
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.empty) {
+    window.alert('Não foi encontrado nenhum dragão para o usuário com o email fornecido.');
+  } else {
+    querySnapshot.forEach(async (docSnapshot) => {
+      const mountRef = doc(db, 'mounts', docSnapshot.id);
+      await updateDoc(mountRef, {
+        winsIA: increment(1)
+      });
+    });
+  }
+}
+
+export const applyIaDefeat = async (dataUser) => {
+  const db = getFirestore(firebaseConfig);
+  const mountsCollectionRef = collection(db, 'mounts');
+  const q = query(
+    mountsCollectionRef,
+    where('email', '==', dataUser.email),
+    where('dragonId', '==', dataUser.dragon.id),
+  );
+
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.empty) {
+    window.alert('Não foi encontrado nenhum dragão para o usuário com o email fornecido.');
+  } else {
+    querySnapshot.forEach(async (docSnapshot) => {
+      const mountRef = doc(db, 'mounts', docSnapshot.id);
+      await updateDoc(mountRef, {
+        lossesIA: increment(1)
+      });
+    });
+  }
+}

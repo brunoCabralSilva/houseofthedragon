@@ -37,6 +37,7 @@ module.exports = {
       },
       backgroundImage: theme => ({
         'drogon': "url('@/assets/wallpaper-drogon.jpg')",
+        'arena': "url('@/assets/arena.png')",
       })
     },
   },

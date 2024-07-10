@@ -3,7 +3,7 @@ import { createDragonImage, updateDragonImage, deleteDragonDirectory } from "./s
 import firebaseConfig from "./connection";
 import { updateMountsById, updateMountsByName } from "./mount";
 
-export const registerDragon = async (name, image, vitalidade, velocidade, rebeldia, dracarys, mordida, garras, aparencia, description, nameFont, linkFont) => {
+export const registerDragon = async (name, image, imageIcon, vitalidade, velocidade, rebeldia, dracarys, mordida, garras, aparencia, description, nameFont, linkFont) => {
   try {
     const db = getFirestore(firebaseConfig);
     const register = await addDoc(
@@ -13,8 +13,9 @@ export const registerDragon = async (name, image, vitalidade, velocidade, rebeld
     );
     const docId = register.id;
     const imageURL = await createDragonImage(docId, image);
+    const imageIconURL = await createDragonImage(docId, imageIcon);
     const newsDoc = doc(db, 'dragons', docId);
-    await updateDoc(newsDoc, { imageURL });
+    await updateDoc(newsDoc, { imageURL, imageIconURL });
     window.alert('Dragão ' + name +' registrado com sucesso!');
     return true;
   } catch (error) {
@@ -25,7 +26,7 @@ export const registerDragon = async (name, image, vitalidade, velocidade, rebeld
   }
 };
 
-export async function updateDragonById(id, name, image, vitalidade, velocidade, rebeldia, dracarys, mordida, garras, aparencia, description, nameFont, linkFont) {
+export async function updateDragonById(id, name, image, imageIcon, vitalidade, velocidade, rebeldia, dracarys, mordida, garras, aparencia, description, nameFont, linkFont) {
   try {
     const db = getFirestore(firebaseConfig);
     const dragonDocRef = doc(db, 'dragons', id);
@@ -49,7 +50,9 @@ export async function updateDragonById(id, name, image, vitalidade, velocidade, 
       };
       if (image) {
         const imageURL = await updateDragonImage(id, image);
+        const imageIconURL = await createDragonImage(id, imageIcon);
         userData.imageURL = imageURL;
+        userData.imageIconURL = imageIconURL;
       }
       await updateDoc(dragonDocRef, userData);
       await updateMountsById(id, userData);

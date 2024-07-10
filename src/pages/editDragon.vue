@@ -114,6 +114,19 @@
             className="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
           />
         </label>
+        <label
+          v-if="changeImage"
+          htmlFor="image"
+          className="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
+          <p class="break-words w-full mb-3 sm:mb-1 text-white">Escolha uma Imagem para o Dragão (Ícone 400 x 400)</p>
+          <input 
+            id="imageIcon"
+            name="imageIcon"
+            type="file"
+            @change="handleImageIcon"
+            className="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
+          />
+        </label>
         <label htmlFor="firstName" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
           <p class="break-words w-full mb-3 sm:mb-1 text-white">Insira uma beve descrição:</p>
           <div class="flex w-full">
@@ -204,6 +217,7 @@ export default {
       nameFont: '',
       name: '',
       image: null,
+      imageIcon: null,
       aparencia: '',
       description: '',
     }
@@ -238,6 +252,11 @@ export default {
     updateText(dataText) {
       this.description = dataText;
     },
+    handleImageIcon(e) {
+      if (e.target.files[0]) {
+        this.imageIcon = e.target.files[0];
+      }
+    },
     handleImage(e) {
       if (e.target.files[0]) {
         this.image = e.target.files[0];
@@ -247,8 +266,8 @@ export default {
       this.loading = true;
       if (this.name < 3) {
         window.alert('Necessário preencher um Nome com pelo menos três caracteres');
-      } else if(this.changeImage && (this.image.length === 0 || this.image === '')) {
-        window.alert('Necessário escolher uma imagem de publicação');
+      } else if(this.changeImage && (this.image.length === 0 || this.image === '') && (this.imageIcon.length === 0 || this.imageIcon === '')) {
+        window.alert('Necessário escolher uma imagem do Dragão e seu ícone');
       } else if (this.vitalidade <= 0 || this.velocidade <= 0 || this.rebeldia <= 0 || this.dracarys <= 0 || this.mordida <= 0 || this.garras <= 0) {
         window.alert('Todos os atributos devem ser maiores que zero');
       } else if(this.aparencia.length < 7) {
@@ -258,7 +277,7 @@ export default {
       } else if(this.isLinkValid(this.linkFont)) {
         window.alert('Necessário preencher um Link para a fonte válido');
       } else {
-        await updateDragonById(this.id, this.name, this.image, this.vitalidade, this.velocidade, this.rebeldia, this.dracarys, this.mordida, this.garras, this.aparencia, this.description, this.nameFont, this.linkFont);
+        await updateDragonById(this.id, this.name, this.image, this.imageIcon, this.vitalidade, this.velocidade, this.rebeldia, this.dracarys, this.mordida, this.garras, this.aparencia, this.description, this.nameFont, this.linkFont);
         this.router.push('/dragons');
       }
       this.loading = false;

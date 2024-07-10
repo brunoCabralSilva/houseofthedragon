@@ -1,175 +1,386 @@
 <template>
-  <Navigation />
+  <NavigationBattle />
   <div v-if="!showData" class="w-full h-screen flex items-center justify-center">
     <Loading />
   </div>
-  <div v-else class="w-full min-h-screen items-center justify-center bg-black text-white px-4 p-2 lg:pt-5">
-    <div class="w-full h-full">
-      <p>timeTurn: {{ timeTurn }}</p>
-      <div class="grid grid-cols-2 w-full">
-        <div class="w-full">
-          <div class="flex items-center justify-start gap-2 w-full mb-5">
-            <img
-            :src="userInviting.profileImage"
-            class="w-20 h-20 object-cover rounded-full"
-            />
-            <div>
-              <p>{{ userInviting.displayName }}</p>
-              <p>Email: {{ userInviting.email }}</p>
-            </div>
-          </div>
-          
-          <img
-          :src="userInviting.dragon.imageURL"
-          class="w-full md:h-50vh md:w-30vw object-cover"
+  <div v-else class="w-full min-h-screen items-center justify-center bg-arena text-white">
+    <div
+      class="z-40 absolute w-full h-screen bg-black/80 flex items-center justify-center"
+      v-if="winner"
+    >
+      <div class="w-full text-center bg-black py-10 px-4 relative">
+        <div
+          @click="endGame"
+          class="break-words absolute p-3 w-full flex justify-end top-0 right-0"
+        >
+          <FontAwesomeIcon
+            :icon="['fas', 'circle-xmark']"
+            class="break-words text-3xl text-golden cursor-pointer duration-500 transition-colors"
+            @click="hideLogout"
           />
-          <p class="text-2xl">{{ userInviting.dragon.name }}</p>
-          <div class="grid grid-cols-2 py-5">
-            <p>Vitalidade: {{ userInviting.dragon.vitalidade.value }} ({{ userInviting.dragon.vitalidade.bonus }})</p>
-            <p>Velocidade: {{ userInviting.dragon.velocidade.value }} ({{ userInviting.dragon.velocidade.bonus }})</p>
-            <p>Rebeldia: {{ userInviting.dragon.rebeldia.value }} ({{ userInviting.dragon.rebeldia.bonus }})</p>
-            <p>Dracarys: {{ userInviting.dragon.dracarys.value }} ({{ userInviting.dragon.dracarys.bonus }})</p>
-            <p>Mordida: {{ userInviting.dragon.mordida.value }} ({{ userInviting.dragon.mordida.bonus }})</p>
-            <p>Garras: {{ userInviting.dragon.garras.value }} ({{ userInviting.dragon.garras.bonus }})</p>
-          </div>
-          <p>Aparencia: {{ userInviting.dragon.aparencia }}</p>
         </div>
-        <div class="w-full flex flex-col items-end">
-          <div class="flex items-center justify-end gap-2 w-full mb-5">
-            <div class="text-right">
-              <p>{{ userInvited.displayName }}</p>
-              <p>Email: {{ userInvited.email }}</p>
-            </div>
+        <p>{{ message }}</p>
+        <p>Fim da Partida!</p>
+      </div>
+    </div>
+    <div
+      class="z-40 absolute w-full h-screen bg-black/80 flex items-center justify-center"
+      v-if="!winner && message !== ''"
+    >
+    <div class="w-full text-center bg-black py-10 px-4 relative">
+      <div
+        @click="updateMessage"
+        class="break-words absolute p-3 w-full flex justify-end top-0 right-0"
+      >
+        <FontAwesomeIcon
+          :icon="['fas', 'circle-xmark']"
+          class="break-words text-3xl text-golden cursor-pointer duration-500 transition-colors"
+          @click="hideLogout"
+        />
+      </div>
+      <p>{{ message }}</p>
+    </div>
+    </div>
+    <div class="w-full h-full">
+      <div class="flex flex-col justify-between h-full">
+        <div class="flex justify-start absolute top-0 left-0 p-2 pb-3 pr-3 bg-black/80 rounded-r">
+          <div class="relative flex items-end">
             <img
-              :src="userInvited.profileImage"
-              class="w-20 h-20 object-cover rounded-full"
+            src="@/assets/Daemon.png"
+            class="h-10 w-10 object-cover rounded-full absolute z-20 top-0 left-0 bg-black border-2 border-golden"
             />
+            <img
+            :src="userOponent.dragon.imageIconURL"
+            class="h-20 w-20 object-cover rounded-full relative border-4 border-golden mt-3 ml-2"
+            />
+            <button
+              type="button"
+              class="h-5 w-5 object-cover rounded-full absolute z-20 bottom-0 left-0 border-2 border-golden text-golden flex items-center justify-center text-xs cursor-pointer"
+            >
+              <FontAwesomeIcon :icon="['fas', 'info']" />
+            </button>
           </div>
-          <img
-            :src="userInvited.dragon.imageURL"
-            class="w-full md:h-50vh md:w-30vw object-cover"
-          />
-          <p class="text-2xl">{{ userInvited.dragon.name }}</p>
-          <div class="grid grid-cols-2 py-5">
-            <p>Vitalidade: {{ userInvited.dragon.vitalidade.value }} ({{ userInvited.dragon.vitalidade.bonus }})</p>
-            <p>Velocidade: {{ userInvited.dragon.velocidade.value }} ({{ userInvited.dragon.velocidade.bonus }})</p>
-            <p>Rebeldia: {{ userInvited.dragon.rebeldia.value }} ({{ userInvited.dragon.rebeldia.bonus }})</p>
-            <p>Dracarys: {{ userInvited.dragon.dracarys.value }} ({{ userInvited.dragon.dracarys.bonus }})</p>
-            <p>Mordida: {{ userInvited.dragon.mordida.value }} ({{ userInvited.dragon.mordida.bonus }})</p>
-            <p>garras.value: {{ userInvited.dragon.garras.value }} ({{ userInvited.dragon.garras.bonus }})</p>
+          <div class="flex flex-col items-start justify-center w-2/12">
+            <div class="grid grid-cols-1 pt-2 w-full">
+              <p class="text-left text-xs bg-green-700 px-2 rounded-full text-white border-2 border-golden w-44">
+                {{
+                  userOponent.dragon.vitalidade.actual
+                  + userOponent.dragon.vitalidade.bonus
+                }} / 
+                {{
+                  userOponent.dragon.vitalidade.total
+                  + userOponent.dragon.vitalidade.bonus
+                }}
+              </p>
+            </div>
+            <p class="text-xl leading-4 mt-1 pl-1 text-white">
+              {{ userOponent.dragon.name }}
+            </p>
+            <p v-if="userTurn === userOponent.email" class="leading-2 text-xs pl-1 w-44">Turno do Oponente</p>
           </div>
-          <p>Aparencia: {{ userInvited.dragon.aparencia }}</p>
+        </div>
+
+        <div class="w-full h-screen">
+
+        </div>
+        
+        <div class="flex justify-between absolute bottom-0 right-0 px-3 pt-3 pb-2 bg-black/80 rounded-l-lg">
+          <div v-if="userTurn === userLogged.email" class="pl-2">
+            <div class="flex flex-col items-start w-full justify-between">
+              <p class="text-2xl leading-4 mt-1 pr-1 text-golden pb-1">
+                {{ userLogged.dragon.name }}
+                <span class="text-base">lv 1</span>
+              </p>
+              <div class="flex gap-1 items-center w-full">
+                <button
+                  type="button"
+                  @click="previousAttack"
+                  class="flex flex-col"
+                >
+                  <FontAwesomeIcon :icon="['fas', 'caret-left']" class="text-2xl cursor-pointer text-golden" />
+                </button>
+                <button
+                  type="button"
+                  @click="attackOponent"
+                  class="p-1 px-2 cursor-pointer border-2 text-xs hover:text-black hover:font-bold border-golden bg-red-700 duration-500 transition-colors rounded-full text-center w-1/2 capitalize">
+                  {{ userLogged.dragon.selectedAttack.name }} {{ userLogged.dragon.selectedAttack.actual }}
+              </button>
+              <button
+                type="button"
+                @click="nextAttack"
+                class="flex flex-col">
+                <FontAwesomeIcon :icon="['fas', 'caret-right']" class="text-2xl cursor-pointer text-golden" />
+              </button>
+              </div>
+              <p class="mt-1 text-sm">
+                Ataca o inimigo com um golpe da desgraça. 
+              </p>
+            </div>
+          </div>
+          <div class="flex justify-end items-center">
+            <div class="flex flex-col items-end justify-center">
+              <div class="flex flex-col items-end w-full pr-1">
+                <p class="text-right text-xs bg-green-700 px-2 rounded-full text-white w-44 border-2 border-golden mb-1">
+                  hp
+                  {{
+                    userLogged.dragon.vitalidade.actual
+                    + userLogged.dragon.vitalidade.bonus
+                  }} / 
+                  {{
+                    userLogged.dragon.vitalidade.total
+                    + userLogged.dragon.vitalidade.bonus
+                  }}
+                </p>
+                <p class="text-right text-xs bg-blue-800 px-2 rounded-full border-2 border-golden w-28 text-white mb-1">
+                  vel.
+                  {{
+                    userLogged.dragon.velocidade.actual 
+                    + userLogged.dragon.velocidade.total
+                  }}
+                </p>
+                <p class="text-right text-xs bg-red-700 px-2 rounded-full text-white border-2 w-20 border-golden mb-1">
+                  reb.
+                  {{
+                    userLogged.dragon.rebeldia.actual
+                    + userLogged.dragon.rebeldia.total
+                  }}
+                </p>
+                <p v-if="userTurn === userLogged.email" class="leading-2 text-xs pl-1">Seu Turno</p>
+              </div>
+            </div>
+            <div class="relative flex justify-end">
+              <button
+                type="button"
+                class="h-5 w-5 object-cover rounded-full absolute z-20 top-0 right-0 border-2 border-golden text-golden flex items-center justify-center text-xs cursor-pointer"
+              >
+                <FontAwesomeIcon :icon="['fas', 'info']" />
+              </button>
+              <img
+              :src="userLogged.profileImage"
+              class="h-10 w-10 object-cover rounded-full absolute z-20 bottom-0 right-0 bg-black border-2 border-golden"
+              />
+              <img
+              :src="userLogged.dragon.imageIconURL"
+              class="mr-2 mb-3 h-20 w-20 object-cover rounded-full relative border-4 border-golden"
+              />
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </div>
 </template>
 <script>
-  import { doc, getFirestore } from 'firebase/firestore';
-  import { initializeApp } from 'firebase/app';
-  import Navigation from '@/components/navigation.vue';
-  import Loading from '@/components/loading.vue';
-  import { onSnapshot } from "firebase/firestore";
-  import { useRouter } from 'vue-router';
-  import { onUnmounted } from "vue";
-  import { authenticate } from '@/firebase/authenticate';
-  // import { getUserByEmail } from '@/firebase/user';
-  export default {
-    name: 'MatchPage',
-    components: { Loading, Navigation },
-    props: { battleId: { type: String, required: true } },
-    data() {
-      const router = useRouter();
-      return {
-        showData: false,
-        router: router,
-        matchId: router.currentRoute.value.params.battleId,
-        type: '',
-        timeTurn: '',
-        userInvited: {
-          email: '',
-          profileImage: '',
-          displayName: '',
-          dragon: {
-            id: '',
-            name: '',
-            vitalidade: { value: 0, bonus: 0 },
-            velocidade: { value: 0, bonus: 0 },
-            rebeldia: { value: 0, bonus: 0 },
-            dracarys: { value: 0, bonus: 0 },
-            mordida: { value: 0, bonus: 0 },
-            garras: { value: 0, bonus: 0 },
-            aparencia: '',
-            description: '',
-            imageURL: '',
-            linkFont: '',
-            nameFont: '',
-          }
-        }, 
-        userInviting: {
-          email: '',
-          profileImage: '',
-          displayName: '',
-          dragon: {
-            id: '',
-            name: '',
-            vitalidade: { value: 0, bonus: 0 },
-            velocidade: { value: 0, bonus: 0 },
-            rebeldia: { value: 0, bonus: 0 },
-            dracarys: { value: 0, bonus: 0 },
-            mordida: { value: 0, bonus: 0 },
-            garras: { value: 0, bonus: 0 },
-            aparencia: '',
-            description: '',
-            imageURL: '',
-            linkFont: '',
-            nameFont: '',
-          }
-        },
-      }
-    },
-    async mounted() {
-      const firebaseConfig = {
-        apiKey: "AIzaSyDnmfij0BzqhrXm4mysV7RNPXaeYEnVgcQ",
-        authDomain: "valyrian-wars-1.firebaseapp.com",
-        projectId: "valyrian-wars-1",
-        storageBucket: "valyrian-wars-1.appspot.com",
-        messagingSenderId: "719626971606",
-        appId: "1:719626971606:web:85eac82dd4166fdbce5c77",
-        measurementId: "G-FZM2Y82780"
-      };
-      const router = useRouter();
-      const auth = await authenticate();
-      if (auth) {
-        // const userLogged = await getUserByEmail(auth.email);
-        const firebaseApp = initializeApp(firebaseConfig);
-        const db = getFirestore(firebaseApp);
-        const chatSnapShot = onSnapshot(
-          doc(db, 'battles', this.matchId),
-          async (snapshot) => {
-            if (snapshot.data()) {
-              const data = snapshot.data();
-              this.type = data.type;
-              this.timeTurn = data.timeTurn;
-              this.userInvited = data.userInvited; 
-              this.userInviting = data.userInviting; 
+import NavigationBattle from '@/components/navigationBattle.vue';
+import Loading from '@/components/loading.vue';
+import { doc, getFirestore } from 'firebase/firestore';
+import { initializeApp } from 'firebase/app';
+import { onSnapshot } from "firebase/firestore";
+import { useRouter } from 'vue-router';
+import { onUnmounted } from "vue";
+import { authenticate } from '@/firebase/authenticate';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faInfo, faCaretUp, faCaretDown, faCaretRight, faCaretLeft, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { attack } from '@/firebase/battle';
+import { endIaMatch, rollIaTurn } from '@/firebase/battleIa';
+library.add(faCircleXmark);
+library.add(faCaretRight);
+library.add(faCaretDown);
+library.add(faCaretLeft);
+library.add(faCaretUp);
+library.add(faInfo);
+
+export default {
+  name: 'MatchPage',
+  components: {
+    Loading,
+    NavigationBattle,
+    FontAwesomeIcon
+  },
+  props: { battleId: { type: String, required: true } },
+  data() {
+    const router = useRouter();
+    return {
+      showData: false,
+      router: router,
+      intervalId: null,
+      matchId: router.currentRoute.value.params.battleId,
+      type: '',
+      winner: null,
+      timeTurn: '',
+      message: '',
+      userTurn: '',
+      userLogged: {
+        email: '',
+        profileImage: '',
+        displayName: '',
+        dragon: {
+          id: '',
+          name: '',
+          vitalidade: { actual: 0, total: 0, bonus: 0 },
+          velocidade: { actual: 0, total: 0, bonus: 0 },
+          rebeldia: { actual: 0, total: 0, bonus: 0 },
+          selectedAttack: { name: 'dracarys', actual: 0, bonus: 0 },
+          attacks: [
+            { name: 'dracarys', actual: 0, total: 0, bonus: 0 },
+            { name: 'mordida', actual: 0, total: 0, bonus: 0 },
+            { name: 'garras', actual: 0, total: 0, bonus: 0 },
+          ],
+          aparencia: '',
+          description: '',
+          imageURL: '',
+          imageIconURL: '',
+          linkFont: '',
+          nameFont: '',
+        }
+      }, 
+      userOponent: {
+        email: '',
+        profileImage: '',
+        displayName: '',
+        dragon: {
+          id: '',
+          name: '',
+          vitalidade: { actual: 0, total: 0, bonus: 0 },
+          velocidade: { actual: 0, total: 0, bonus: 0 },
+          rebeldia: { actual: 0, total: 0, bonus: 0 },
+          selectedAttack: { name: 'dracarys', actual: 0, bonus: 0 },
+          attacks: [
+            { name: 'dracarys', actual: 0, total: 0, bonus: 0 },
+            { name: 'mordida', actual: 0, total: 0, bonus: 0 },
+            { name: 'garras', actual: 0, total: 0, bonus: 0 },
+          ],
+          aparencia: '',
+          description: '',
+          imageURL: '',
+          imageIconURL: '',
+          linkFont: '',
+          nameFont: '',
+        }
+      },
+    }
+  },
+  async mounted() {
+    const firebaseConfig = {
+      apiKey: "AIzaSyDnmfij0BzqhrXm4mysV7RNPXaeYEnVgcQ",
+      authDomain: "valyrian-wars-1.firebaseapp.com",
+      projectId: "valyrian-wars-1",
+      storageBucket: "valyrian-wars-1.appspot.com",
+      messagingSenderId: "719626971606",
+      appId: "1:719626971606:web:85eac82dd4166fdbce5c77",
+      measurementId: "G-FZM2Y82780"
+    };
+    const router = useRouter();
+    const auth = await authenticate();
+    if (auth) {
+      const firebaseApp = initializeApp(firebaseConfig);
+      const db = getFirestore(firebaseApp);
+      const chatSnapShot = onSnapshot(
+        doc(db, 'battles', this.matchId),
+        async (snapshot) => {
+          if (snapshot.data()) {
+            this.intervalId = null;
+            const data = snapshot.data();
+            this.type = data.type;
+            this.winner = data.winner;
+            const userLogged = data.users.find((user) => user.email === auth.email);
+            const userOponent = data.users.find((user) => user.email !== auth.email);
+            this.userLogged = {
+              ...userLogged,
+              dragon: {
+                ...userLogged.dragon,
+                selectedAttack: { name: 'dracarys', actual: userLogged.dragon.dracarys.actual, bonus: userLogged.dragon.dracarys.bonus },
+                attacks: [
+                  // ...userLogged.dragon.attacks,
+                  { name: 'dracarys',
+                    actual: userLogged.dragon.dracarys.actual,
+                    total: userLogged.dragon.dracarys.total,
+                    bonus: userLogged.dragon.dracarys.bonus },
+                  { name: 'mordida',
+                    actual: userLogged.dragon.mordida.actual,
+                    total: userLogged.dragon.mordida.total,
+                    bonus: userLogged.dragon.mordida.bonus },
+                  { name: 'garras',
+                    actual: userLogged.dragon.garras.actual,
+                    total: userLogged.dragon.garras.total,
+                    bonus: userLogged.dragon.garras.bonus },
+                ],
+              },
+            };
+            this.userOponent = {
+              ...userOponent,
+              dragon: {
+                ...userOponent.dragon,
+                selectedAttack: { name: 'dracarys', actual: userOponent.dragon.dracarys.actual, bonus: userOponent.dragon.dracarys.bonus },
+                attacks: [
+                  { name: 'dracarys',
+                    actual: userOponent.dragon.dracarys.actual,
+                    total: userOponent.dragon.dracarys.total,
+                    bonus: userOponent.dragon.dracarys.bonus },
+                  { name: 'mordida',
+                    actual: userOponent.dragon.mordida.actual,
+                    total: userOponent.dragon.mordida.total,
+                    bonus: userOponent.dragon.mordida.bonus },
+                  { name: 'garras',
+                    actual: userOponent.dragon.garras.actual,
+                    total: userOponent.dragon.garras.total,
+                    bonus: userOponent.dragon.garras.bonus },
+                ],
+              },
+            };
+            this.userTurn = data.userTurn;
+            this.message = data.message;
+            if (data.userTurn === 'ia') {
+              setTimeout(async () => {
+                await rollIaTurn(this.matchId);
+              }, 3000)
             }
           }
-        );
-        onUnmounted(chatSnapShot);
-        this.showData = true;
-      } else router.push("/login");
+        }
+      );
+      onUnmounted(chatSnapShot);
+      this.showData = true;
+    } else router.push("/login");
+  },
+  methods: {
+    async endGame() {
+      await endIaMatch(this.matchId);
+      this.router.push('/matchs')
     },
-    // async beforeCreate() {
-    //   const auth = await authenticate();
-    //   if (auth) {
-    //     const match = await getMatchById(this.matchId);
-    //     const userInvitedEmail = match.playersEmail.find((email) => email !== auth.email);
-    //     const userInvited = await getUserByEmail(userInvitedEmail); 
-    //     const userLogged = await getUserByEmail(auth.email);
-    //     this.dataUserInvited = userInvited;
-    //     this.dataUserLogged = userLogged;
-    //   }
-    // },
+    updateMessage() { this.message = '' },
+    async attackOponent() {
+      clearInterval(this.intervalId);
+      await attack(this.userLogged, this.userOponent, this.matchId);
+    },
+    previousAttack() {
+      if (this.userLogged.dragon && this.userLogged.dragon.attacks) {
+        const attacks = this.userLogged.dragon.attacks;
+        const currentAttackIndex = attacks.findIndex(
+          attack => attack.name === this.userLogged.dragon.selectedAttack.name
+        );
+        if (currentAttackIndex !== -1) {
+          const previousAttackIndex = currentAttackIndex === 0 
+            ? attacks.length - 1 
+            : currentAttackIndex - 1;
+          this.userLogged.dragon.selectedAttack = attacks[previousAttackIndex];
+        }
+      }
+    },
+    nextAttack() {
+      if (this.userLogged.dragon && this.userLogged.dragon.attacks) {
+        const attacks = this.userLogged.dragon.attacks;
+        const currentAttackIndex = attacks.findIndex(
+          attack => attack.name === this.userLogged.dragon.selectedAttack.name
+        );
+        if (currentAttackIndex !== -1) {
+          const nextAttackIndex = currentAttackIndex === attacks.length - 1 
+            ? 0 
+            : currentAttackIndex + 1;
+          this.userLogged.dragon.selectedAttack = attacks[nextAttackIndex];
+        }
+      }
+    }
   }
+}
 </script>

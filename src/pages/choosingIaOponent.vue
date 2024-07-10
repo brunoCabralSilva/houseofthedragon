@@ -101,7 +101,7 @@ import Navigation from '@/components/navigation.vue';
 import Loading from '@/components/loading.vue';
 import { useRouter } from 'vue-router';
 import { authenticate } from '@/firebase/authenticate';
-import { chooseIaDragon, verifyBattle } from '@/firebase/battle';
+import { chooseIaDragon, verifyIaBattle } from '@/firebase/battleIa';
 
 export default {
   name: 'ChoosingIaOponent',
@@ -158,7 +158,7 @@ export default {
     onMounted(async () => {
       const auth = await authenticate();
       if (auth) {
-        const verify = await verifyBattle(props.battleId);
+        const verify = await verifyIaBattle(props.battleId);
         if (verify) router.push('/match/' + props.battleId);
         else {
           showData.value = true;

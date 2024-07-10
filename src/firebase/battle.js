@@ -1,119 +1,136 @@
-import { addDoc, collection, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
+import { doc, getDoc, getFirestore, updateDoc } from "firebase/firestore";
+import { applyIaDefeat, applyIaVictory } from "./mount";
+import { authenticate } from "./authenticate";
 import firebaseConfig from "./connection";
 
-export const createIaBattle = async (
-  type,
-  email,
-  displayName,
-  profileImage,
-  selectedDragon,
-) => {
-  try {
-    const db = getFirestore(firebaseConfig);
-    const battleId = await findIaBattle(email);
-    if (battleId) return battleId;
-    else {
-      const register = await addDoc(
-        collection(db, 'battles'),
-        {
-          type,
-          timeTurn: '',
-          userTurn: '',
-          userInviting: {
-            email,
-            displayName,
-            profileImage,
-            dragon: {
-              ...selectedDragon.data,
-              name: selectedDragon.name,
-              id: selectedDragon.dragonId,
-            },
-          },
-          userInvited: {
-            email: 'ia',
-            displayName: 'IA',
-            profileImage: '',
-            dragon: { },
-          },
-        }
-      );
-      return register.id;
-    }
-  } catch (error) {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    window.alert('Erro ao registrar:' + errorCode + ' - ' + errorMessage);
-    return false;
-  }
+export const attack = async (attacker, defender, matchId) => {
+  let totalDamage = 0;
+  let finalDamage = 0;
+  let text = '';
+  const testAttack = rollAttack(attacker, defender);
+  const { type } = testAttack;
+  if (type === 'success') {
+    const damage = calculateDamage(attacker) * 2;
+    totalDamage = calcAbsorption(defender, damage);
+    const updtStamina = updateStamina(defender, totalDamage, false, attacker.dragon.selectedAttack.name);
+    finalDamage = updtStamina.finalDamage;
+    text = updtStamina.text;
+  } else if (type === 'criticalSuccess') {
+    totalDamage = (attacker.dragon.selectedAttack.actual + 12) * 2;
+    const updtStamina = updateStamina(defender, totalDamage, true, attacker.dragon.selectedAttack.name);
+    finalDamage = updtStamina.finalDamage;
+    text = updtStamina.text;
+  } else if (type === 'criticalFail') text = attacker.dragon.name + ' Errou o ataque ' + attacker.dragon.selectedAttack.name + ' (FALHA CRÍTICA).';
+  else text = attacker.dragon.name + ' Errou o ataque ' + attacker.dragon.selectedAttack.name + '.';
+  applyDamage(matchId, attacker, defender, finalDamage, text);
 };
 
-export const findIaBattle = async (email) => {
-  try {
-    const db = getFirestore(firebaseConfig);
-    const battlesCollectionRef = collection(db, 'battles');
-    const q = query(battlesCollectionRef, where('type', '==', 'ia'));
-    const querySnapshot = await getDocs(q);
-    let battleId = null;
-    querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      if (data.userInviting.email === email) battleId = doc.id;
-    });
-    return battleId;
-  } catch (error) {
-    window.alert('Erro ao buscar batalha vazia:', error.message);
-    return null;
-  }
-}
+const rollDice = (faces) => Math.floor(Math.random() * faces) + 1;
 
-export const chooseIaDragon = async (dragon, id) => {
-  const objDragon = {};
-  objDragon.vitalidade = { value: dragon.vitalidade, bonus: 0 };
-  objDragon.velocidade = { value: dragon.velocidade, bonus: 0 };
-  objDragon.rebeldia = { value: dragon.rebeldia, bonus: 0 };
-  objDragon.dracarys = { value: dragon.dracarys, bonus: 0 };
-  objDragon.mordida = { value: dragon.mordida, bonus: 0 };
-  objDragon.garras = { value: dragon.garras, bonus: 0 };
-  objDragon.aparencia = dragon.aparencia;
-  objDragon.description = dragon.description;
-  objDragon.id = dragon.id;
-  objDragon.imageURL = dragon.imageURL;
-  objDragon.linkFont = dragon.linkFont;
-  objDragon.name = dragon.name;
-  objDragon.nameFont = dragon.nameFont;
-  const userInvited = {
-    userInvited: {
-      email: 'ia',
-      displayName: 'IA',
-      profileImage: '',
-      dragon: objDragon,
-    },
-  };
+const rollAttack = (attacker, defender) => {
+  const roll = rollDice(20);
+  let type = '';
+  let dodgeBonus = 0;
+  switch (defender.dragon.velocidade.total) {
+    case 100: dodgeBonus = 12; break;
+    case 95: dodgeBonus = 10; break;
+    case 90: dodgeBonus = 8; break;
+    case 85: dodgeBonus = 6; break;
+    case 80: dodgeBonus = 4; break;
+    case 75: dodgeBonus = 2; break;
+    default: dodgeBonus = 14; break;
+  }
+  if (roll === 20) type = "criticalSuccess";
+  else if (roll === 1) type = 'criticalFail';
+  else {
+    const typeAttack = attacker.dragon.selectedAttack.actual;
+    const attackRoll = rollDice(20) + (typeAttack * 2);
+    const dodgeRoll = rollDice(20) + dodgeBonus;
+    if (attackRoll >= dodgeRoll) type = 'success';
+    else type = 'fail';
+  }
+  return { type };
+};
+
+const calculateDamage = (attacker) => {
+  const roll = rollDice(12);
+  return roll + attacker.dragon.selectedAttack.actual;
+};
+
+const calcAbsorption = (defender, damage) => {
+  const maxChance = 35;
+  const minChance = 10;
+  const maxVitalidade = 200;
+  const minVitalidade = 155;
+  let dificulty = 0;
+  if (defender.dragon.vitalidade.actual > maxVitalidade) dificulty = maxChance;
+  else if (defender.dragon.vitalidade.actual <= minVitalidade) dificulty = minChance;
+  else {
+    const chance = ((30 - minChance) / (maxVitalidade - minVitalidade)) * (defender.dragon.vitalidade.actual - minVitalidade) + minChance;
+    dificulty = Math.round(chance);
+  }
+  var roll = rollDice(100);
+  if (roll <= dificulty) {
+    const percentToRemove = dificulty / 100;
+    const amountToRemove = Math.floor(damage * percentToRemove);
+    return damage - amountToRemove;
+  } return damage;
+};
+
+const updateStamina = (defender, totalDamage, critical, name) => {
+  const finalDamage = totalDamage;
+  let text = '';
+  if(critical) text = defender.dragon.name + ' recebeu ' + totalDamage + ' de Dano Crítico de um ataque de ' + name + '!';
+  else text = defender.dragon.name + ' recebeu ' + totalDamage + ' de Dano de um ataque de ' + name + '!';
+  return { finalDamage, text };
+};
+
+const applyDamage = async (matchId, attacker, defender, finalDamage, text) => {
   try {
     const db = getFirestore(firebaseConfig);
-    const battleDocRef = doc(db, 'battles', id);
+    const battleDocRef = doc(db, 'battles', matchId);
     const battleDocSnapshot = await getDoc(battleDocRef);
     if (!battleDocSnapshot.exists()) window.alert('Batalha não encontrad(a). Por favor, atualize a página e tente novamente.');
-    else await updateDoc(battleDocRef, userInvited);
+    else {
+      const currDt = battleDocSnapshot.data();
+      let userTurn = '';
+      if (currDt.userTurn === attacker.email ) userTurn = defender.email;
+      else if (currDt.userTurn === defender.email) userTurn = attacker.email;
+      const attackerUser = currDt.users.find((user) => user.email === attacker.email);
+      const defenderUser = currDt.users.find((user) => user.email === defender.email);
+      defenderUser.dragon.vitalidade.actual -= finalDamage;
+      let message = '';
+      if (!text.includes('Errou')) {
+        if (defenderUser.dragon.vitalidade.actual <= 0) {
+          defenderUser.dragon.vitalidade.actual = 0;
+          message = ' ' + attackerUser.displayName + ' venceu o combate!';
+          await updateDoc(battleDocRef, { winner: attackerUser.email, userTurn: '', timeTurn: Date.now(), message: text + message, users: [ attackerUser, defenderUser ] });
+          const auth = await authenticate();
+          if (auth.email === attackerUser.email) await applyIaVictory(attackerUser);
+          else await applyIaDefeat(defenderUser);
+        } else {
+          message = ' Vez de ' + defenderUser.displayName + '!';
+          await updateDoc(battleDocRef, { userTurn, timeTurn: Date.now(), message: text + message, users: [ attackerUser, defenderUser ] });
+        }
+      } else {
+        message = ' Vez de ' + defenderUser.displayName + '!';
+        await updateDoc(battleDocRef, { userTurn, timeTurn: Date.now(), message: text + message, users: [ attackerUser, defenderUser ] });
+      }
+    }
   } catch (error) {
     return false;
   }
 }
 
-export const verifyBattle = async (battleId) => {
+export const updateMessage = async (matchId, message) => {
   try {
     const db = getFirestore(firebaseConfig);
-    const battleDocRef = doc(db, 'battles', battleId);
-    const battleDoc = await getDoc(battleDocRef);
-    if (battleDoc.exists()) {
-      const battleData = battleDoc.data();
-      if (battleData.userInvited && battleData.userInvited.dragon && battleData.userInvited.dragon.name) return true;
-      return false;
-    } else {
-      window.alert('Batalha não encontrada. Por favor, atualize a página e tente novamente.');
-      return false;
-    }
+    const battleDocRef = doc(db, 'battles', matchId);
+    const battleDocSnapshot = await getDoc(battleDocRef);
+    if (!battleDocSnapshot.exists()) window.alert('Batalha não encontrad(a). Por favor, atualize a página e tente novamente.');
+    else await updateDoc(battleDocRef, { message });
   } catch (error) {
-    window.alert('Erro ao verificar batalha:', error.message);
     return false;
   }
 }
+  

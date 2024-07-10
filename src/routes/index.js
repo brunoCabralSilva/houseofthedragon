@@ -13,7 +13,6 @@ import CreateNews from '@/pages/createNews.vue';
 import AddDragon from '@/pages/addDragon.vue';
 import EditDragon from '@/pages/editDragon.vue';
 import ChoosingIaOponent from '@/pages/choosingIaOponent.vue';
-import Calc from '@/pages/calc.vue';
 import Match from '@/pages/match.vue';
 
 const routes = [
@@ -94,11 +93,6 @@ const routes = [
     name: 'playMatch',
     component: Match,
     props: true
-  },
-  {
-    path: '/calculate',
-    name: 'CalcAttack',
-    component: Calc,
   }
 ];
 

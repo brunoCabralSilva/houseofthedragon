@@ -349,7 +349,6 @@ import { authenticate } from '@/firebase/authenticate';
 import Loading from '@/components/loading.vue';
 import { getUserByEmail } from '@/firebase/user';
 import { changeSelectedDragon, getMountsByEmail } from '@/firebase/mount';
-import { createIaBattle } from '@/firebase/battle';
 import { getDragonsWithVitalityNotOne } from '@/firebase/dragons';
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
@@ -359,6 +358,7 @@ library.add(faArrowUp);
 library.add(faChevronRight);
 library.add(faCheck);
 import 'swiper/css';
+import { createIaBattle } from '@/firebase/battleIa';
 
 const objectDragon = {
   email: '',
