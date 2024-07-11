@@ -129,8 +129,10 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, text) => {
             await applyVictoryOrDefeat(attackerUser, 'winsPVP');
             await applyVictoryOrDefeat(defenderUser, 'lossesPVP');
         } else {
-          await applyVictoryOrDefeat(attackerUser, 'winsIA');
-          await applyVictoryOrDefeat(defenderUser, 'lossesIA');
+          if (defenderUser.dispolayName !== 'IA')
+            await applyVictoryOrDefeat(attackerUser, 'winsIA');
+          if (defenderUser.dispolayName !== 'IA')
+            await applyVictoryOrDefeat(defenderUser, 'lossesIA');
         }
       } else {
         const message = ' Vez de ' + defenderUser.displayName + '!';

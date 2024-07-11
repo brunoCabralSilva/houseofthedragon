@@ -178,8 +178,6 @@ export const registerMount = async (dragon, email) => {
 }
 
 export const applyVictoryOrDefeat = async (dataUser, type) => {
-  console.log(dataUser);
-  console.log(type);
   const db = getFirestore(firebaseConfig);
   const mountsCollectionRef = collection(db, 'mounts');
   const q = query(
