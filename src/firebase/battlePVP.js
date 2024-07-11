@@ -77,8 +77,11 @@ export const createPVPBattle = async (
           userTurn: email,
           end: [],
           message: [],
-          turnAttack: '',
-          damage: '',
+          actualAttack: {
+            damage: '',
+            type: '',
+            turnAttack: '',
+          },
           users: [
             {
               email,

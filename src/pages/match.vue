@@ -65,24 +65,25 @@
         <div class="transition-all duration-500 w-full h-screen flex flex-col absolute">
           <div class="w-1/2 h-50vh absolute top-0 right-0 flex items-end justify-start">
             <div class="dragon w-20 h-24 text-black relative flex flex-col justify-end" >
-              <p id="damage-right" class="text-3xl w-full text-center font-bold text-red-500 top-0" :class="typeof damageRight === 'string' ? 'text-white text-xl' : 'text-red-500 text-3xl'">{{ damageRight }}</p>
+              <p id="damage-top" class="text-3xl w-full text-center font-bold text-red-500 top-0" :class="typeof damageTop === 'string' ? 'text-white text-xl' : 'text-red-500 text-3xl'">{{ damageTop }}</p>
               <img
-                id="rightDragon"
+                id="top-dragon"
                 class="rounded-full"
                 :class="'border-4 border-golden'"
                 :src="userOponent.dragon.imageIconURL"
               />
             </div>
           </div>
+          <div>Class</div>
           <div class="w-1/2 h-50vh absolute bottom-0 left-0 flex items-start justify-end">
             <div class="dragon absolute w-20 h-24 text-black">
               <img
-              id="leftDragon"
+              id="bottom-dragon"
               class="rounded-full"
               :class="'border-4 border-golden'"
               :src="userLogged.dragon.imageIconURL"
               />
-              <p id="damage-left" class="text-3xl w-full text-center font-bold flex flex-col justify-end" :class="typeof damageLeft === 'string' ? 'text-white text-xl' : 'text-red-500 text-3xl'">{{ damageLeft }}</p>
+              <p id="damage-bottom" class="text-3xl w-full text-center font-bold flex flex-col justify-end" :class="typeof damageBottom === 'string' ? 'text-white text-xl' : 'text-red-500 text-3xl'">{{ damageBottom }}</p>
             </div>
           </div>
         </div>
@@ -279,8 +280,8 @@ export default {
   data() {
     const router = useRouter();
     return {
-      damageRight: '',
-      damageLeft: '',
+      damageTop: '',
+      damageBottom: '',
       chatSnapShot: null,
       showData: false,
       router: router,
@@ -288,6 +289,7 @@ export default {
       type: '',
       winner: null,
       timeTurn: '',
+      damageType: '',
       messages: [],
       userTurn: '',
       hideMessages: true,
@@ -361,10 +363,10 @@ export default {
         doc(db, 'battles', this.matchId),
         async (snapshot) => {
           if (snapshot.data()) {
-            const rightDragon = document.getElementById('rightDragon');
-            const leftDragon = document.getElementById('leftDragon');
-            leftDragon.style.animation = 'none';
-            rightDragon.style.animation = 'none';
+            const topDragon = document.getElementById('top-dragon');
+            const bottomDragon = document.getElementById('bottom-dragon');
+            bottomDragon.style.animation = 'none';
+            topDragon.style.animation = 'none';
             const data = snapshot.data();
             this.type = data.type;
             this.winner = data.winner;
@@ -414,15 +416,14 @@ export default {
               },
             };
             let time = 1;
-            console.log(data.turnAttack);
-            if (data.turnAttack === auth.user) {
+            if (data.actualAttack.turnAttack === auth.email) {
               setTimeout(() => {
-                this.animationAttackLeft(data.damage);
+                this.animationAttackTop(data.actualAttack.damage, data.actualAttack.type);
                 time = 3000;
               }, 1000);
-            } else if (data.turnAttack !== '') {
+            } else if (data.actualAttack.turnAttack !== '') {
               setTimeout(() => {
-                this.animationAttackRight(data.damage);
+                this.animationAttackBottom(data.actualAttack.damage, data.actualAttack.type);
                 time = 3000;
               }, 1000);
             }
@@ -454,40 +455,44 @@ export default {
     }
   },
   methods: {
-    animationAttackLeft(damage) {
-      this.damageLeft = '';
-      const damageRight = document.getElementById('damage-right');
-      const rightDragon = document.getElementById('rightDragon');
-      const leftDragon = document.getElementById('leftDragon');
-      leftDragon.style.animation = 'animateAtackLeft 3s forwards';
-      rightDragon.style.animation = 'animateDamageRight 3s forwards';
-      rightDragon.style.animationDelay = '1.7s';
-      damageRight.style.animation = 'animateDamageRight 3s forwards';
-      damageRight.style.animationDelay = '1.7s';
+    animationAttackBottom(damage, type) {
+      this.damageBottom = '';
+      const damageTop = document.getElementById('damage-top');
+      const topDragon = document.getElementById('top-dragon');
+      const bottomDragon = document.getElementById('bottom-dragon');
+      bottomDragon.style.animation = 'animateAttackBottom 3s forwards';
+      topDragon.style.animation = 'animateDamageTop 3s forwards';
+      topDragon.style.animationDelay = '1.7s';
+      damageTop.style.animation = 'animateDamageTop 3s forwards';
+      damageTop.style.animationDelay = '1.7s';
       setTimeout(() => {
-        this.damageRight = damage;
+        this.damageTop = damage;
+        this.damageType = type;
       }, 1700);
       setTimeout(() => {
-        this.damageRight = '';
-        damageRight.style.animation = 'none';
+        this.damageTop = '';
+        this.damageType = '';
+        damageTop.style.animation = 'none';
       }, 5000);
     },
-    animationAttackRight(damage) {
-      this.damageRight = '';
-      const damageLeft = document.getElementById('damage-left');
-      const rightDragon = document.getElementById('rightDragon');
-      const leftDragon = document.getElementById('leftDragon');
-      leftDragon.style.animation = 'animateDamageLeft 3s forwards';
-      rightDragon.style.animation = 'animateAtackRight 3s forwards';
-      leftDragon.style.animationDelay = '1.7s';
-      damageLeft.style.animation = 'animateDamageLeft 3s forwards';
-      damageLeft.style.animationDelay = '1.7s';
+    animationAttackTop(damage, type) {
+      this.damageTop = '';
+      const damageBottom = document.getElementById('damage-bottom');
+      const topDragon = document.getElementById('top-dragon');
+      const bottomDragon = document.getElementById('bottom-dragon');
+      bottomDragon.style.animation = 'animateDamageBottom 3s forwards';
+      topDragon.style.animation = 'animateAttackTop 3s forwards';
+      bottomDragon.style.animationDelay = '1.7s';
+      damageBottom.style.animation = 'animateDamageBottom 3s forwards';
+      damageBottom.style.animationDelay = '1.7s';
       setTimeout(() => {
-        this.damageLeft = damage;
+        this.damageBottom = damage;
+        this.damageType = type;
       }, 1700);
       setTimeout(() => {
-        this.damageLeft = '';
-        damageLeft.style.animation = 'none';
+        this.damageBottom = '';
+        this.damageType = '';
+        damageBottom.style.animation = 'none';
       }, 5000);
     },
     hideMessageUser() {
@@ -544,7 +549,7 @@ export default {
     transition: transform 5s ease-in-out;
   }
 
-  @keyframes animateAtackLeft {
+  @keyframes animateAttackBottom {
     0% { transform: translate(0, 0) }
     49% {
       border-color: #BE8E4A;
@@ -559,7 +564,7 @@ export default {
     100% { transform: translate(0, 0) }
   }
 
-  @keyframes animateDamageRight {
+  @keyframes animateDamageTop {
     0% {
       transform: translate(0, 0);
       border-color: red;
@@ -568,7 +573,7 @@ export default {
     100% { transform: translate(0, 0) }
   }
 
-  @keyframes animateAtackRight {
+  @keyframes animateAttackTop {
     0% { transform: translate(0, 0) }
     49% {
       border-color: #BE8E4A;
@@ -583,7 +588,7 @@ export default {
     100% { transform: translate(0, 0) }
   }
 
-  @keyframes animateDamageLeft {
+  @keyframes animateDamageBottom {
     0% {
       transform: translate(0, 0);
       border-color: red;

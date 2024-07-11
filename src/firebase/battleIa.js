@@ -22,8 +22,11 @@ export const createIaBattle = async (
           userTurn: 'ia',
           end: [],
           message: [],
-          turnAttack: '',
-          damage: '',
+          actualAttack: {
+            damage: '',
+            type: '',
+            turnAttack: '',
+          },
           users: [
             {
               email,

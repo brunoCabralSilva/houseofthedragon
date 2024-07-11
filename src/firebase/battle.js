@@ -135,14 +135,20 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, text) => {
           ...currDt.message,
           { text: text + message, date: getHora },
         ];
-        let damage = '';
-        let turnAttack = defenderUser.email;
-        if (text.includes('Errou')) damage = 'Errou';
-        else damage = -finalDamage;
+        const actualAttack = {
+          damage: '',
+          type: '',
+          turnAttack: defenderUser.email,
+        };
+
+        if (text.includes('dracarys')) actualAttack.type = 'dracarys';
+        else if(text.includes('mordida')) actualAttack.type = 'mordida';
+        else if(text.includes('garras')) actualAttack.type = 'garras';
+        if (text.includes('Errou')) actualAttack.damage = 'Errou';
+        else actualAttack.damage = -finalDamage;
         await updateDoc(battleDocRef, {
           userTurn,
-          turnAttack,
-          damage,
+          actualAttack,
           message: updtdMsg,
           users: [ attackerUser, defenderUser ]
         });
