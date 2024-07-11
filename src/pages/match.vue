@@ -174,6 +174,7 @@
                   </button>
                   <button
                     type="button"
+                    :disabled="disableButton"
                     @click="attackOponent"
                     class="transition-all duration-500 p-1 px-2 cursor-pointer border-2 text-xs hover:text-black hover:font-bold border-golden bg-red-700 rounded-full text-center w-1/2 capitalize">
                     {{ userLogged.dragon.selectedAttack.name }} {{ userLogged.dragon.selectedAttack.actual }}
@@ -287,6 +288,7 @@ export default {
   data() {
     const router = useRouter();
     return {
+      disableButton: true,
       damageTop: '',
       damageBottom: '',
       chatSnapShot: null,
@@ -436,6 +438,7 @@ export default {
             }
             setTimeout(() => {
               this.userTurn = data.userTurn;
+              if (data.userTurn === auth.email) this.disableButton =false;
               this.messages = data.message.sort((a, b) => {
                 let dateA = new Date(a.date.split(', ')[0].split('/').reverse().join('-') + 'T' + a.date.split(', ')[1]);
                 let dateB = new Date(b.date.split(', ')[0].split('/').reverse().join('-') + 'T' + b.date.split(', ')[1]);
@@ -525,6 +528,7 @@ export default {
     },
     updateMessage() { this.message = '' },
     async attackOponent() {
+      this.disableButton = true;
       await attack(this.userLogged, this.userOponent, this.matchId);
     },
     previousAttack() {
