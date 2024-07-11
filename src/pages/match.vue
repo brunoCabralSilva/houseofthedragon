@@ -62,11 +62,32 @@
           </div>
         </div>
 
-        <div class="transition-all duration-500 w-full h-screen">
-
+        <div class="transition-all duration-500 w-full h-screen flex flex-col absolute">
+          <div class="w-1/2 h-50vh absolute top-0 right-0 flex items-end justify-start">
+            <div class="dragon w-20 h-24 text-black relative flex flex-col justify-end" >
+              <p id="damage-right" class="text-3xl w-full text-center font-bold text-red-500 top-0" :class="typeof damageRight === 'string' ? 'text-white text-xl' : 'text-red-500 text-3xl'">{{ damageRight }}</p>
+              <img
+                id="rightDragon"
+                class="rounded-full"
+                :class="'border-4 border-golden'"
+                :src="userOponent.dragon.imageIconURL"
+              />
+            </div>
+          </div>
+          <div class="w-1/2 h-50vh absolute bottom-0 left-0 flex items-start justify-end">
+            <div class="dragon absolute w-20 h-24 text-black">
+              <img
+              id="leftDragon"
+              class="rounded-full"
+              :class="'border-4 border-golden'"
+              :src="userLogged.dragon.imageIconURL"
+              />
+              <p id="damage-left" class="text-3xl w-full text-center font-bold flex flex-col justify-end" :class="typeof damageLeft === 'string' ? 'text-white text-xl' : 'text-red-500 text-3xl'">{{ damageLeft }}</p>
+            </div>
+          </div>
         </div>
       
-        <div class="transition-all duration-500 flex flex-col items-between px-3 pt-3 pb-2 bg-black/80 rounded-l-lg w-1/2">
+        <div class="transition-all duration-500 flex flex-col items-between px-3 pt-3 pb-2 bg-black/80 rounded-l-lg w-full sm:w-1/2 absolute bottom-0">
           <div v-if="!hideMessages" class="transition-all duration-500 mb-3 border border-golden w-full rounded h-20vh">
             <div
               class="transition-all duration-500 w-full flex flex-col h-full items-center justify-center"
@@ -129,8 +150,8 @@
             </div>
           </div>
           <div :class="['transition-all', 'duration-500','flex', userTurn === userLogged.email ? 'justify-between' : 'justify-end']">
-            <div v-if="userTurn === userLogged.email" class="transition-all duration-500 pl-2 col-span-3 w-full">
-              <div class="transition-all duration-500 flex flex-col items-start w-full justify-between">
+            <div v-if="userTurn === userLogged.email" class="transition-all duration-500 col-span-3 w-full">
+              <div class="transition-all duration-500 flex flex-col items-start w-full justify-between pl-1">
                 <p class="transition-all duration-500 text-2xl leading-4 mt-1 pr-1 text-golden pb-1">
                   {{ userLogged.dragon.name }}
                   <span class="transition-all duration-500 text-base">lv 1</span>
@@ -159,7 +180,21 @@
                 <p class="transition-all duration-500 mt-1 text-sm w-full leading-3">
                   Ataca o inimigo com um golpe da desgraça. 
                 </p>
+                <button
+                  type="button"
+                  @click="animationAttackLeft(-40)"
+                >
+                  Animar ataque (Azul)
+                </button>
+                <button
+                  type="button"
+                  @click="animationAttackRight('MISS')"
+                >
+                  Animar ataque (Vermelho)
+                </button>
               </div>
+              <!-- <div v-else class="transition-all duration-500 flex flex-col items-start w-full h-full justify-between bg-gray-500">
+              </div> -->
             </div>
             <div class="transition-all duration-500 col-span-3 flex w-full justify-end">
               <div class="transition-all duration-500 flex flex-col items-end justify-center w-full">
@@ -192,13 +227,19 @@
                   >
                     <FontAwesomeIcon :icon="['fas', 'info']" />
                   </button>
-                  <button
-                    type="button"
-                    @click="hideMessageUser"
-                    class="transition-all duration-500 h-5 w-5 object-cover rounded-full absolute top-7 right-0 border-2 border-golden text-golden flex items-center justify-center text-xs cursor-pointer p-1"
-                  >
-                    <FontAwesomeIcon :icon="['fas', 'list']" />
-                  </button>
+                  <div class="absolute top-7 right-0">
+                    <div v-if="notifyMessages"
+                      class="w-2 h-2 rounded-full bg-red-500 right-0 absolute"
+                    >
+                    </div>
+                    <button
+                      type="button"
+                      @click="hideMessageUser"
+                      class="transition-all duration-500 h-5 w-5 object-cover rounded-full border-2 border-golden text-golden flex items-center justify-center text-xs cursor-pointer p-1"
+                    >
+                      <FontAwesomeIcon :icon="['fas', 'list']" />
+                    </button>
+                  </div>
                   <img
                     :src="userLogged.profileImage"
                     class="transition-all duration-500 h-10 w-10 object-cover rounded-full absolute z-20 bottom-0 right-0 bg-black border-2 border-golden"
@@ -250,6 +291,8 @@ export default {
   data() {
     const router = useRouter();
     return {
+      damageRight: '',
+      damageLeft: '',
       chatSnapShot: null,
       showData: false,
       router: router,
@@ -260,6 +303,7 @@ export default {
       messages: [],
       userTurn: '',
       hideMessages: true,
+      notifyMessages: false,
       hideInfo: true,
       userLogged: {
         email: '',
@@ -329,6 +373,10 @@ export default {
         doc(db, 'battles', this.matchId),
         async (snapshot) => {
           if (snapshot.data()) {
+            const rightDragon = document.getElementById('rightDragon');
+            const leftDragon = document.getElementById('leftDragon');
+            leftDragon.style.animation = 'none';
+            rightDragon.style.animation = 'none';
             const data = snapshot.data();
             this.type = data.type;
             this.winner = data.winner;
@@ -377,19 +425,34 @@ export default {
                 ],
               },
             };
-            this.userTurn = data.userTurn;
-            this.messages = data.message.sort((a, b) => {
-              let dateA = new Date(a.date.split(', ')[0].split('/').reverse().join('-') + 'T' + a.date.split(', ')[1]);
-              let dateB = new Date(b.date.split(', ')[0].split('/').reverse().join('-') + 'T' + b.date.split(', ')[1]);
-              return dateB - dateA;
-            });
-            this.hideMessages = false;
-            this.hideInfo = true;
-            if (data.userTurn === 'ia') {
-              setTimeout(async () => {
-                await rollIaTurn(this.matchId);
-              }, 3000)
+            let time = 1;
+            console.log(data.turnAttack);
+            if (data.turnAttack === auth.user) {
+              setTimeout(() => {
+                this.animationAttackLeft(data.damage);
+                time = 3000;
+              }, 1000);
+            } else if (data.turnAttack !== '') {
+              setTimeout(() => {
+                this.animationAttackRight(data.damage);
+                time = 3000;
+              }, 1000);
             }
+            setTimeout(() => {
+              this.userTurn = data.userTurn;
+              this.messages = data.message.sort((a, b) => {
+                let dateA = new Date(a.date.split(', ')[0].split('/').reverse().join('-') + 'T' + a.date.split(', ')[1]);
+                let dateB = new Date(b.date.split(', ')[0].split('/').reverse().join('-') + 'T' + b.date.split(', ')[1]);
+                return dateB - dateA;
+              });
+              this.notifyMessages = true;
+              this.hideInfo = true;
+              if (data.userTurn === 'ia') {
+                setTimeout(async () => {
+                  await rollIaTurn(this.matchId);
+                }, time)
+              }
+            }, 3000);
           }
         }
       );
@@ -403,8 +466,45 @@ export default {
     }
   },
   methods: {
+    animationAttackLeft(damage) {
+      this.damageLeft = '';
+      const damageRight = document.getElementById('damage-right');
+      const rightDragon = document.getElementById('rightDragon');
+      const leftDragon = document.getElementById('leftDragon');
+      leftDragon.style.animation = 'animateAtackLeft 3s forwards';
+      rightDragon.style.animation = 'animateDamageRight 3s forwards';
+      rightDragon.style.animationDelay = '1.7s';
+      damageRight.style.animation = 'animateDamageRight 3s forwards';
+      damageRight.style.animationDelay = '1.7s';
+      setTimeout(() => {
+        this.damageRight = damage;
+      }, 1700);
+      setTimeout(() => {
+        this.damageRight = '';
+        damageRight.style.animation = 'none';
+      }, 5000);
+    },
+    animationAttackRight(damage) {
+      this.damageRight = '';
+      const damageLeft = document.getElementById('damage-left');
+      const rightDragon = document.getElementById('rightDragon');
+      const leftDragon = document.getElementById('leftDragon');
+      leftDragon.style.animation = 'animateDamageLeft 3s forwards';
+      rightDragon.style.animation = 'animateAtackRight 3s forwards';
+      leftDragon.style.animationDelay = '1.7s';
+      damageLeft.style.animation = 'animateDamageLeft 3s forwards';
+      damageLeft.style.animationDelay = '1.7s';
+      setTimeout(() => {
+        this.damageLeft = damage;
+      }, 1700);
+      setTimeout(() => {
+        this.damageLeft = '';
+        damageLeft.style.animation = 'none';
+      }, 5000);
+    },
     hideMessageUser() {
       this.hideInfo = true;
+      this.notifyMessages = false;
       this.hideMessages = !this.hideMessages;
     },
     hideInfoUser() {
@@ -450,3 +550,57 @@ export default {
   }
 }
 </script>
+<style>
+  .dragon {
+    position: relative;
+    transition: transform 5s ease-in-out;
+  }
+
+  @keyframes animateAtackLeft {
+    0% { transform: translate(0, 0) }
+    49% {
+      border-color: #BE8E4A;
+    }
+    50% {
+      transform: translate(-50px, 50px);
+      border-color: red;
+    }
+    55% {
+      transform: translate(20px, -20px);
+    }
+    100% { transform: translate(0, 0) }
+  }
+
+  @keyframes animateDamageRight {
+    0% {
+      transform: translate(0, 0);
+      border-color: red;
+    }
+    5% { transform: translate(50px, -50px) }
+    100% { transform: translate(0, 0) }
+  }
+
+  @keyframes animateAtackRight {
+    0% { transform: translate(0, 0) }
+    49% {
+      border-color: #BE8E4A;
+    }
+    50% {
+      transform: translate(50px, -50px);
+      border-color: red;
+    }
+    55% {
+      transform: translate(-20px, 20px);
+    }
+    100% { transform: translate(0, 0) }
+  }
+
+  @keyframes animateDamageLeft {
+    0% {
+      transform: translate(0, 0);
+      border-color: red;
+    }
+    5% { transform: translate(-50px, 50px) }
+    100% { transform: translate(0, 0) }
+  }
+</style>
