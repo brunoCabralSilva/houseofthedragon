@@ -74,7 +74,14 @@
               />
             </div>
           </div>
-          <div>Class</div>
+          <div :v-if="damageType !== ''" class="w-full h-full flex items-center justify-center">
+            <img
+              v-if="damageType !== ''"
+              :src="require(`@/assets/${damageType}.png`)"
+              :alt="damageType"
+              class="z-30 h-20 w-20"
+            />
+          </div>
           <div class="w-1/2 h-50vh absolute bottom-0 left-0 flex items-start justify-end">
             <div class="dragon absolute w-20 h-24 text-black">
               <img
@@ -469,11 +476,15 @@ export default {
         this.damageTop = damage;
         this.damageType = type;
       }, 1700);
+
       setTimeout(() => {
         this.damageTop = '';
-        this.damageType = '';
         damageTop.style.animation = 'none';
       }, 5000);
+
+      setTimeout(() => {
+        this.damageType = '';
+      }, 2700);
     },
     animationAttackTop(damage, type) {
       this.damageTop = '';
@@ -489,11 +500,15 @@ export default {
         this.damageBottom = damage;
         this.damageType = type;
       }, 1700);
+
       setTimeout(() => {
         this.damageBottom = '';
-        this.damageType = '';
         damageBottom.style.animation = 'none';
       }, 5000);
+
+      setTimeout(() => {
+        this.damageType = '';
+      }, 2700);
     },
     hideMessageUser() {
       this.hideInfo = true;
