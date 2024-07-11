@@ -35,7 +35,7 @@ export const getHoraOficialBrasil = async () => {
     const day = date.getDate().toString().padStart(2, '0');
     const month = (date.getMonth() + 1).toString().padStart(2, '0');
     const year = date.getFullYear();
-    const formattedDate = `${hours}:${minutes}:${seconds}, ${day}/${month}/${year}`;
+    const formattedDate = `${day}/${month}/${year}, ${hours}:${minutes}:${seconds}`;
     return formattedDate;
   } catch (error) {
     return null;

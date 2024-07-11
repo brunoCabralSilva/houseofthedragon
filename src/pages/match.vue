@@ -68,24 +68,26 @@
         
         
         <div class="flex flex-col justify-between absolute bottom-0 right-0 px-3 pt-3 pb-2 bg-black/80 rounded-l-lg">
-          <div v-if="!hideMessages" class="mb-4 border border-golden rounded h-20vh">
+          <div v-if="!hideMessages" class="mb-3 border border-golden rounded h-20vh">
             <div
               class="w-full flex flex-col h-full items-center justify-center"
             >
               <p class="w-full px-2 pt-1 border-b-golden border border-transparent text-sm">Histórico</p>
-              <div class="w-full h-full justify-end relative overflow-y-auto pb-2 px-1">
+              <div class="w-full h-full justify-end relative overflow-y-auto py-2 px-2">
                 <div
                   v-for="(message, index) in messages"
                   :key="index"
                   class=""
                 >
-                  <span class=" pb-1 leading-4 text-golden">{{ message.date }}</span>
-                  <span class="pt-1 leading-4 text-sm">{{ message.text }}</span>
+                  <span class=" pb-1 leading-4 text-golden pr-1">{{ message.date }}:</span>
+                  <span :class="['pt-1', 'leading-4', 'text-sm', index === messages.length -1 ? 'underline': '']">
+                    {{ message.text }}
+                  </span>
                 </div>
               </div>
             </div>
           </div>
-          <div class="flex justify-between">
+          <div :class="['flex', userTurn === userLogged.email ? 'justify-between' : 'justify-end']">
             <div v-if="userTurn === userLogged.email" class="pl-2">
               <div class="flex flex-col items-start w-full justify-between">
                 <p class="text-2xl leading-4 mt-1 pr-1 text-golden pb-1">
@@ -220,7 +222,7 @@ export default {
       type: '',
       winner: null,
       timeTurn: '',
-      message: [],
+      messages: [],
       userTurn: '',
       hideMessages: true,
       userLogged: {
@@ -340,7 +342,11 @@ export default {
               },
             };
             this.userTurn = data.userTurn;
-            this.message = data.message;
+            this.messages = data.message.sort((a, b) => {
+              let dateA = new Date(a.date.split(', ')[0].split('/').reverse().join('-') + 'T' + a.date.split(', ')[1]);
+              let dateB = new Date(b.date.split(', ')[0].split('/').reverse().join('-') + 'T' + b.date.split(', ')[1]);
+              return dateB - dateA;
+            });
             if (data.userTurn === 'ia') {
               setTimeout(async () => {
                 await rollIaTurn(this.matchId);
