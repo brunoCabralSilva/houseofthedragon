@@ -67,7 +67,7 @@
         </div>
         
         
-        <div class="flex flex-col justify-between absolute bottom-0 right-0 px-3 pt-3 pb-2 bg-black/80 rounded-l-lg">
+        <div class="flex flex-col justify-between absolute bottom-0 right-0 px-3 pt-3 pb-2 bg-black/80 rounded-l-lg w-4/10">
           <div v-if="!hideMessages" class="mb-3 border border-golden rounded h-20vh">
             <div
               class="w-full flex flex-col h-full items-center justify-center"
@@ -77,18 +77,64 @@
                 <div
                   v-for="(message, index) in messages"
                   :key="index"
-                  class=""
+                  class="leading-4"
                 >
-                  <span class=" pb-1 leading-4 text-golden pr-1">{{ message.date }}:</span>
-                  <span :class="['pt-1', 'leading-4', 'text-sm', index === messages.length -1 ? 'underline': '']">
+                  <span class=" pb-1 leading-3 text-golden pr-1">{{ message.date }}:</span>
+                  <span :class="['pt-1', 'leading-3', 'text-sm', index === 0 ? 'underline': '']">
                     {{ message.text }}
                   </span>
                 </div>
               </div>
             </div>
           </div>
-          <div :class="['flex', userTurn === userLogged.email ? 'justify-between' : 'justify-end']">
-            <div v-if="userTurn === userLogged.email" class="pl-2">
+          <div v-if="!hideInfo" class="mb-3 border border-golden rounded h-20vh">
+            <div
+              class="w-full flex flex-col h-full items-center justify-center"
+            >
+              <p class="w-full px-2 pt-1 border-b-golden border border-transparent text-sm">Status</p>
+              <div class="w-full h-full justify-end relative overflow-y-auto py-2 px-2">
+                <div class="flex w-full">
+                  <div class="w-1/2">
+                    <p class="pb-1">Jogador: {{  userLogged.displayName  }}</p>
+                    <p class="leading-5">
+                      hp:
+                      {{
+                        userLogged.dragon.vitalidade.actual
+                        + userLogged.dragon.vitalidade.bonus
+                      }} / 
+                      {{ userLogged.dragon.vitalidade.total }} + {{ userLogged.dragon.vitalidade.bonus }}
+                    </p>
+                    <p class="leading-5">
+                      velocidade:
+                      {{ userLogged.dragon.velocidade.total }} + 
+                      {{ userLogged.dragon.velocidade.bonus }}
+                    </p>
+                    <p class="leading-5">
+                      rebeldia: 
+                      {{ userLogged.dragon.rebeldia.actual }} + {{ userLogged.dragon.rebeldia.bonus }}
+                    </p>
+                    <p
+                      v-for="(attack, index) in userLogged.dragon.attacks"
+                      :key="index"
+                      class="leading-5"
+                    >
+                      {{ attack.name }}: {{ attack.actual }} + {{ attack.bonus }}
+                    </p>
+                  </div>
+                  <div class="w-1/2 border-l-white border border-transparent pl-3">
+                    <p class="pb-1">Condições:</p>
+                    <p class="text-sm leading-5 pl-1">- desvantagem nas rolagens de ataque e rolagens de ataque.</p>
+                    <p class="text-sm leading-5 pl-1">- desvantagem nas rolagens de ataque</p>
+                    <p class="text-sm leading-5 pl-1">- desvantagem nas rolagens de ataque</p>
+                    <p class="text-sm leading-5 pl-1">- desvantagem nas rolagens de ataque</p>
+
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div :class="['grid', userTurn === userLogged.email ? 'grid-cols-6' : 'grid-cols-1']">
+            <div v-if="userTurn === userLogged.email" class="pl-2 col-span-3">
               <div class="flex flex-col items-start w-full justify-between">
                 <p class="text-2xl leading-4 mt-1 pr-1 text-golden pb-1">
                   {{ userLogged.dragon.name }}
@@ -115,12 +161,12 @@
                   <FontAwesomeIcon :icon="['fas', 'caret-right']" class="text-2xl cursor-pointer text-golden" />
                 </button>
                 </div>
-                <p class="mt-1 text-sm">
+                <p class="mt-1 text-sm w-full leading-3">
                   Ataca o inimigo com um golpe da desgraça. 
                 </p>
               </div>
             </div>
-            <div class="flex justify-end items-center">
+            <div class="col-span-3 flex w-full justify-end">
               <div class="flex flex-col items-end justify-center">
                 <div class="flex flex-col items-end w-full pr-1">
                   <p class="text-right text-xs bg-green-700 px-2 rounded-full text-white w-44 border-2 border-golden mb-1">
@@ -129,38 +175,30 @@
                       userLogged.dragon.vitalidade.actual
                       + userLogged.dragon.vitalidade.bonus
                     }} / 
-                    {{
-                      userLogged.dragon.vitalidade.total
-                      + userLogged.dragon.vitalidade.bonus
-                    }}
+                    {{ userLogged.dragon.vitalidade.total }} {{ userLogged.dragon.vitalidade  .bonus !== 0 ? '+' + userLogged.dragon.vitalidade .bonus : '' }}
                   </p>
-                  <p class="text-right text-xs bg-blue-800 px-2 rounded-full border-2 border-golden w-28 text-white mb-1">
+                  <p class="text-right text-xs bg-blue-800 px-2 rounded-full border-2 border-golden w-8/12 text-white mb-1">
                     vel.
-                    {{
-                      userLogged.dragon.velocidade.actual 
-                      + userLogged.dragon.velocidade.total
-                    }}
+                    {{ userLogged.dragon.velocidade.actual }} {{ userLogged.dragon.velocidade.bonus !== 0 ? '+' + userLogged.dragon.velocidade.bonus : '' }}
                   </p>
-                  <p class="text-right text-xs bg-red-700 px-2 rounded-full text-white border-2 w-20 border-golden mb-1">
+                  <p class="text-right text-xs bg-red-700 px-2 rounded-full text-white border-2 w-1/2 border-golden mb-1">
                     reb.
-                    {{
-                      userLogged.dragon.rebeldia.actual
-                      + userLogged.dragon.rebeldia.total
-                    }}
+                    {{ userLogged.dragon.rebeldia.actual }} {{ userLogged.dragon.rebeldia.bonus !== 0 ? '+' + userLogged.dragon.rebeldia.bonus : '' }}
                   </p>
                   <p v-if="userTurn === userLogged.email" class="leading-2 text-xs pl-1">Seu Turno</p>
                 </div>
               </div>
-              <div class="relative flex justify-end">
+              <div class="relative flex justify-end w-30">
                 <button
                   type="button"
+                  @click="hideInfoUser"
                   class="h-5 w-5 object-cover rounded-full absolute z-20 top-1 right-2 border-2 border-golden text-golden flex items-center justify-center text-xs cursor-pointer"
                 >
                   <FontAwesomeIcon :icon="['fas', 'info']" />
                 </button>
                 <button
                   type="button"
-                  @click="hide"
+                  @click="hideMessageUser"
                   class="h-5 w-5 object-cover rounded-full absolute top-7 right-0 border-2 border-golden text-golden flex items-center justify-center text-xs cursor-pointer p-1"
                 >
                   <FontAwesomeIcon :icon="['fas', 'list']" />
@@ -225,6 +263,7 @@ export default {
       messages: [],
       userTurn: '',
       hideMessages: true,
+      hideInfo: true,
       userLogged: {
         email: '',
         profileImage: '',
@@ -347,6 +386,8 @@ export default {
               let dateB = new Date(b.date.split(', ')[0].split('/').reverse().join('-') + 'T' + b.date.split(', ')[1]);
               return dateB - dateA;
             });
+            this.hideMessages = false;
+            this.hideInfo = true;
             if (data.userTurn === 'ia') {
               setTimeout(async () => {
                 await rollIaTurn(this.matchId);
@@ -365,8 +406,13 @@ export default {
     }
   },
   methods: {
-    hide() {
+    hideMessageUser() {
+      this.hideInfo = true;
       this.hideMessages = !this.hideMessages;
+    },
+    hideInfoUser() {
+      this.hideMessages = true;
+      this.hideInfo = !this.hideInfo;
     },
     async endGame() {
       await endMatch(this.matchId, this.userLogged.email);
