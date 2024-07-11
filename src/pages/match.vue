@@ -4,44 +4,26 @@
     <Loading />
   </div>
   <div v-else class="w-full min-h-screen items-center justify-center bg-arena text-white">
-    <div
-      class="z-40 absolute w-full h-screen bg-black/80 flex items-center justify-center"
-      v-if="winner"
-    >
-      <div class="w-full text-center bg-black py-10 px-4 relative">
-        <div
-          @click="endGame"
-          class="break-words absolute p-3 w-full flex justify-end top-0 right-0"
-        >
-          <FontAwesomeIcon
-            :icon="['fas', 'circle-xmark']"
-            class="break-words text-3xl text-golden cursor-pointer duration-500 transition-colors"
-            @click="hideLogout"
-          />
-        </div>
-        <p>{{ message }}</p>
-        <p>Fim da Partida!</p>
-      </div>
-    </div>
-    <div
-      class="z-40 absolute w-full h-screen bg-black/80 flex items-center justify-center"
-      v-if="!winner && message !== ''"
-    >
-    <div class="w-full text-center bg-black py-10 px-4 relative">
-      <div
-        @click="updateMessage"
-        class="break-words absolute p-3 w-full flex justify-end top-0 right-0"
-      >
-        <FontAwesomeIcon
-          :icon="['fas', 'circle-xmark']"
-          class="break-words text-3xl text-golden cursor-pointer duration-500 transition-colors"
-          @click="hideLogout"
-        />
-      </div>
-      <p>{{ message }}</p>
-    </div>
-    </div>
     <div class="w-full h-full">
+      <div
+      class="bg-yellow-500 flex items-center justify-center border border-golden"
+        v-if="winner"
+      >
+        <div class="w-full text-center p-2 relative">
+          <div
+            @click="endGame"
+            class="break-words p-3 w-full flex justify-end top-0 right-0"
+          >
+            <FontAwesomeIcon
+              :icon="['fas', 'circle-xmark']"
+              class="break-words text-3xl text-golden cursor-pointer duration-500 transition-colors"
+              @click="hideLogout"
+            />
+          </div>
+          <p>{{ message }}</p>
+          <p>Fim da Partida!</p>
+        </div>
+      </div>
       <div class="flex flex-col justify-between h-full">
         <div class="flex justify-start absolute top-0 left-0 p-2 pb-3 pr-3 bg-black/80 rounded-r">
           <div class="relative flex items-end">
@@ -84,85 +66,112 @@
 
         </div>
         
-        <div class="flex justify-between absolute bottom-0 right-0 px-3 pt-3 pb-2 bg-black/80 rounded-l-lg">
-          <div v-if="userTurn === userLogged.email" class="pl-2">
-            <div class="flex flex-col items-start w-full justify-between">
-              <p class="text-2xl leading-4 mt-1 pr-1 text-golden pb-1">
-                {{ userLogged.dragon.name }}
-                <span class="text-base">lv 1</span>
-              </p>
-              <div class="flex gap-1 items-center w-full">
-                <button
-                  type="button"
-                  @click="previousAttack"
-                  class="flex flex-col"
+        
+        <div class="flex flex-col justify-between absolute bottom-0 right-0 px-3 pt-3 pb-2 bg-black/80 rounded-l-lg">
+          <div v-if="!hideMessages" class="mb-4 border border-golden rounded h-20vh">
+            <div
+              class="w-full flex flex-col h-full items-center justify-center"
+            >
+              <p class="w-full px-2 pt-1 border-b-golden border border-transparent text-sm">Histórico</p>
+              <div class="w-full h-full justify-end relative overflow-y-auto pb-2 px-1">
+                <div
+                  v-for="(message, index) in messages"
+                  :key="index"
+                  class=""
                 >
-                  <FontAwesomeIcon :icon="['fas', 'caret-left']" class="text-2xl cursor-pointer text-golden" />
+                  <span class=" pb-1 leading-4 text-golden">{{ message.date }}</span>
+                  <span class="pt-1 leading-4 text-sm">{{ message.text }}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex justify-between">
+            <div v-if="userTurn === userLogged.email" class="pl-2">
+              <div class="flex flex-col items-start w-full justify-between">
+                <p class="text-2xl leading-4 mt-1 pr-1 text-golden pb-1">
+                  {{ userLogged.dragon.name }}
+                  <span class="text-base">lv 1</span>
+                </p>
+                <div class="flex gap-1 items-center w-full">
+                  <button
+                    type="button"
+                    @click="previousAttack"
+                    class="flex flex-col"
+                  >
+                    <FontAwesomeIcon :icon="['fas', 'caret-left']" class="text-2xl cursor-pointer text-golden" />
+                  </button>
+                  <button
+                    type="button"
+                    @click="attackOponent"
+                    class="p-1 px-2 cursor-pointer border-2 text-xs hover:text-black hover:font-bold border-golden bg-red-700 duration-500 transition-colors rounded-full text-center w-1/2 capitalize">
+                    {{ userLogged.dragon.selectedAttack.name }} {{ userLogged.dragon.selectedAttack.actual }}
                 </button>
                 <button
                   type="button"
-                  @click="attackOponent"
-                  class="p-1 px-2 cursor-pointer border-2 text-xs hover:text-black hover:font-bold border-golden bg-red-700 duration-500 transition-colors rounded-full text-center w-1/2 capitalize">
-                  {{ userLogged.dragon.selectedAttack.name }} {{ userLogged.dragon.selectedAttack.actual }}
-              </button>
-              <button
-                type="button"
-                @click="nextAttack"
-                class="flex flex-col">
-                <FontAwesomeIcon :icon="['fas', 'caret-right']" class="text-2xl cursor-pointer text-golden" />
-              </button>
-              </div>
-              <p class="mt-1 text-sm">
-                Ataca o inimigo com um golpe da desgraça. 
-              </p>
-            </div>
-          </div>
-          <div class="flex justify-end items-center">
-            <div class="flex flex-col items-end justify-center">
-              <div class="flex flex-col items-end w-full pr-1">
-                <p class="text-right text-xs bg-green-700 px-2 rounded-full text-white w-44 border-2 border-golden mb-1">
-                  hp
-                  {{
-                    userLogged.dragon.vitalidade.actual
-                    + userLogged.dragon.vitalidade.bonus
-                  }} / 
-                  {{
-                    userLogged.dragon.vitalidade.total
-                    + userLogged.dragon.vitalidade.bonus
-                  }}
+                  @click="nextAttack"
+                  class="flex flex-col">
+                  <FontAwesomeIcon :icon="['fas', 'caret-right']" class="text-2xl cursor-pointer text-golden" />
+                </button>
+                </div>
+                <p class="mt-1 text-sm">
+                  Ataca o inimigo com um golpe da desgraça. 
                 </p>
-                <p class="text-right text-xs bg-blue-800 px-2 rounded-full border-2 border-golden w-28 text-white mb-1">
-                  vel.
-                  {{
-                    userLogged.dragon.velocidade.actual 
-                    + userLogged.dragon.velocidade.total
-                  }}
-                </p>
-                <p class="text-right text-xs bg-red-700 px-2 rounded-full text-white border-2 w-20 border-golden mb-1">
-                  reb.
-                  {{
-                    userLogged.dragon.rebeldia.actual
-                    + userLogged.dragon.rebeldia.total
-                  }}
-                </p>
-                <p v-if="userTurn === userLogged.email" class="leading-2 text-xs pl-1">Seu Turno</p>
               </div>
             </div>
-            <div class="relative flex justify-end">
-              <button
-                type="button"
-                class="h-5 w-5 object-cover rounded-full absolute z-20 top-0 right-0 border-2 border-golden text-golden flex items-center justify-center text-xs cursor-pointer"
-              >
-                <FontAwesomeIcon :icon="['fas', 'info']" />
-              </button>
-              <img
-              :src="userLogged.profileImage"
-              class="h-10 w-10 object-cover rounded-full absolute z-20 bottom-0 right-0 bg-black border-2 border-golden"
-              />
-              <img
-              :src="userLogged.dragon.imageIconURL"
-              class="mr-2 mb-3 h-20 w-20 object-cover rounded-full relative border-4 border-golden"
-              />
+            <div class="flex justify-end items-center">
+              <div class="flex flex-col items-end justify-center">
+                <div class="flex flex-col items-end w-full pr-1">
+                  <p class="text-right text-xs bg-green-700 px-2 rounded-full text-white w-44 border-2 border-golden mb-1">
+                    hp
+                    {{
+                      userLogged.dragon.vitalidade.actual
+                      + userLogged.dragon.vitalidade.bonus
+                    }} / 
+                    {{
+                      userLogged.dragon.vitalidade.total
+                      + userLogged.dragon.vitalidade.bonus
+                    }}
+                  </p>
+                  <p class="text-right text-xs bg-blue-800 px-2 rounded-full border-2 border-golden w-28 text-white mb-1">
+                    vel.
+                    {{
+                      userLogged.dragon.velocidade.actual 
+                      + userLogged.dragon.velocidade.total
+                    }}
+                  </p>
+                  <p class="text-right text-xs bg-red-700 px-2 rounded-full text-white border-2 w-20 border-golden mb-1">
+                    reb.
+                    {{
+                      userLogged.dragon.rebeldia.actual
+                      + userLogged.dragon.rebeldia.total
+                    }}
+                  </p>
+                  <p v-if="userTurn === userLogged.email" class="leading-2 text-xs pl-1">Seu Turno</p>
+                </div>
+              </div>
+              <div class="relative flex justify-end">
+                <button
+                  type="button"
+                  class="h-5 w-5 object-cover rounded-full absolute z-20 top-1 right-2 border-2 border-golden text-golden flex items-center justify-center text-xs cursor-pointer"
+                >
+                  <FontAwesomeIcon :icon="['fas', 'info']" />
+                </button>
+                <button
+                  type="button"
+                  @click="hide"
+                  class="h-5 w-5 object-cover rounded-full absolute top-7 right-0 border-2 border-golden text-golden flex items-center justify-center text-xs cursor-pointer p-1"
+                >
+                  <FontAwesomeIcon :icon="['fas', 'list']" />
+                </button>
+                <img
+                  :src="userLogged.profileImage"
+                  class="h-10 w-10 object-cover rounded-full absolute z-20 bottom-0 right-0 bg-black border-2 border-golden"
+                />
+                <img
+                  :src="userLogged.dragon.imageIconURL"
+                  class="mr-6 mb-3 h-20 w-20 object-cover rounded-full relative border-4 border-golden"
+                />
+              </div>
             </div>
           </div>
         </div>
@@ -181,7 +190,7 @@ import { onUnmounted } from "vue";
 import { authenticate } from '@/firebase/authenticate';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
-import { faInfo, faCaretUp, faCaretDown, faCaretRight, faCaretLeft, faCircleXmark } from '@fortawesome/free-solid-svg-icons';
+import { faInfo, faCaretUp, faCaretDown, faCaretRight, faCaretLeft, faCircleXmark, faList } from '@fortawesome/free-solid-svg-icons';
 import { attack, endMatch } from '@/firebase/battle';
 import { rollIaTurn } from '@/firebase/battleIa';
 
@@ -191,6 +200,7 @@ library.add(faCaretDown);
 library.add(faCaretLeft);
 library.add(faCaretUp);
 library.add(faInfo);
+library.add(faList);
 
 export default {
   name: 'MatchPage',
@@ -210,8 +220,9 @@ export default {
       type: '',
       winner: null,
       timeTurn: '',
-      message: '',
+      message: [],
       userTurn: '',
+      hideMessages: true,
       userLogged: {
         email: '',
         profileImage: '',
@@ -348,6 +359,9 @@ export default {
     }
   },
   methods: {
+    hide() {
+      this.hideMessages = !this.hideMessages;
+    },
     async endGame() {
       await endMatch(this.matchId, this.userLogged.email);
       this.$router.push('/matchs');

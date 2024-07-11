@@ -76,7 +76,7 @@ export const createPVPBattle = async (
           timeTurn: '',
           userTurn: email,
           end: [],
-          message: '',
+          message: [],
           users: [
             {
               email,

@@ -24,6 +24,24 @@ export const attack = async (attacker, defender, matchId) => {
   applyDamage(matchId, attacker, defender, finalDamage, text);
 };
 
+export const getHoraOficialBrasil = async () => {
+  try {
+    const response = await fetch('https://worldtimeapi.org/api/timezone/America/Sao_Paulo');
+    const data = await response.json();
+    const date = new Date(data.utc_datetime);
+    const hours = date.getHours().toString().padStart(2, '0');
+    const minutes = date.getMinutes().toString().padStart(2, '0');
+    const seconds = date.getSeconds().toString().padStart(2, '0');
+    const day = date.getDate().toString().padStart(2, '0');
+    const month = (date.getMonth() + 1).toString().padStart(2, '0');
+    const year = date.getFullYear();
+    const formattedDate = `${hours}:${minutes}:${seconds}, ${day}/${month}/${year}`;
+    return formattedDate;
+  } catch (error) {
+    return null;
+  }
+};
+
 const rollDice = (faces) => Math.floor(Math.random() * faces) + 1;
 
 const rollAttack = (attacker, defender) => {
@@ -112,7 +130,12 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, text) => {
         }
       } else {
         message = ' Vez de ' + defenderUser.displayName + '!';
-        await updateDoc(battleDocRef, { userTurn, timeTurn: Date.now(), message: text + message, users: [ attackerUser, defenderUser ] });
+        const getHora = await getHoraOficialBrasil();
+        const updtdMsg = [
+          ...currDt.message,
+          { text: text + message, date: getHora },
+        ];
+        await updateDoc(battleDocRef, { userTurn, timeTurn: Date.now(), message: updtdMsg, users: [ attackerUser, defenderUser ] });
       }
     }
   } catch (error) {
@@ -120,13 +143,21 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, text) => {
   }
 }
 
-export const updateMessage = async (matchId, message) => {
+export const createNewMessage = async (matchId, message) => {
   try {
     const db = getFirestore(firebaseConfig);
     const battleDocRef = doc(db, 'battles', matchId);
     const battleDocSnapshot = await getDoc(battleDocRef);
     if (!battleDocSnapshot.exists()) window.alert('Batalha não encontrad(a). Por favor, atualize a página e tente novamente.');
-    else await updateDoc(battleDocRef, { message });
+    else {
+      const data = battleDocSnapshot.data();
+      const sameMessage = data.message.find((msg) => msg.text.includes('A Batalha começou! Vez de '));
+      if (!sameMessage) {
+        const getHora = await getHoraOficialBrasil();
+        const updtdMsg = [...data.message, { text: message, date: getHora }];
+        await updateDoc(battleDocRef, { message: updtdMsg });
+      }
+    }
   } catch (error) {
     return false;
   }

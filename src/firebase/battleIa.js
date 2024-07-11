@@ -21,7 +21,7 @@ export const createIaBattle = async (
           timeTurn: '',
           userTurn: 'ia',
           end: [],
-          message: '',
+          message: [],
           users: [
             {
               email,
