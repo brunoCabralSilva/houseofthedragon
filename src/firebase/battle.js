@@ -116,11 +116,15 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, text) => {
       const attackerUser = currDt.users.find((user) => user.email === attacker.email);
       const defenderUser = currDt.users.find((user) => user.email === defender.email);
       defenderUser.dragon.vitalidade.actual -= finalDamage;
-      let message = '';
+      const getHora = await getHoraOficialBrasil();
       if (defenderUser.dragon.vitalidade.actual <= 0) {
         defenderUser.dragon.vitalidade.actual = 0;
-        message = ' ' + attackerUser.displayName + ' venceu o combate!';
-        await updateDoc(battleDocRef, { winner: attackerUser.email, userTurn: '', timeTurn: Date.now(), message: text + message, users: [ attackerUser, defenderUser ] });
+        const message = ' ' + attackerUser.displayName + ' venceu o combate!';
+        const updtdMsg = [
+          ...currDt.message,
+          { text: text + message, date: getHora },
+        ];
+        await updateDoc(battleDocRef, { winner: attackerUser.email, userTurn: '', timeTurn: Date.now(), message: updtdMsg, users: [ attackerUser, defenderUser ] });
         if (currDt.type === 'pvp') {
             await applyVictoryOrDefeat(attackerUser, 'winsPVP');
             await applyVictoryOrDefeat(defenderUser, 'lossesPVP');
@@ -129,8 +133,7 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, text) => {
           await applyVictoryOrDefeat(defenderUser, 'lossesIA');
         }
       } else {
-        message = ' Vez de ' + defenderUser.displayName + '!';
-        const getHora = await getHoraOficialBrasil();
+        const message = ' Vez de ' + defenderUser.displayName + '!';
         const updtdMsg = [
           ...currDt.message,
           { text: text + message, date: getHora },

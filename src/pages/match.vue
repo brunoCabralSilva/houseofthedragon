@@ -6,13 +6,13 @@
   <div v-else class="transition-all duration-500 w-full min-h-screen items-center justify-center bg-arena text-white bg-cover">
     <div class="transition-all duration-500 w-full h-full">
       <div
-      class="transition-all duration-500 bg-yellow-500 flex items-center justify-center border border-golden"
+      class="z-40 absolute w-full h-screen transition-all duration-500 bg-black/80 flex items-center justify-center"
         v-if="winner"
       >
-        <div class="transition-all duration-500 w-full text-center p-2 relative">
+        <div class="transition-all duration-500 bg-black h-30vh w-full text-center p-2 relative flex flex-col items-center justify-center">
           <div
             @click="endGame"
-            class="transition-all duration-500 break-words p-3 w-full flex justify-end top-0 right-0"
+            class="absolute transition-all duration-500 break-words p-3 w-full flex justify-end top-0 right-0"
           >
             <FontAwesomeIcon
               :icon="['fas', 'circle-xmark']"
