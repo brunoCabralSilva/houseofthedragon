@@ -180,18 +180,6 @@
                 <p class="transition-all duration-500 mt-1 text-sm w-full leading-3">
                   Ataca o inimigo com um golpe da desgraça. 
                 </p>
-                <button
-                  type="button"
-                  @click="animationAttackLeft(-40)"
-                >
-                  Animar ataque (Azul)
-                </button>
-                <button
-                  type="button"
-                  @click="animationAttackRight('MISS')"
-                >
-                  Animar ataque (Vermelho)
-                </button>
               </div>
               <!-- <div v-else class="transition-all duration-500 flex flex-col items-start w-full h-full justify-between bg-gray-500">
               </div> -->
