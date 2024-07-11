@@ -3,7 +3,7 @@
   <div v-if="!showData" class="w-full h-screen flex items-center justify-center">
     <Loading />
   </div>
-  <div v-else class="w-full min-h-screen items-center justify-center bg-arena text-white">
+  <div v-else class="w-full min-h-screen items-center justify-center bg-arena text-white bg-cover">
     <div class="w-full h-full">
       <div
       class="bg-yellow-500 flex items-center justify-center border border-golden"
