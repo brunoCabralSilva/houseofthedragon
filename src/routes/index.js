@@ -15,6 +15,7 @@ import EditDragon from '@/pages/editDragon.vue';
 import ChoosingIaOponent from '@/pages/choosingIaOponent.vue';
 import Match from '@/pages/match.vue';
 import FindOpponent from '@/pages/FindOpponent.vue';
+import MapPage from '@/pages/map.vue';
 
 const routes = [
   {
@@ -99,6 +100,12 @@ const routes = [
     path: '/choosing-pvp-battle/:battleId',
     name: 'FindOponent',
     component: FindOpponent,
+    props: true
+  },
+  {
+    path: '/map',
+    name: 'MapPage',
+    component: MapPage,
     props: true
   },
 ];

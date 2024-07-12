@@ -4,6 +4,12 @@ module.exports = {
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {
+      gridTemplateRows: {
+        '16': 'repeat(16, minmax(0, 1fr))',
+      },
+      gridTemplateColumns: {
+        '16': 'repeat(16, minmax(0, 1fr))',
+      },
       animation: {
         'pulse-1': 'pulse 1s linear infinite',
         'pulse-2': 'pulse 2s linear infinite',
@@ -27,6 +33,9 @@ module.exports = {
         '80vh': '80vh',
         '90vh': '90vh',
         '95vh': '95vh',
+        '35rem': '35rem',
+        '40rem': '40rem',
+        '80rem': '80rem',
       },
       width: {
         '20vw': '20vw',
@@ -34,10 +43,13 @@ module.exports = {
         '40vw': '40vw',
         '50vw': '50vw',
         '95vw': '95vw',
+        '40rem': '40rem',
+        '80rem': '80rem',
       },
       backgroundImage: theme => ({
         'drogon': "url('@/assets/wallpaper-drogon.jpg')",
-        'arena': "url('@/assets/arena.png')",
+        'arena': "url('@/assets/arena.jpg')",
+        
       })
     },
   },
