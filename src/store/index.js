@@ -29,9 +29,7 @@ const store = createStore({
           nivel: 1,
           column: 0,
           row: 0,
-          affectedSquares: [],
           oportunity: '',
-          rangeSquares: [],
           vitalidade: { actual: 0, total: 0, bonus: 0 },
           velocidade: { actual: 0, total: 0, bonus: 0 },
           rebeldia: { actual: 0, total: 0, bonus: 0 },
@@ -58,9 +56,7 @@ const store = createStore({
         dragon: {
           id: '',
           name: '',
-          affectedSquares: [],
           oportunity: '',
-          rangeSquares: [],
           nivel: 1,
           column: 0,
           row: 0,
@@ -86,15 +82,6 @@ const store = createStore({
     };
   },
   mutations: {
-    setMovement(state, { user, affectedSquares, rangeSquares }) {
-      if (user.email === state.userLogged.email) {
-        state.movements.userLogged.affectedSquares = affectedSquares;
-        state.movements.userLogged.rangeSquares = rangeSquares;
-      } else {
-        state.movements.userOponent.affectedSquares = affectedSquares;
-        state.movements.userOponent.rangeSquares = rangeSquares;
-      }
-    },
     setUserLogged(state, userLogged)  { state.userLogged = userLogged },
     setUserOponent(state, userOponent) { state.userOponent = userOponent },
     setType(state, type) { state.type = type },
@@ -102,9 +89,6 @@ const store = createStore({
     setUserTurn(state, userTurn) { state.userTurn = userTurn },
   },
   actions: {
-    setMovement({ commit }, payload) {
-      commit('setMovement', payload);
-    },
     fetchMatchData({ commit }, { matchId, auth }) {
       onSnapshot(doc(db, 'battles', matchId), (snapshot) => {
         if (snapshot.data()) {

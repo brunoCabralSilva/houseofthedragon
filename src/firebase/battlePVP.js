@@ -21,9 +21,7 @@ export const createPVPBattle = async (
             ...selectedDragon.data,
             column: 11,
             row: 4,
-            affectedSquares: [],
             oportunity: '',
-            rangeSquares: [],
             name: selectedDragon.name,
             id: selectedDragon.dragonId,
             vitalidade: {
@@ -103,11 +101,9 @@ export const createPVPBattle = async (
               displayName,
               profileImage,
               dragon: {
-                affectedSquares: [],
                 column: 6,
                 row: 4,
                 oportunity: '',
-                rangeSquares: [],
                 ...selectedDragon.data,
                 name: selectedDragon.name,
                 id: selectedDragon.dragonId,

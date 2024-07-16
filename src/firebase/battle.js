@@ -207,3 +207,23 @@ export const endMatch = async (matchId, emailUser) => {
     window.alert('Erro ao encerrar batalha:', error.message);
   }
 }
+
+export const updateDragonPosition = async (matchId, email, column, row) => {
+  console.log('entrou');
+  try {
+    const db = getFirestore(firebaseConfig);
+    const battleDocRef = doc(db, 'battles', matchId);
+    const battleDocSnapshot = await getDoc(battleDocRef);
+    if (!battleDocSnapshot.exists()) window.alert('Batalha não encontrad(a). Por favor, atualize a página e tente novamente.');
+    else {
+      const data = battleDocSnapshot.data();
+      const userUpdating = data.users.find((user) => user.email === email);
+      userUpdating.dragon.column = column;
+      userUpdating.dragon.row = row;
+      const otherUser = data.users.find((user) => user.email !== email);
+      await updateDoc(battleDocRef, { users: [userUpdating, otherUser] });
+    }
+  } catch (error) {
+    return false;
+  }
+}
