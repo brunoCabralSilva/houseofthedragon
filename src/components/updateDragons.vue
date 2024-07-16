@@ -77,6 +77,30 @@
                     class="bg-golden text-black text-center w-full sm:w-14"
                   />
                 </div>
+                <div class="grid grid-cols-2 sm:flex gap-1">
+                  <p class="w-full sm:w-28">Alcance: </p>
+                  <input
+                    type="text"
+                    v-model.number="item.Alcance"
+                    class="bg-golden text-black text-center w-full sm:w-14"
+                  />
+                </div>
+                <div class="grid grid-cols-2 sm:flex gap-1">
+                  <p class="w-full sm:w-28">Deslocamento: </p>
+                  <input
+                    type="text"
+                    v-model.number="item.Deslocamento"
+                    class="bg-golden text-black text-center w-full sm:w-14"
+                  />
+                </div>
+                <div class="grid grid-cols-2 sm:flex gap-1">
+                  <p class="w-full sm:w-28">Nível: </p>
+                  <input
+                    type="text"
+                    v-model.number="item.Nível"
+                    class="bg-golden text-black text-center w-full sm:w-14"
+                  />
+                </div>
               </div>
             </div>
             <button

@@ -83,12 +83,32 @@
               />
             </label>
             <label htmlFor="firstName" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
-              <p class="break-words w-full mb-3 sm:mb-1 text-white">Aparência</p>
+              <p class="break-words w-full mb-3 sm:mb-1 text-white">Alcance</p>
               <input
-                type="text"
-                id="aparencia"
-                v-model="aparencia"
-                placeholder="Aparência"
+                type="number"
+                id="alcance"
+                v-model="alcance"
+                placeholder="alcance"
+                class="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
+              />
+            </label>
+            <label htmlFor="firstName" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
+              <p class="break-words w-full mb-3 sm:mb-1 text-white">Deslocamento</p>
+              <input
+                type="number"
+                id="deslocamento"
+                v-model="deslocamento"
+                placeholder="deslocamento"
+                class="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
+              />
+            </label>
+            <label htmlFor="firstName" class="break-words mb-3 sm:mb-4 flex flex-col items-center w-full">
+              <p class="break-words w-full mb-3 sm:mb-1 text-white">Nível</p>
+              <input
+                type="number"
+                id="nivel"
+                v-model="nivel"
+                placeholder="nivel"
                 class="break-words bg-black border border-golden w-full p-3 cursor-pointer text-white text-left focus:outline-none focus:border-golden focus:ring-1 focus:ring-golden"
               />
             </label>
@@ -201,13 +221,15 @@ export default {
       rebeldia: 0,
       vitalidade: 0,
       velocidade: 0,
+      alcance: 0,
+      deslocamento: 0,
+      nivel: 0,
       name: '',
       nameFont: '',
       linkFont: '',
       image: '',
       imageIcon: '',
       password: '',
-      aparencia: '',
       description: '',
       oldPassword: '',
     }
@@ -247,7 +269,7 @@ export default {
         window.alert('Necessário escolher uma imagem do Dragão');
       } else if(this.imageIcon.length === 0 || this.imageIcon === '') {
         window.alert('Necessário escolher uma imagem para o Ícone do Dragão');
-      } else if (this.vitalidade <= 0 || this.velocidade <= 0 || this.rebeldia <= 0 || this.dracarys <= 0 || this.mordida <= 0 || this.garras <= 0) {
+      } else if (this.vitalidade <= 0 || this.velocidade <= 0 || this.rebeldia <= 0 || this.dracarys <= 0 || this.mordida <= 0 || this.garras <= 0 || this.alcance <= 0 || this.deslocamento <= 0 || this.nivel <= 0) {
         window.alert('Todos os atributos devem ser maiores que zero');
       } else if(this.aparencia.length < 7) {
         window.alert('Necessário preencher uma Aparência com pelo menos sete caracteres');
@@ -256,7 +278,7 @@ export default {
       } else if(this.isLinkValid(this.linkFont)) {
         window.alert('Necessário preencher um Link para a fonte válido');
       } else {
-        await registerDragon(this.name, this.image, this.imageIcon, this.vitalidade, this.velocidade, this.rebeldia, this.dracarys, this.mordida, this.garras, this.aparencia, this.description, this.nameFont, this.linkFont);
+        await registerDragon(this.name, this.image, this.imageIcon, this.vitalidade, this.velocidade, this.rebeldia, this.dracarys, this.mordida, this.garras, this.alcance, this.deslocamento, this.nivel, this.description, this.nameFont, this.linkFont);
         this.image = null;
         this.imageIcon = null;
         this.garras = 0;
@@ -265,6 +287,9 @@ export default {
         this.dracarys = 0;
         this.vitalidade = 0;
         this.velocidade = 0;
+        this.alcance = 0;
+        this.deslocamento = 0;
+        this.nivel = 0;
         this.name = '';
         this.nameFont = '';
         this.linkFont = '';

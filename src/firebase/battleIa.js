@@ -64,6 +64,17 @@ export const createIaBattle = async (
                   actual: selectedDragon.data.garras.value,
                   bonus: 0
                 },
+                alcance: {
+                  total: selectedDragon.data.alcance.value,
+                  actual: selectedDragon.data.alcance.value,
+                  bonus: 0
+                },
+                deslocamento: {
+                  total: selectedDragon.data.alcance.value,
+                  actual: selectedDragon.data.alcance.value,
+                  bonus: 0
+                },
+                nivel: selectedDragon.data.nivel,
                 name: selectedDragon.name,
                 id: selectedDragon.dragonId,
               },
@@ -113,8 +124,10 @@ export const chooseIaDragon = async (dragon, id) => {
   objDragon.dracarys = { total: dragon.dracarys, actual: dragon.dracarys, bonus: 0 };
   objDragon.mordida = { total: dragon.mordida, actual: dragon.mordida, bonus: 0 };
   objDragon.garras = { total: dragon.garras, actual: dragon.garras, bonus: 0 };
-  objDragon.aparencia = dragon.aparencia;
+  objDragon.alcance = dragon.alcance;
   objDragon.description = dragon.description;
+  objDragon.nivel = dragon.nivel;
+  objDragon.deslocamento = dragon.deslocamento;
   objDragon.id = dragon.id;
   objDragon.imageIconURL = dragon.imageIconURL;
   objDragon.imageURL = dragon.imageURL;

@@ -20,7 +20,9 @@ export const updateMountsById = async (id, dragonData) => {
         "data.garras.value": dragonData.garras,
         "data.nameFont": dragonData.nameFont,
         "data.linkFont": dragonData.linkFont,
-        "data.aparencia": dragonData.aparencia,
+        "data.deslocamento.value": dragonData.Deslocamento,
+        "data.alcance.value": dragonData.Alcance,
+        "data.nivel": dragonData.Nível,
         "data.description": dragonData.description
       };
       if (dragonData.imageURL) updatedData["data.imageURL"] = dragonData.imageURL;
@@ -53,6 +55,9 @@ export const updateMountsByName = async (nameParam, dragonData) => {
         "data.dracarys.value": dragonData.Dracarys,
         "data.mordida.value": dragonData.Mordida,
         "data.garras.value": dragonData.Garras,
+        "data.deslocamento.value": dragonData.Deslocamento,
+        "data.alcance.value": dragonData.Alcance,
+        "data.nivel": dragonData.Nível,
         // "data.nameFont": dragonData.nameFont,
         // "data.linkFont": dragonData.linkFont,
         // "data.aparencia": dragonData.aparencia,
@@ -161,11 +166,13 @@ export const registerMount = async (dragon, email) => {
         dracarys: { value: dragon.dracarys, bonus: 0 },
         mordida: { value: dragon.mordida, bonus: 0 },
         garras: { value: dragon.garras, bonus: 0 },
+        alcance: { value: dragon.alcance, bonus: 0 },
+        deslocamento: { value: dragon.deslocamento, bonus: 0 },
         imageURL: dragon.imageURL,
+        nivel: dragon.nivel,
         imageIconURL: dragon.imageIconURL,
         nameFont: dragon.nameFont,
         linkFont: dragon.linkFont,
-        aparencia: dragon.aparencia,
         description: dragon.description,
       },
     });

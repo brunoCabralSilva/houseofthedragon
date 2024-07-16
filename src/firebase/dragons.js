@@ -3,12 +3,12 @@ import { createDragonImage, updateDragonImage, deleteDragonDirectory } from "./s
 import firebaseConfig from "./connection";
 import { updateMountsById, updateMountsByName } from "./mount";
 
-export const registerDragon = async (name, image, imageIcon, vitalidade, velocidade, rebeldia, dracarys, mordida, garras, aparencia, description, nameFont, linkFont) => {
+export const registerDragon = async (name, image, imageIcon, vitalidade, velocidade, rebeldia, dracarys, mordida, garras, alcance, deslocamento, nivel, description, nameFont, linkFont) => {
   try {
     const db = getFirestore(firebaseConfig);
     const register = await addDoc(
       collection(db, 'dragons'), {
-        name, imageURL: '', vitalidade, velocidade, rebeldia, dracarys, mordida, garras, aparencia, description, nameFont, linkFont
+        name, imageURL: '', vitalidade, velocidade, rebeldia, dracarys, mordida, garras, alcance, deslocamento, nivel, description, nameFont, linkFont
       }
     );
     const docId = register.id;
@@ -26,7 +26,7 @@ export const registerDragon = async (name, image, imageIcon, vitalidade, velocid
   }
 };
 
-export async function updateDragonById(id, name, image, imageIcon, vitalidade, velocidade, rebeldia, dracarys, mordida, garras, aparencia, description, nameFont, linkFont) {
+export async function updateDragonById(id, name, image, imageIcon, vitalidade, velocidade, rebeldia, dracarys, mordida, garras, alcance, deslocamento, nivel, description, nameFont, linkFont) {
   try {
     const db = getFirestore(firebaseConfig);
     const dragonDocRef = doc(db, 'dragons', id);
@@ -43,7 +43,9 @@ export async function updateDragonById(id, name, image, imageIcon, vitalidade, v
         dracarys,
         mordida,
         garras,
-        aparencia,
+        alcance,
+        deslocamento,
+        nivel,
         description,
         nameFont,
         linkFont
@@ -171,7 +173,9 @@ export const updateListOfDragons = async (list) => {
             dracarys: dragon.Dracarys,
             mordida: dragon.Mordida,
             garras: dragon.Garras,
-            // aparencia: dragon.Aparencia,
+            alcance: dragon.Alcance,
+            nivel: dragon.Nível,
+            deslocamento: dragon.Deslocamento,
             // description: dragon.Description,
             // nameFont: dragon.NameFont,
             // linkFont: dragon.LinkFont,

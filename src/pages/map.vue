@@ -147,7 +147,6 @@ export default {
           }
 
           if (safePath) {
-            console.log('Movendo pelo caminho seguro: ', safePath);
             safePath.forEach(square => {
               this.selectedDragon.affectedSquares.push(this.grid.find(item => item.column === square.column && item.row === square.row));
             });
@@ -156,7 +155,6 @@ export default {
             this.selectedDragon.column = finalSquare.column;
             this.selectedDragon.row = finalSquare.row;
           } else {
-            console.log('Nenhum caminho seguro encontrado. Movendo pelo primeiro caminho encontrado: ', paths[0]);
             paths[0].forEach(square => {
               this.selectedDragon.affectedSquares.push(this.grid.find(item => item.column === square.column && item.row === square.row));
             });
@@ -187,8 +185,6 @@ export default {
           this.dragons[0].affectedSquares = [];
           this.dragons[1].affectedSquares = [];
           this.selectedDragon = { oportunity: '' };
-        } else {
-          console.log('Nenhum caminho encontrado.');
         }
       }
     },
@@ -221,14 +217,6 @@ export default {
 
       return paths;
     },
-    logAllPaths(startColumn, startRow, endColumn, endRow) {
-      const deslocamento = this.selectedDragon.deslocamento;
-      const paths = this.calculateAllPaths(startColumn, startRow, endColumn, endRow, deslocamento);
-      console.log('All possible paths:');
-      paths.forEach((path, index) => {
-        console.log(`Path ${index + 1}:`, path);
-      });
-    },
     isPathSafe(path, otherDragon) {
       let isStartInRange = false;
       let isAnyIntermediateOutOfRange = false;
@@ -248,23 +236,12 @@ export default {
       }
 
       if (isStartInRange && isEndInRange) return { safe: true, oportunity: '' };
-      else if (!isStartInRange && !isEndInRange && isAnyIntermediateOutOfRange) {
-        console.log('Começa fora, termina fora, mas passa por dentro. Ataque de Oportunidade');
-        return { safe: false, oportunity: 'Ataque de Oportunidade' }; 
-      } else if (!isStartInRange && !isEndInRange) return { safe: true, oportunity: '' }; 
+      else if (!isStartInRange && !isEndInRange && isAnyIntermediateOutOfRange) return { safe: false, oportunity: 'Ataque de Oportunidade' }; 
+      else if (!isStartInRange && !isEndInRange) return { safe: true, oportunity: '' }; 
       else if (!isStartInRange && isEndInRange) return { safe: true, oportunity: '' }; 
-      else if (isStartInRange && !isEndInRange) {
-        console.log('Começa Dentro e termina Fora. Ataque de Oportunidade');
-        return { safe: false, oportunity: 'Ataque de Oportunidade' }; 
-      } else {
-        console.log('Começa Dentro? ' + isStartInRange);
-        console.log('Termina Dentro? ' + isEndInRange);
-        console.log('Passa por Dentro? ' + isAnyIntermediateOutOfRange);
-        return { safe: false, oportunity: 'Ataque de Oportunidade' };
-      }
+      else if (isStartInRange && !isEndInRange) return { safe: false, oportunity: 'Ataque de Oportunidade' };
+      else return { safe: false, oportunity: 'Ataque de Oportunidade' };
     }
-
-
   },
   mounted() {
     let number = 1;

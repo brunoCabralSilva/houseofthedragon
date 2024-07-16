@@ -386,6 +386,17 @@ export default {
               dragon: {
                 ...userLogged.dragon,
                 selectedAttack: { name: 'dracarys', actual: userLogged.dragon.dracarys.actual, bonus: userLogged.dragon.dracarys.bonus },
+                deslocamento: {
+                  actual: userLogged.dragon.deslocamento.actual,
+                  total: userLogged.dragon.deslocamento.total,
+                  bonus: userLogged.dragon.deslocamento.bonus
+                },
+                alcance: {
+                  actual: userLogged.dragon.alcance.actual,
+                  total: userLogged.dragon.alcance.total,
+                  bonus: userLogged.dragon.alcance.bonus
+                },
+                nivel: userLogged.dragon.nivel,
                 attacks: [
                   // ...userLogged.dragon.attacks,
                   { name: 'dracarys',
@@ -408,6 +419,17 @@ export default {
               dragon: {
                 ...userOponent.dragon,
                 selectedAttack: { name: 'dracarys', actual: userOponent.dragon.dracarys.actual, bonus: userOponent.dragon.dracarys.bonus },
+                deslocamento: {
+                  actual: userOponent.dragon.deslocamento.actual,
+                  total: userOponent.dragon.deslocamento.total,
+                  bonus: userOponent.dragon.deslocamento.bonus
+                },
+                alcance: {
+                  actual: userOponent.dragon.alcance.actual,
+                  total: userOponent.dragon.alcance.total,
+                  bonus: userOponent.dragon.alcance.bonus
+                },
+                nivel: userOponent.dragon.nivel,
                 attacks: [
                   { name: 'dracarys',
                     actual: userOponent.dragon.dracarys.actual,

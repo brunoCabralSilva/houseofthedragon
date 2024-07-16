@@ -1,6 +1,5 @@
-import { addDoc, collection, deleteDoc, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
+import { addDoc, collection, doc, getDoc, getDocs, getFirestore, query, updateDoc, where } from "firebase/firestore";
 import firebaseConfig from "./connection";
-import { attack } from "./battle";
 
 export const createPVPBattle = async (
   type,
@@ -52,6 +51,17 @@ export const createPVPBattle = async (
               actual: selectedDragon.data.garras.value,
               bonus: 0
             },
+            alcance: {
+              total: selectedDragon.data.alcance.value,
+              actual: selectedDragon.data.alcance.value,
+              bonus: 0
+            },
+            deslocamento: {
+              total: selectedDragon.data.alcance.value,
+              actual: selectedDragon.data.alcance.value,
+              bonus: 0
+            },
+            nivel: selectedDragon.data.nivel,
           },
         }
         try {
@@ -121,6 +131,17 @@ export const createPVPBattle = async (
                   actual: selectedDragon.data.garras.value,
                   bonus: 0
                 },
+                alcance: {
+                  total: selectedDragon.data.alcance.value,
+                  actual: selectedDragon.data.alcance.value,
+                  bonus: 0
+                },
+                deslocamento: {
+                  total: selectedDragon.data.alcance.value,
+                  actual: selectedDragon.data.alcance.value,
+                  bonus: 0
+                },
+                nivel: selectedDragon.data.nivel,
               },
             },
           ],
@@ -166,94 +187,5 @@ export const findPVPBattle = async (email) => {
   } catch (error) {
     window.alert('Erro ao buscar batalha PvP: ', error.message);
     return null;
-  }
-}
-
-export const chooseIaDragon = async (dragon, id) => {
-  const objDragon = {};
-  objDragon.vitalidade = { total: dragon.vitalidade, actual: dragon.vitalidade, bonus: 0 };
-  objDragon.velocidade = { total: dragon.velocidade, actual: dragon.velocidade, bonus: 0 };
-  objDragon.rebeldia = { total: dragon.rebeldia, actual: dragon.rebeldia, bonus: 0 };
-  objDragon.dracarys = { total: dragon.dracarys, actual: dragon.dracarys, bonus: 0 };
-  objDragon.mordida = { total: dragon.mordida, actual: dragon.mordida, bonus: 0 };
-  objDragon.garras = { total: dragon.garras, actual: dragon.garras, bonus: 0 };
-  objDragon.aparencia = dragon.aparencia;
-  objDragon.description = dragon.description;
-  objDragon.id = dragon.id;
-  objDragon.imageIconURL = dragon.imageIconURL;
-  objDragon.imageURL = dragon.imageURL;
-  objDragon.linkFont = dragon.linkFont;
-  objDragon.name = dragon.name;
-  objDragon.nameFont = dragon.nameFont;
-
-  const idData = { email: 'ia', displayName: 'IA', profileImage: '', dragon: objDragon };
-
-  try {
-    const db = getFirestore(firebaseConfig);
-    const battleDocRef = doc(db, 'battles', id);
-    const battleDocSnapshot = await getDoc(battleDocRef);
-    if (!battleDocSnapshot.exists()) window.alert('Batalha não encontrad(a). Por favor, atualize a página e tente novamente.');
-    else {
-      const currentData = battleDocSnapshot.data();
-      const existingUsers = currentData.users.find((user) => user.displayName !== 'IA');
-      await updateDoc(battleDocRef, { users: [ idData, existingUsers ] });
-    }
-  } catch (error) {
-    return false;
-  }
-}
-
-export const rollIaTurn = async (matchId) => {
-try {
-  const db = getFirestore(firebaseConfig);
-  const battleDocRef = doc(db, 'battles', matchId);
-  const battleDocSnapshot = await getDoc(battleDocRef);
-  if (!battleDocSnapshot.exists()) window.alert('Batalha não encontrad(a). Por favor, atualize a página e tente novamente.');
-  else {
-      const currentData = battleDocSnapshot.data();
-      const userData = currentData.users.find((current) => current.displayName !== 'IA');
-      const iaData = currentData.users.find((current) => current.displayName === 'IA');
-      const attacks = ['dracarys', 'garras', 'mordida'];
-      const randomIndex = Math.floor(Math.random() * attacks.length);
-      const randomAttack = attacks[randomIndex];
-      iaData.dragon.selectedAttack = {
-        ...iaData.dragon[randomAttack],
-        name: attacks[randomIndex],
-      };
-      await attack(iaData, userData, matchId);
-    }
-  } catch (error) {
-    return false;
-  }
-}
-
-export const verifyIaBattle = async (battleId) => {
-  try {
-    const db = getFirestore(firebaseConfig);
-    const battleDocRef = doc(db, 'battles', battleId);
-    const battleDoc = await getDoc(battleDocRef);
-    if (battleDoc.exists()) {
-      const battleData = battleDoc.data();
-      const iaData = battleData.users.find((user) => user.displayName === 'IA');
-      if (iaData && iaData.dragon && iaData.dragon.name) return true;
-      return false;
-    } else {
-      window.alert('Batalha não encontrada. Por favor, atualize a página e tente novamente.');
-      return false;
-    }
-  } catch (error) {
-    window.alert('Erro ao verificar batalha:', error.message);
-    return false;
-  }
-}
-
-export const endIaMatch = async (matchId) => {
-  try {
-    const db = getFirestore(firebaseConfig);
-    const battleDocRef = doc(db, 'battles', matchId);
-    const battleDocSnapshot = await getDoc(battleDocRef);
-    if (battleDocSnapshot.exists()) await deleteDoc(battleDocRef);
-  } catch (error) {
-    window.alert('Erro ao encerrar batalha:', error.message);
   }
 }

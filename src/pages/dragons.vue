@@ -92,6 +92,9 @@
               <p>Dracarys: {{ dragon.dracarys }}</p>
               <p>Mordida: {{ dragon.mordida }}</p>
               <p>Garras: {{ dragon.garras }}</p>
+              <p>Alcance: {{ dragon.alcance }}</p>
+              <p>Deslocamento: {{ dragon.deslocamento }}</p>
+              <p>Nível: {{ dragon.nivel }}</p>
             </div>
             <div v-else>
               <p class="md:mt-4 mb-2 w-full">Indisponível no momento</p>
