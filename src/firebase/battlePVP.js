@@ -17,8 +17,13 @@ export const createPVPBattle = async (
           email,
           displayName,
           profileImage,
+          column: 11,
+          row: 4,
           dragon: {
             ...selectedDragon.data,
+            affectedSquares: [],
+            oportunity: '',
+            rangeSquares: [],
             name: selectedDragon.name,
             id: selectedDragon.dragonId,
             vitalidade: {
@@ -57,8 +62,8 @@ export const createPVPBattle = async (
               bonus: 0
             },
             deslocamento: {
-              total: selectedDragon.data.alcance.value,
-              actual: selectedDragon.data.alcance.value,
+              total: selectedDragon.data.deslocamento.value,
+              actual: selectedDragon.data.deslocamento.value,
               bonus: 0
             },
             nivel: selectedDragon.data.nivel,
@@ -94,10 +99,15 @@ export const createPVPBattle = async (
           },
           users: [
             {
+              column: 6,
+              row: 4,
               email,
               displayName,
               profileImage,
               dragon: {
+                affectedSquares: [],
+                oportunity: '',
+                rangeSquares: [],
                 ...selectedDragon.data,
                 name: selectedDragon.name,
                 id: selectedDragon.dragonId,
@@ -137,8 +147,8 @@ export const createPVPBattle = async (
                   bonus: 0
                 },
                 deslocamento: {
-                  total: selectedDragon.data.alcance.value,
-                  actual: selectedDragon.data.alcance.value,
+                  total: selectedDragon.data.deslocamento.value,
+                  actual: selectedDragon.data.deslocamento.value,
                   bonus: 0
                 },
                 nivel: selectedDragon.data.nivel,
@@ -182,7 +192,6 @@ export const findPVPBattle = async (email) => {
         }
       }
     });
-
     return { existing, battleId };
   } catch (error) {
     window.alert('Erro ao buscar batalha PvP: ', error.message);
