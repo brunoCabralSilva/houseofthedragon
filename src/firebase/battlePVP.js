@@ -16,11 +16,11 @@ export const createPVPBattle = async (
         const userToAdd = {
           email,
           displayName,
-          profileImage,
-          column: 11,
-          row: 4,
+          profileImage,        
           dragon: {
             ...selectedDragon.data,
+            column: 11,
+            row: 4,
             affectedSquares: [],
             oportunity: '',
             rangeSquares: [],
@@ -99,13 +99,13 @@ export const createPVPBattle = async (
           },
           users: [
             {
-              column: 6,
-              row: 4,
               email,
               displayName,
               profileImage,
               dragon: {
                 affectedSquares: [],
+                column: 6,
+                row: 4,
                 oportunity: '',
                 rangeSquares: [],
                 ...selectedDragon.data,

@@ -69,7 +69,7 @@ import { initializeApp } from 'firebase/app';
 import { doc, getFirestore, onSnapshot } from 'firebase/firestore';
 import { onUnmounted } from 'vue';
 import Loading from '@/components/loading.vue';
-import { createNewMessage } from '@/firebase/battle';
+// import { createNewMessage } from '@/firebase/battle';
 
 export default {
 name: 'GamingPage',
@@ -154,7 +154,7 @@ async mounted() {
             if (challengedUser) this.challengedUser = challengedUser;
             if (data.users.length === 2) {
               setTimeout( async () => {
-                await createNewMessage(this.matchId, 'A Batalha começou! Vez de ' + challengerUser.displayName + '.');
+                // await createNewMessage(this.matchId, 'A Batalha começou! Vez de ' + challengerUser.displayName + '.');
                 this.route.push('/match/' + this.matchId);
               }, 4000);
             }
