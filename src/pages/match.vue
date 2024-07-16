@@ -1,48 +1,235 @@
 <template>
   <NavigationBattle />
-  <div class="h-screen flex items-center justify-center bg-wallpaper bg-cover text-white">
-    <div class="grid grid-cols-16 w-80rem grid-rows-7 h-35rem relative">
-      <button
-        type="button"
-        @click="movementDragon(userLogged)"
-        class="transition-all duration-500 flex flex-col absolute h-5rem w-5rem cursor-pointer"
-        :style="computedPosition(userLogged.dragon)"
-      >
-        <div class="flex items-end justify-start">
-          <div class="dragon text-black relative flex">
-            <img
-              id="top-dragon"
-              class="rounded-full border-4 border-golden object-fit"
-              :src="userLogged.dragon.imageIconURL"
-            />
+  <div class="h-screen flex flex-col items-center justify-center bg-wallpaper bg-cover text-white">
+    <div class="w-full h-80vh flex items-start justify-center py-5">
+      <div class="grid grid-cols-20 grid-rows-8 relative">
+        <button
+          type="button"
+          @click="movementDragon(userLogged)"
+          class="transition-all duration-500 flex flex-col absolute h-4rem w-4rem cursor-pointer"
+          :style="computedPosition(userLogged.dragon)"
+        >
+          <div class="flex items-end justify-start">
+            <div class="dragon text-black relative flex">
+              <img
+                id="top-dragon"
+                class="rounded-full border-4 border-golden object-fit"
+                :src="userLogged.dragon.imageIconURL"
+              />
+            </div>
+          </div>
+        </button>
+        <button
+          type="button"
+          class="transition-all duration-500 flex flex-col absolute h-4rem w-4rem cursor-pointer"
+          :style="computedPosition(userOponent.dragon)"
+        >
+          <div class="flex items-end justify-start">
+            <div class="dragon text-black relative flex">
+              <img
+                id="top-dragon"
+                class="rounded-full border-4 border-golden object-fit"
+                :src="userOponent.dragon.imageIconURL"
+              />
+            </div>
+          </div>
+        </button>
+        <div
+          v-for="(item, index) in grid"
+          :key="index"
+          :id="item.number"
+          :column="item.column"
+          :row="item.row"
+          :class="getSquareClass(item)"
+          @click="squareClicked(item)"
+          class="h-4rem w-4rem border border-white/10 hover:border-white transition-colors duration-300 cursor-pointer text-sm"
+        >
+        </div>
+      </div>
+    </div>
+    <div class="w-full h-20vh bg-black/80 rounded-t-xl mt-1 z-20">
+      <div class="transition-all duration-500 flex h-full px-2 w-full">
+        <div class="transition-all duration-500 w-full h-full grid grid-cols-4">
+          <div class="col-span-1 relative transition-all duration-500 flex items-center h-full w-full">
+            <div class="transition-all duration-500 relative w-40">
+              <button
+                type="button"
+                @click="hideInfoUser"
+                class="transition-all duration-500 h-5 w-5 object-cover rounded-full absolute z-20 top-1 left-2 border-2 border-golden text-golden flex items-center justify-center text-xs cursor-pointer"
+              >
+                <FontAwesomeIcon :icon="['fas', 'info']" />
+              </button>
+              <div class="absolute top-7 left-0 z-20">
+                <div v-if="notifyMessages"
+                  class="w-2 h-2 rounded-full bg-red-500"
+                >
+                </div>
+                <button
+                  type="button"
+                  @click="hideMessageUser"
+                  class="transition-all duration-500 h-5 w-5 object-cover rounded-full border-2 border-golden text-golden flex items-center justify-center text-xs cursor-pointer p-1"
+                >
+                  <FontAwesomeIcon :icon="['fas', 'list']" />
+                </button>
+              </div>
+              <img
+                :src="userLogged.profileImage"
+                class="transition-all duration-500 h-10 w-10 object-cover rounded-full absolute z-20 bottom-0 left-0 bg-black border-2 border-golden"
+              />
+              <img
+                :src="userLogged.dragon.imageIconURL"
+                :class="['ml-6', 'transition-all', 'duration-500', 'mb-3', 'h-20', 'w-20', 'object-cover', 'rounded-full', 'relative', 'border-4', 'border-golden']"
+              />
+            </div>
+            <div class="transition-all duration-500 col-span-3 flex w-full mr-2 ml-1">
+              <div class="transition-all duration-500 flex flex-col items-start justify-center w-full">
+                <div class="transition-all duration-500 flex flex-col items-start w-full pr-1">
+                  <p class="transition-all duration-500 text-xs bg-green-700 px-2 rounded-full text-white w-full border-2 border-golden mb-1">
+                    hp
+                    {{
+                      userLogged.dragon.vitalidade.actual
+                      + userLogged.dragon.vitalidade.bonus
+                    }} / 
+                    {{ userLogged.dragon.vitalidade.total }} {{ userLogged.dragon.vitalidade  .bonus !== 0 ? '+' + userLogged.dragon.vitalidade .bonus : '' }}
+                  </p>
+                  <p class="transition-all duration-500 text-xs bg-blue-800 px-2 rounded-full border-2 border-golden w-8/12 text-white mb-1">
+                    vel.
+                    {{ userLogged.dragon.velocidade.actual }} {{ userLogged.dragon.velocidade.bonus !== 0 ? '+' + userLogged.dragon.velocidade.bonus : '' }}
+                  </p>
+                  <p class="transition-all duration-500 text-xs bg-red-700 px-2 rounded-full text-white border-2 w-1/2 border-golden mb-1">
+                    reb.
+                    {{ userLogged.dragon.rebeldia.actual }} {{ userLogged.dragon.rebeldia.bonus !== 0 ? '+' + userLogged.dragon.rebeldia.bonus : '' }}
+                  </p>
+                  <p class="transition-all duration-500 leading-2 text-xs pl-1">Seu Turno</p>
+                </div>
+              </div>
+              
+            </div>
+          </div>
+          
+          <div class="col-span-2 grid grid-cols-2 w-full">
+            <div class="col-span-2 w-full h-full flex flex-col items-center justify-center gap-2 p-1">
+              <div class="flex w-full justify-center items-center gap-2">
+                <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
+                  <img
+                    src="@/assets/dracarys.png"
+                    class="transition-all duration-500 h-8 w-8 object-cover"
+                  />
+                </div>
+                <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
+                  <img
+                    src="@/assets/mordida.png"
+                    class="transition-all duration-500 h-8 w-8 object-cover"
+                  />
+                </div>
+                <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
+                  <img
+                    src="@/assets/garras.png"
+                    class="transition-all duration-500 h-8 w-8 object-cover"
+                  />
+                </div>
+                <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
+                  <img
+                    src="@/assets/dracarys.png"
+                    class="transition-all duration-500 h-8 w-8 object-cover"
+                  />
+                </div>
+                <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
+                  <img
+                    src="@/assets/dracarys.png"
+                    class="transition-all duration-500 h-8 w-8 object-cover"
+                  />
+                </div>
+              </div>
+              <div class="flex w-full justify-center items-center gap-2">
+                <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
+                  <img
+                    src="@/assets/dracarys.png"
+                    class="transition-all duration-500 h-8 w-8 object-cover"
+                  />
+                </div>
+                <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
+                  <img
+                    src="@/assets/dracarys.png"
+                    class="transition-all duration-500 h-8 w-8 object-cover"
+                  />
+                </div>
+                <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
+                  <img
+                    src="@/assets/dracarys.png"
+                    class="transition-all duration-500 h-8 w-8 object-cover"
+                  />
+                </div>
+                <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
+                  <img
+                    src="@/assets/dracarys.png"
+                    class="transition-all duration-500 h-8 w-8 object-cover"
+                  />
+                </div>
+                <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
+                  <img
+                    src="@/assets/dracarys.png"
+                    class="transition-all duration-500 h-8 w-8 object-cover"
+                  />
+                </div>
+              </div>
+
+              <!-- Voar
+              Caçar
+              Dracarys
+              Mordida
+              Garras
+              Skill1
+              Skill2
+              Mover -->
+            </div>
+          </div>
+          
+          <div class="col-span-1 relative transition-all duration-500 flex justify-start items-center h-full w-full">
+            <div class="transition-all duration-500 col-span-3 flex w-full mr-2 ml-1">
+              <div class="transition-all duration-500 flex flex-col items-end justify-center w-full">
+                <div class="transition-all duration-500 flex flex-col items-end w-full">
+                  <p class="transition-all duration-500 text-right text-xs bg-green-700 px-2 rounded-full text-white w-full border-2 border-golden mb-1">
+                    hp
+                    {{
+                      userOponent.dragon.vitalidade.actual
+                      + userOponent.dragon.vitalidade.bonus
+                    }} / 
+                    {{ userOponent.dragon.vitalidade.total }} {{ userOponent.dragon.vitalidade  .bonus !== 0 ? '+' + userOponent.dragon.vitalidade .bonus : '' }}
+                  </p>
+                  <p class="transition-all duration-500 text-right text-xs bg-blue-800 px-2 rounded-full border-2 border-golden w-8/12 text-white mb-1">
+                    vel.
+                    {{ userOponent.dragon.velocidade.actual }} {{ userOponent.dragon.velocidade.bonus !== 0 ? '+' + userOponent.dragon.velocidade.bonus : '' }}
+                  </p>
+                  <p class="transition-all duration-500 text-right text-xs bg-red-700 px-2 rounded-full text-white border-2 w-1/2 border-golden mb-1">
+                    reb.
+                    {{ userOponent.dragon.rebeldia.actual }} {{ userOponent.dragon.rebeldia.bonus !== 0 ? '+' + userOponent.dragon.rebeldia.bonus : '' }}
+                  </p>
+                  <p class="transition-all duration-500 leading-2 text-sm pl-1">Seu oponente: {{ userOponent.dragon.name }}</p>
+                </div>
+              </div>
+              
+            </div>
+            <div class="transition-all duration-500 relative w-40">
+              <button
+                type="button"
+                @click="hideInfoUser"
+                class="transition-all duration-500 h-5 w-5 object-cover rounded-full absolute z-20 top-1 right-2 border-2 border-golden text-golden flex items-center justify-center text-xs cursor-pointer"
+              >
+                <FontAwesomeIcon :icon="['fas', 'info']" />
+              </button>
+              <img
+                :src="userOponent.profileImage"
+                class="transition-all duration-500 h-10 w-10 object-cover rounded-full absolute z-20 bottom-0 right-0 bg-black border-2 border-golden"
+              />
+              <img
+                :src="userOponent.dragon.imageIconURL"
+                :class="['mr-6', 'transition-all', 'duration-500', 'mb-3', 'h-20', 'w-20', 'object-cover', 'rounded-full', 'relative', 'border-4', 'border-golden']"
+              />
+            </div>
           </div>
         </div>
-      </button>
-      <button
-        type="button"
-        class="transition-all duration-500 flex flex-col absolute h-5rem w-5rem cursor-pointer"
-        :style="computedPosition(userOponent.dragon)"
-      >
-        <div class="flex items-end justify-start">
-          <div class="dragon text-black relative flex">
-            <img
-              id="top-dragon"
-              class="rounded-full border-4 border-golden object-fit"
-              :src="userOponent.dragon.imageIconURL"
-            />
-          </div>
-        </div>
-      </button>
-      <div
-        v-for="(item, index) in grid"
-        :key="index"
-        :id="item.number"
-        :column="item.column"
-        :row="item.row"
-        :class="getSquareClass(item)"
-        @click="squareClicked(item)"
-        class="h-5rem w-5rem border border-white/10 hover:border-white transition-colors duration-300 cursor-pointer text-sm"
-      >
+        
       </div>
     </div>
   </div>
@@ -54,11 +241,22 @@ import { authenticate } from '@/firebase/authenticate';
 import { useRouter } from 'vue-router';
 import NavigationBattle from '@/components/navigationBattle.vue';
 import { updateDragonPosition } from '@/firebase/battle';
+import { library } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
+import { faInfo, faCaretUp, faCaretDown, faCaretRight, faCaretLeft, faCircleXmark, faList } from '@fortawesome/free-solid-svg-icons';
+library.add(faCircleXmark);
+library.add(faCaretRight);
+library.add(faCaretDown);
+library.add(faCaretLeft);
+library.add(faCaretUp);
+library.add(faInfo);
+library.add(faList);
 
 export default {
   name: 'MatchPage',
   components: {
     NavigationBattle,
+    FontAwesomeIcon
   },
   data() {
     const router = useRouter();
@@ -81,7 +279,7 @@ export default {
       this.fetchMatchData({ matchId: this.matchId, auth });
       let number = 1;
       for (let row = 1; row <= 7; row += 1) {
-        for (let col = 1; col <= 16; col += 1) {
+        for (let col = 1; col <= 20; col += 1) {
           this.grid.push({ column: col, row: row, number });
           number += 1;
         }
@@ -130,7 +328,7 @@ export default {
       return {rangeSquaresLogged, rangeSquaresOponent };
     },
     computedPosition(dragon) {
-      return { top: `${dragon.row * 5 - 5}rem`, left: `${dragon.column * 5 - 5}rem` };
+      return { top: `${dragon.row * 4 - 4}rem`, left: `${dragon.column * 4 - 4}rem` };
     },
     movementDragon(userLogged) {
       const dragon = userLogged.dragon;
@@ -164,7 +362,6 @@ export default {
     async moveDragonTo(column, row) {
       this.affectedSquaresLogged = [];
       const paths = this.calculateAllPaths(this.initialPosition.column, this.initialPosition.row, column, row, this.userLogged.dragon.deslocamento.actual);
-      console.log(paths);
       let safePath = null;
       let oportunity = '';
       if (paths && paths.length > 0) {
@@ -260,3 +457,68 @@ export default {
   },
 }
 </script>
+
+
+<!-- <div class="col-span-1 w-4/5">
+  <div v-if="!hideMessages" class="transition-all duration-500 border border-golden w-full rounded ">
+    <div
+      class="transition-all duration-500 w-full flex flex-col h-full items-center justify-center"
+    >
+      <p class="transition-all duration-500 w-full px-2 pt-1 border-b-golden border border-transparent text-sm">Histórico</p>
+      <div class="transition-all duration-500 w-full justify-end relative overflow-y-auto h-14vh py-2 px-2">
+        <div
+          v-for="(message, index) in messages"
+          :key="index"
+          class="transition-all duration-500 leading-4"
+        >
+          <span class="transition-all duration-500  pb-1 leading-3 text-golden pr-1">{{ message.date }}:</span>
+          <span :class="['transition-all', 'duration-500', 'pt-1', 'leading-3', 'text-sm', index === 0 ? 'underline': '']">
+            {{ message.text }}
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div v-if="hideInfo" class="transition-all duration-500 border border-golden rounded w-full">
+    <div
+      class="transition-all duration-500 w-full flex flex-col h-full items-center justify-center relative"
+    >
+      <p class="transition-all duration-500 w-full px-2 pt-1 border-b-golden border border-transparent text-sm">Status</p>
+      <div class="transition-all duration-500 w-full justify-end relative overflow-y-auto h-15vh py-2 px-2">
+        <div class="transition-all duration-500 flex w-full">
+          <div class="transition-all duration-500 w-1/2">
+            <p class="transition-all duration-500 pb-1">Jogador: {{  userLogged.displayName  }}</p>
+            <p class="transition-all duration-500 leading-5">
+              hp:
+              {{
+                userLogged.dragon.vitalidade.actual
+                + userLogged.dragon.vitalidade.bonus
+              }} / 
+              {{ userLogged.dragon.vitalidade.total }} + {{ userLogged.dragon.vitalidade.bonus }}
+            </p>
+            <p class="transition-all duration-500 leading-5">
+              velocidade:
+              {{ userLogged.dragon.velocidade.total }} + 
+              {{ userLogged.dragon.velocidade.bonus }}
+            </p>
+            <p class="transition-all duration-500 leading-5">
+              rebeldia: 
+              {{ userLogged.dragon.rebeldia.actual }} + {{ userLogged.dragon.rebeldia.bonus }}
+            </p>
+            <p
+              v-for="(attack, index) in userLogged.dragon.attacks"
+              :key="index"
+              class="transition-all duration-500 leading-5"
+            >
+              {{ attack.name }}: {{ attack.actual }} + {{ attack.bonus }}
+            </p>
+          </div>
+          <div class="transition-all duration-500 w-1/2 border-l-white border border-transparent pl-3">
+            <p class="transition-all duration-500 pb-1">Condições:</p>
+             <p class="transition-all duration-500 text-sm leading-5 pl-1">- desvantagem nas rolagens de ataque e rolagens de ataque.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> -->

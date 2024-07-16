@@ -1,5 +1,5 @@
 <template>
-    <div class="flex flex-col gap-1 cursor-pointer fixed top-2 right-2 z-40
+    <div class="flex flex-col gap-1 cursor-pointer fixed top-2 right-2 z-50
     " @click="toggleMenu">
       <div :class="['h-1', 'w-7', 'bg-gradient-to-r from-golden to-dark-golden rounded', barra1()]" ></div>
       <div :class="['h-1', 'w-7', 'bg-gradient-to-r from-golden to-dark-golden rounded', barra2()]" ></div>
