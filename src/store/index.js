@@ -98,6 +98,8 @@ const store = createStore({
           const data = snapshot.data();
           commit('setType', data.type);
           commit('setWinner', data.winner);
+          commit('setUserTurn', data.userTurn);
+          
           const userLogged = data.users.find((user) => user.email === auth.email);
           const userOponent = data.users.find((user) => user.email !== auth.email);
 
