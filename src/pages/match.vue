@@ -187,15 +187,17 @@
                 </div>
               </div>
               <div class="flex w-full justify-center items-center gap-2">
-                <div
+                <button 
+                  v-if="this.userLogged.dragon.actions.position === 'ground'"
+                  type="button"
+                  :disabled="this.userLogged.dragon.actions.hunt !== 0"
+                  @click="huntSheep"
                   @mouseout="setTooltip('')"
-                  @mouseover="setTooltip(this.userLogged.dragon.actions.position === 'ground' ? 'Caçar': 'Derrubar')"
+                  @mouseover="setTooltip('Caçar')"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
                 >
                   <img
-                    :src="this.userLogged.dragon.actions.position === 'ground'
-                        ? require('@/assets/icons/sheep.png')
-                        : require('@/assets/icons/derrubar.png')"
+                    :src="require('@/assets/icons/sheep.png')"
                     class="transition-all duration-500 h-8 w-8 object-cover"
                     :class="this.userLogged.dragon.actions.hunt === 0 ? 'opacity-1' : 'opacity-40'"
                   />
@@ -211,6 +213,20 @@
                       <p class="w-full pt-1 leading-4">O dragão avista uma ovelha, avança rapidamente e a devora com voracidade, recuperando {{ Math.ceil(Math.ceil(this.userLogged.dragon.vitalidade.total / 5) / 10) }}d10 pontos de vida. Esta ação só pode ser realizada uma vez durante o combate.</p>
                     </div>
                   </div>
+                </button>
+                <button 
+                  v-else
+                  type="button"
+                  :disabled="this.userLogged.dragon.actions.hunt !== 0"
+                  @click="huntSheep"
+                  @mouseout="setTooltip('')"
+                  @mouseover="setTooltip('Caçar')"
+                  class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
+                >
+                  <img
+                    :src="require('@/assets/icons/derrubar.png')"
+                    class="transition-all duration-500 h-8 w-8 object-cover"
+                  />
                   <div
                     v-if="tooltip === 'Derrubar'"  
                     class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
@@ -223,8 +239,10 @@
                       <p class="w-full pt-1 leading-4">Ambos os Dragões precisam estar Voando para que esta ação seja possível, além de que é necessário estar fora do alcance do Oponente. Executando esta ação, o alvo é derrubado dos céus ao chão, precisando ter sucesso em um teste de Vitalidade para que não fique Atordoado.</p>
                     </div>
                   </div>
-                </div>
-                <div
+                </button>
+                <button
+                  type="button"
+                  @click="changeDragonPosition"
                   @mouseover="setTooltip(this.userLogged.dragon.actions.position === 'ground' ? 'Voar': 'Aterrisar')"
                   @mouseout="setTooltip('')"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
@@ -255,7 +273,7 @@
                       <p class="w-full pt-1 leading-4">Com um último bater de asas, o dragão toca o chão suavemente, pronto para enfrentar qualquer desafio em solo que o aguarde. Concede Ataque de Oportunidade caso as circunstâncias permitam.</p>
                     </div>
                   </div>
-                </div>
+                </button>
                 <div
                   @mouseout="setTooltip('')"
                   @mouseover="setTooltip('Mover')"
@@ -351,7 +369,7 @@ import { mapState, mapActions } from 'vuex';
 import { authenticate } from '@/firebase/authenticate';
 import { useRouter } from 'vue-router';
 import NavigationBattle from '@/components/navigationBattle.vue';
-import { updateDragonPosition } from '@/firebase/battle';
+import { changePosition, hunt, updateDragonPosition } from '@/firebase/battle';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faInfo, faCaretUp, faCaretDown, faCaretRight, faCaretLeft, faCircleXmark, faList } from '@fortawesome/free-solid-svg-icons';
@@ -375,6 +393,7 @@ export default {
       tooltip: '',
       grid: [],
       email: '',
+      disabledHunt: false,
       rangeSquaresLogged: [],
       affectedSquaresLogged: [],
       rangeSquaresOponent: [],
@@ -400,6 +419,7 @@ export default {
       const updateRanges = this.updateRangedSquare();
       this.rangeSquaresLogged = updateRanges.rangeSquaresLogged
       this.rangeSquaresOponent = updateRanges.rangeSquaresOponent;
+      if (this.userLogged.dragon.hunt !== 0) this.disabledHunt = true;
     } else this.router.push("/login");
   },
   computed: {
@@ -428,9 +448,12 @@ export default {
   },
   methods: {
     ...mapActions(['fetchMatchData']),
-    setTooltip(item) {
-      this.tooltip = item;
+    setTooltip(item) { this.tooltip = item },
+    async huntSheep() {
+      this.disabledHunt = true;
+      await hunt(this.matchId, this.email, Math.ceil(Math.ceil(this.userLogged.dragon.vitalidade.total / 5) / 10))
     },
+    async changeDragonPosition() { await changePosition(this.matchId, this.email) },
     updateRangedSquare() {
       const rangeSquaresLogged = this.grid.filter(item => {
         const distance = Math.abs(item.column - this.userLogged.dragon.column) + Math.abs(item.row - this.userLogged.dragon.row);
