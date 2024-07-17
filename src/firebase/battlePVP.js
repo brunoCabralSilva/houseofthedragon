@@ -56,7 +56,6 @@ export const createPVPBattle = async (
         }
       } return data.battleId;
     } else {
-      console.log(selectedDragon)
       const register = await addDoc(
         collection(db, 'battles'),
         {

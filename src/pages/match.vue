@@ -151,7 +151,7 @@
               <div class="flex w-full justify-center items-center gap-2">
                 <button
                   type="button"
-                  :disabled="userTurn !== userLogged.email"
+                  :disabled="userTurn !== userLogged.email || this.verifyActions('default')"
                   @mouseover="setTooltip('Dracarys')"
                   @mouseout="setTooltip('')"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
@@ -177,7 +177,7 @@
                 </button>
                 <button
                   type="button"
-                  :disabled="userTurn !== userLogged.email"
+                  :disabled="userTurn !== userLogged.email || this.verifyActions('default')"
                   @mouseover="setTooltip('Mordida')"
                   @mouseout="setTooltip('')"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
@@ -203,7 +203,7 @@
                 </button>
                 <button
                   type="button"
-                  :disabled="userTurn !== userLogged.email"
+                  :disabled="userTurn !== userLogged.email || this.verifyActions('default')"
                   @mouseover="setTooltip('Garras')"
                   @mouseout="setTooltip('')"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
@@ -238,7 +238,7 @@
                 <button 
                   type="button"
                   v-if="this.userLogged.dragon.actions.position === 'ground'"
-                  :disabled="this.userLogged.dragon.actions.hunt !== 0 || userTurn !== userLogged.email"
+                  :disabled="this.userLogged.dragon.actions.hunt !== 0 || userTurn !== userLogged.email  || this.verifyActions('movement-bonus')"
                   @click="huntSheep"
                   @mouseout="setTooltip('')"
                   @mouseover="setTooltip('Caçar')"
@@ -265,7 +265,7 @@
                 <button 
                   v-else
                   type="button"
-                  :disabled="userTurn !== userLogged.email"
+                  :disabled="userTurn !== userLogged.email || this.verifyActions('movement-bonus')"
                   @mouseout="setTooltip('')"
                   @mouseover="setTooltip('Derrubar')"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
@@ -293,7 +293,7 @@
                   @click="changeDragonPosition"
                   @mouseover="setTooltip(this.userLogged.dragon.actions.position === 'ground' ? 'Voar': 'Aterrisar')"
                   @mouseout="setTooltip('')"
-                  :disabled="userTurn !== userLogged.email"
+                  :disabled="userTurn !== userLogged.email || this.verifyActions('movement')"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
                 >
                   <img
@@ -326,7 +326,7 @@
                 </button>
                 <button
                   type="button"
-                  :disabled="userTurn !== userLogged.email"
+                  :disabled="userTurn !== userLogged.email || this.verifyActions('movement')"
                   @mouseout="setTooltip('')"
                   @mouseover="setTooltip('Mover')"
                   @click="movementDragon(userLogged)"
@@ -505,7 +505,6 @@ export default {
       this.rangeSquaresLogged = updateRanges.rangeSquaresLogged
       this.rangeSquaresOponent = updateRanges.rangeSquaresOponent;
       if (this.userLogged.dragon.hunt !== 0) this.disabledHunt = true;
-      console.log(this.userLogged.actions);
     } else this.router.push("/login");
   },
   computed: {
@@ -533,6 +532,32 @@ export default {
   },
   methods: {
     ...mapActions(['fetchMatchData']),
+    async verifyActions(type) {
+      console.log(type);
+      const actMove = this.userLogged.actions.movement;
+      const actDefault = this.userLogged.actions.default;
+      const actBonus = this.userLogged.actions.bonus;
+
+      if (type === 'movement-bonus') {
+        if (actDefault <= 1 && actMove === 0 && actBonus === 0) return false;
+        if (actDefault === 0 && actMove <= 1 && actBonus === 0) return false;
+        if (actDefault === 0 && actMove === 0 && actBonus <= 1) return false;
+        return true;
+      } else if (type === 'bonus') {
+        if (actDefault <= 1 && actMove <= 1 && actBonus === 0) return false;
+        if (actDefault === 0 && actMove <= 2 && actBonus === 0) return false;
+        if (actDefault === 0 && actMove <= 1 && actBonus <= 1) return false;
+        return true;
+      } else if (type === 'movement') {
+        if (actDefault <= 1 && actBonus <= 1 && actMove === 0) return false;
+        if (actDefault === 0 && actBonus <= 2 && actMove === 0) return false;
+        if (actDefault === 0 && actBonus <= 1 && actMove <= 1) return false;  
+        return true;
+      } else {
+        if (actBonus <= 1 && actMove <= 1 && actDefault === 0) return false;
+        return true;
+      }
+    },
     async finishTurn() {
       await endTurn(this.matchId, this.email);
     },

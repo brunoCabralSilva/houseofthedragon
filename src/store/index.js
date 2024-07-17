@@ -23,6 +23,7 @@ const store = createStore({
         email: '',
         profileImage: '',
         displayName: '',
+        actions: { movement: 0, default: 0, bonus: 0 },
         dragon: {
           id: '',
           name: '',
@@ -55,6 +56,7 @@ const store = createStore({
         email: '',
         profileImage: '',
         displayName: '',
+        actions: { movement: 0, default: 0, bonus: 0 },
         dragon: {
           id: '',
           name: '',
@@ -99,7 +101,6 @@ const store = createStore({
           commit('setType', data.type);
           commit('setWinner', data.winner);
           commit('setUserTurn', data.userTurn);
-          
           const userLogged = data.users.find((user) => user.email === auth.email);
           const userOponent = data.users.find((user) => user.email !== auth.email);
 
