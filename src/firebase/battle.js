@@ -219,6 +219,11 @@ export const updateDragonPosition = async (matchId, email, column, row) => {
       const userUpdating = data.users.find((user) => user.email === email);
       userUpdating.dragon.column = column;
       userUpdating.dragon.row = row;
+      userUpdating.actions = {
+        bonus: userUpdating.actions.bonus,
+        default: userUpdating.actions.default,
+        movement: userUpdating.actions.movement + 1,
+      }
       const otherUser = data.users.find((user) => user.email !== email);
       await updateDoc(battleDocRef, { users: [userUpdating, otherUser] });
     }
@@ -228,7 +233,6 @@ export const updateDragonPosition = async (matchId, email, column, row) => {
 }
 
 export const hunt = async (matchId, email, numberOfDices) => {
-  console.log(matchId, email, numberOfDices);
   let result = 0;
   for (let i = 0; i < numberOfDices; i += 1) {
     result += Math.floor(Math.random() * 10) + 1;
@@ -244,6 +248,11 @@ export const hunt = async (matchId, email, numberOfDices) => {
       if (userUpdating.dragon.vitalidade.actual + result < userUpdating.dragon.vitalidade.total) {
         userUpdating.dragon.vitalidade.actual += result;
       } else userUpdating.dragon.vitalidade.actual = userUpdating.dragon.vitalidade.total;
+      userUpdating.actions = {
+        movement: userUpdating.actions.movement + 1,
+        bonus: userUpdating.actions.bonus + 1,
+        default: userUpdating.actions.default,
+      }
       userUpdating.dragon.actions.hunt = 1;
       const otherUser = data.users.find((user) => user.email !== email);
       await updateDoc(battleDocRef, { users: [userUpdating, otherUser] });
@@ -264,8 +273,32 @@ export const changePosition = async (matchId, email) => {
       const userUpdating = data.users.find((user) => user.email === email);
       if (userUpdating.dragon.actions.position === 'ground') {
         userUpdating.dragon.actions.position = 'fly';
-      } else userUpdating.dragon.actions.position = 'ground'
+      } else userUpdating.dragon.actions.position = 'ground';
+      userUpdating.actions = {
+        bonus: userUpdating.actions.bonus,
+        default: userUpdating.actions.default,
+        movement: userUpdating.actions.movement + 1,
+      }
       const otherUser = data.users.find((user) => user.email !== email);
+      await updateDoc(battleDocRef, { users: [userUpdating, otherUser] });
+    }
+  } catch (error) {
+    return false;
+  }
+}
+
+export const endTurn = async (matchId, email) => {
+  try {
+    const db = getFirestore(firebaseConfig);
+    const battleDocRef = doc(db, 'battles', matchId);
+    const battleDocSnapshot = await getDoc(battleDocRef);
+    if (!battleDocSnapshot.exists()) window.alert('Batalha não encontrad(a). Por favor, atualize a página e tente novamente.');
+    else {
+      const data = battleDocSnapshot.data();
+      const userUpdating = data.users.find((user) => user.email === email);
+      const otherUser = data.users.find((user) => user.email !== email);
+      data.userTurn === otherUser.email;
+      otherUser.actions = { bonus: 0, default: 0, movement: 0 };
       await updateDoc(battleDocRef, { users: [userUpdating, otherUser] });
     }
   } catch (error) {

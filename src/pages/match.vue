@@ -143,7 +143,9 @@
           <div class="col-span-2 grid grid-cols-2 w-full">
             <div class="col-span-2 w-full h-full flex flex-col items-center justify-center gap-2 p-1">
               <div class="flex w-full justify-center items-center gap-2">
-                <div
+                <button
+                  type="button"
+                  :disabled="userTurn !== userLogged.email"
                   @mouseover="setTooltip('Dracarys')"
                   @mouseout="setTooltip('')"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
@@ -151,12 +153,13 @@
                   <img
                     src="@/assets/icons/dracarys.png"
                     class="transition-all duration-500 h-8 w-8 object-cover"
+                    :class="userTurn !== userLogged.email ? 'opacity-40' : 'opaticy-1'"
                   />
                   <div
                     v-if="tooltip === 'Dracarys'"
                     class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
                   >
-                    <div class="bg-black/80 w-1/3 rounded p-1 px-2 h-full">
+                    <div class="bg-black/80 w-1/3 rounded p-2 px-2 h-full">
                       <p class="w-full pb-1">Dracarys - Ação Padrão</p>
                       <hr />
                       <p class="w-full pt-1 leading-4">Ataca o oponente com uma torrente de chamas ardentes, expelindo um poderoso jato de fogo de suas mandíbulas.</p>
@@ -165,8 +168,10 @@
                       <p class="pt-1"></p>
                     </div>
                   </div>
-                </div>
-                <div
+                </button>
+                <button
+                  type="button"
+                  :disabled="userTurn !== userLogged.email"
                   @mouseover="setTooltip('Mordida')"
                   @mouseout="setTooltip('')"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
@@ -174,12 +179,13 @@
                   <img
                     src="@/assets/icons/mordida.png"
                     class="transition-all duration-500 h-8 w-8 object-cover"
+                    :class="userTurn !== userLogged.email ? 'opacity-40' : 'opaticy-1'"
                   />
                   <div
                     v-if="tooltip === 'Mordida'"
                     class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
                   >
-                    <div class="bg-black/80 w-1/3 rounded p-1 px-2 h-full">
+                    <div class="bg-black/80 w-1/3 rounded p-2 px-2 h-full">
                       <p class="w-full pb-1">Mordida - Ação Padrão</p>
                       <hr />
                       <p class="w-full pt-1 leading-4">Ataca o oponente com uma mordida feroz, cravando suas afiadas presas na carne inimiga e causando danos devastadores.</p>
@@ -188,8 +194,10 @@
                       <p class="pt-1"></p>
                     </div>
                   </div>
-                </div>
-                <div
+                </button>
+                <button
+                  type="button"
+                  :disabled="userTurn !== userLogged.email"
                   @mouseover="setTooltip('Garras')"
                   @mouseout="setTooltip('')"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
@@ -197,12 +205,13 @@
                   <img
                     src="@/assets/icons/garras.png"
                     class="transition-all duration-500 h-8 w-8 object-cover"
+                    :class="userTurn !== userLogged.email ? 'opacity-40' : 'opaticy-1'"
                   />
                   <div
                     v-if="tooltip === 'Garras'"
                     class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
                   >
-                    <div class="bg-black/80 w-1/3 rounded p-1 px-2 h-full">
+                    <div class="bg-black/80 w-1/3 rounded p-2 px-2 h-full">
                       <p class="w-full pb-1">Garras - Ação Padrão</p>
                       <hr />
                       <p class="w-full pt-1 leading-4">Ataca o oponente com suas garras afiadas, desferindo golpes rápidos e precisos.</p>
@@ -211,7 +220,7 @@
                       <p class="pt-1"></p>
                     </div>
                   </div>
-                </div>
+                </button>
                 <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
                   1
                 </div>
@@ -221,9 +230,9 @@
               </div>
               <div class="flex w-full justify-center items-center gap-2">
                 <button 
-                  v-if="this.userLogged.dragon.actions.position === 'ground'"
                   type="button"
-                  :disabled="this.userLogged.dragon.actions.hunt !== 0"
+                  v-if="this.userLogged.dragon.actions.position === 'ground'"
+                  :disabled="this.userLogged.dragon.actions.hunt !== 0 || userTurn !== userLogged.email"
                   @click="huntSheep"
                   @mouseout="setTooltip('')"
                   @mouseover="setTooltip('Caçar')"
@@ -232,13 +241,13 @@
                   <img
                     :src="require('@/assets/icons/sheep.png')"
                     class="transition-all duration-500 h-8 w-8 object-cover"
-                    :class="this.userLogged.dragon.actions.hunt === 0 ? 'opacity-1' : 'opacity-40'"
+                    :class="this.userLogged.dragon.actions.hunt === 0 || userTurn === userLogged.email ? 'opacity-1' : 'opacity-40'"
                   />
                   <div
                     v-if="tooltip === 'Caçar'"  
                     class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
                   >
-                    <div class="bg-black/80 w-1/3 rounded p-1 px-2 h-full">
+                    <div class="bg-black/80 w-1/3 rounded p-2 px-2 h-full">
                       <p class="w-full pb-1">                        
                         Caçar - Ação Bônus e de Movimento
                       </p>
@@ -250,21 +259,21 @@
                 <button 
                   v-else
                   type="button"
-                  :disabled="this.userLogged.dragon.actions.hunt !== 0"
-                  @click="huntSheep"
+                  :disabled="userTurn !== userLogged.email"
                   @mouseout="setTooltip('')"
-                  @mouseover="setTooltip('Caçar')"
+                  @mouseover="setTooltip('Derrubar')"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
                 >
                   <img
                     :src="require('@/assets/icons/derrubar.png')"
                     class="transition-all duration-500 h-8 w-8 object-cover"
+                    :class="userTurn === userLogged.email ? 'opacity-1' : 'opacity-40'"
                   />
                   <div
                     v-if="tooltip === 'Derrubar'"  
                     class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
                   >
-                    <div class="bg-black/80 w-1/3 rounded p-1 px-2 h-full">
+                    <div class="bg-black/80 w-1/3 rounded p-2 px-2 h-full">
                       <p class="w-full pb-1">                        
                         Derrubar - Ação Bônus e de Movimento
                       </p>
@@ -278,6 +287,7 @@
                   @click="changeDragonPosition"
                   @mouseover="setTooltip(this.userLogged.dragon.actions.position === 'ground' ? 'Voar': 'Aterrisar')"
                   @mouseout="setTooltip('')"
+                  :disabled="userTurn !== userLogged.email"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
                 >
                   <img
@@ -285,12 +295,13 @@
                       ? require('@/assets/icons/voar.png')
                       : require('@/assets/icons/aterrisar.png')"
                     class="transition-all duration-500 h-8 w-8 object-cover"
+                    :class="userTurn === userLogged.email ? 'opacity-1' : 'opacity-40'"
                   />
                   <div
                     v-if="tooltip === 'Voar'"
                     class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
                   >
-                    <div class="bg-black/80 w-1/3 rounded p-1 px-2 h-full">
+                    <div class="bg-black/80 w-1/3 rounded p-2 px-2 h-full">
                       <p class="w-full pb-1">Voar - Ação De Movimento</p>
                       <hr />
                       <p class="w-full pt-1 leading-4">Com um poderoso bater de asas, o dragão se ergue do solo e alça voo aos céus. Concede Ataque de Oportunidade caso as circunstâncias permitam.</p>
@@ -300,14 +311,16 @@
                     v-if="tooltip === 'Aterrisar'"
                     class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
                   >
-                    <div class="bg-black/80 w-1/3 rounded p-1 px-2 h-full">
+                    <div class="bg-black/80 w-1/3 rounded p-2 px-2 h-full">
                       <p class="w-full pb-1">Aterrisar - Ação De Movimento</p>
                       <hr />
                       <p class="w-full pt-1 leading-4">Com um último bater de asas, o dragão toca o chão suavemente, pronto para enfrentar qualquer desafio em solo que o aguarde. Concede Ataque de Oportunidade caso as circunstâncias permitam.</p>
                     </div>
                   </div>
                 </button>
-                <div
+                <button
+                  type="button"
+                  :disabled="userTurn !== userLogged.email"
                   @mouseout="setTooltip('')"
                   @mouseover="setTooltip('Mover')"
                   @click="movementDragon(userLogged)"
@@ -316,24 +329,46 @@
                   <img
                     src="@/assets/icons/move.png"
                     class="transition-all duration-500 h-8 w-8 object-cover"
+                    :class="userTurn === userLogged.email ? 'opacity-1' : 'opacity-40'"
                   />
                   <div
                     v-if="tooltip === 'Mover'"  
                     class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
                   >
-                    <div class="bg-black/80 w-1/3 rounded p-1 px-2 h-full">
+                    <div class="bg-black/80 w-1/3 rounded p-2 px-2 h-full">
                       <p class="w-full pb-1">Deslocar-se - Ação De Movimento</p>
                       <hr />
                       <p class="w-full pt-1 leading-4">Permite que o Dragão se mova baseado no seu valor de deslocamento e também pode ser feito clicando diretamente no ícone do Dragão. Pode gerar Ataque de Oportunidade caso esteja saindo da área de alcance do oponente.</p>
                     </div>
                   </div>
-                </div>
+                </button>
                 <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
                   3
                 </div>
-                <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
-                  4
-                </div>
+                <button
+                  type="button"
+                  @mouseout="setTooltip('')"
+                  @mouseover="setTooltip('End')"
+                  @click="finishTurn"
+                  :disabled="userTurn !== userLogged.email"
+                  class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
+                >
+                  <img
+                    src="@/assets/icons/end.png"
+                    class="transition-all duration-500 h-8 w-8 object-cover"
+                    :class="userTurn === userLogged.email ? 'opacity-1' : 'opacity-40'"
+                  />
+                  <div
+                    v-if="tooltip === 'End'"  
+                    class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
+                  >
+                    <div class="bg-black/80 w-1/3 rounded px-2 h-full p-2">
+                      <p class="w-full pb-1">Encerrar Turno</p>
+                      <hr />
+                      <p class="w-full pt-1 leading-4">Passa a vez para o oponente, permitindo que ele faça suas ações enquanto o dragão aguarda sua próxima oportunidade de agir.</p>
+                    </div>
+                  </div>
+                </button>
               </div>
 
               <!-- Voar
@@ -413,7 +448,7 @@ import { mapState, mapActions } from 'vuex';
 import { authenticate } from '@/firebase/authenticate';
 import { useRouter } from 'vue-router';
 import NavigationBattle from '@/components/navigationBattle.vue';
-import { changePosition, hunt, updateDragonPosition } from '@/firebase/battle';
+import { changePosition, endTurn, hunt, updateDragonPosition } from '@/firebase/battle';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faInfo, faCaretUp, faCaretDown, faCaretRight, faCaretLeft, faCircleXmark, faList } from '@fortawesome/free-solid-svg-icons';
@@ -492,6 +527,9 @@ export default {
   },
   methods: {
     ...mapActions(['fetchMatchData']),
+    async finishTurn() {
+      await endTurn(this.matchId, this.email);
+    },
     setTooltip(item) { this.tooltip = item },
     async huntSheep() {
       this.disabledHunt = true;
