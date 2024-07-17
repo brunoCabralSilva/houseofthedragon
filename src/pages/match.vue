@@ -133,7 +133,13 @@
                     reb.
                     {{ userLogged.dragon.rebeldia.actual }} {{ userLogged.dragon.rebeldia.bonus !== 0 ? '+' + userLogged.dragon.rebeldia.bonus : '' }}
                   </p>
-                  <p class="transition-all duration-500 leading-2 text-xs pl-1">Seu Turno ({{userLogged.dragon.actions.position === 'ground' ? 'Em Terra' : 'Voando'}})</p>
+                  <p class="transition-all duration-500 leading-2 text-xs pl-1">
+                    {{
+                      userTurn === userLogged.email
+                        ? `Seu Turno (${userLogged.dragon.actions.position === 'ground' ? 'Em Terra' : 'Voando'})`
+                        : `Turno do oponente (${userOponent.dragon.actions.position === 'ground' ? 'Em Terra' : 'Voando'})`
+                    }}
+                  </p>
                 </div>
               </div>
               
