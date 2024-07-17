@@ -21,7 +21,7 @@ export const createPVPBattle = async (
             row: 4,
             column: 11,
             id: selectedDragon.dragonId,
-            name: selectedDragon.data.name,
+            name: selectedDragon.name,
             nivel: selectedDragon.data.nivel,
             imageURL: selectedDragon.data.imageURL,
             imageIconURL: selectedDragon.data.imageURL,
@@ -30,7 +30,7 @@ export const createPVPBattle = async (
               dracarys: { total: selectedDragon.data.dracarys.value, actual: selectedDragon.data.dracarys.value, bonus: 0 },
               mordida: { total: selectedDragon.data.mordida.value, actual: selectedDragon.data.mordida.value, bonus: 0 },
               garras: { total: selectedDragon.data.garras.value, actual: selectedDragon.data.garras.value, bonus: 0 },
-              hunt: { used: 0 },
+              hunt: 0,
               position: 'ground',
             },
             vitalidade: { total: selectedDragon.data.vitalidade.value, actual: selectedDragon.data.vitalidade.value, bonus: 0 },
@@ -55,6 +55,7 @@ export const createPVPBattle = async (
         }
       } return data.battleId;
     } else {
+      console.log(selectedDragon)
       const register = await addDoc(
         collection(db, 'battles'),
         {
@@ -73,7 +74,7 @@ export const createPVPBattle = async (
                 row: 4,
                 column: 11,
                 id: selectedDragon.dragonId,
-                name: selectedDragon.data.name,
+                name: selectedDragon.name,
                 nivel: selectedDragon.data.nivel,
                 imageURL: selectedDragon.data.imageURL,
                 imageIconURL: selectedDragon.data.imageURL,
@@ -82,7 +83,7 @@ export const createPVPBattle = async (
                   dracarys: { total: selectedDragon.data.dracarys.value, actual: selectedDragon.data.dracarys.value, bonus: 0 },
                   mordida: { total: selectedDragon.data.mordida.value, actual: selectedDragon.data.mordida.value, bonus: 0 },
                   garras: { total: selectedDragon.data.garras.value, actual: selectedDragon.data.garras.value, bonus: 0 },
-                  hunt: { used: 0 },
+                  hunt: 0,
                   position: 'ground',
                 },
                 vitalidade: { total: selectedDragon.data.vitalidade.value, actual: selectedDragon.data.vitalidade.value, bonus: 0 },
