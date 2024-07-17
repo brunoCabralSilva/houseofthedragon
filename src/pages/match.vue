@@ -6,30 +6,51 @@
         <button
           type="button"
           @click="movementDragon(userLogged)"
-          class="transition-all duration-500 flex flex-col absolute h-4rem w-4rem cursor-pointer"
+          class="transition-all duration-500 flex flex-col absolute cursor-pointer"
           :style="computedPosition(userLogged.dragon)"
         >
-          <div class="flex items-end justify-start">
-            <div class="dragon text-black relative flex">
+          <div
+            class="flex items-end justify-start transition-all duration-500"
+            :class="userLogged.dragon.actions.position === 'fly' ? '-mt-4': '-mt-0'"
+          >
+            <div class="dragon text-black relative flex flex-col">
               <img
                 id="top-dragon"
-                class="rounded-full border-4 border-golden object-fit"
+                class="rounded-full border-4 object-fit h-4rem w-4rem mb-2 transition-all duration-500"
+                :class="userLogged.dragon.actions.position === 'fly' ? 'border-blue-300' : 'border-golden'"
                 :src="userLogged.dragon.imageIconURL"
+              />
+              <img
+                v-if="userLogged.dragon.actions.position === 'fly'"
+                id="top-dragon"
+                class="w-4rem -mt-1"
+                src="@/assets/icons/shadow.png"
               />
             </div>
           </div>
         </button>
         <button
           type="button"
-          class="transition-all duration-500 flex flex-col absolute h-4rem w-4rem cursor-pointer"
+          @click="movementDragon(userOponent)"
+          class="transition-all duration-500 flex flex-col absolute cursor-pointer"
           :style="computedPosition(userOponent.dragon)"
         >
-          <div class="flex items-end justify-start">
-            <div class="dragon text-black relative flex">
+          <div
+            class="flex items-end justify-start transition-all duration-500"
+            :class="userOponent.dragon.actions.position === 'fly' ? '-mt-4': '-mt-0'"
+          >
+            <div class="dragon text-black relative flex flex-col">
               <img
                 id="top-dragon"
-                class="rounded-full border-4 border-golden object-fit"
+                class="rounded-full border-4 object-fit h-4rem w-4rem mb-2"
+                :class="userOponent.dragon.actions.position === 'fly' ? 'border-blue-300' : 'border-golden'"
                 :src="userOponent.dragon.imageIconURL"
+              />
+              <img
+                v-if="userOponent.dragon.actions.position === 'fly'"
+                id="top-dragon"
+                class="w-4rem -mt-1"
+                src="@/assets/icons/shadow.png"
               />
             </div>
           </div>
@@ -55,7 +76,8 @@
               <button
                 type="button"
                 @click="hideInfoUser"
-                class="transition-all duration-500 h-5 w-5 object-cover rounded-full absolute z-20 top-1 left-2 border-2 border-golden text-golden flex items-center justify-center text-xs cursor-pointer"
+                class="transition-all duration-500 h-5 w-5 object-cover rounded-full absolute z-20 top-1 left-2 border-2 flex items-center justify-center text-xs cursor-pointer"
+                :class="this.userLogged.dragon.actions.position === 'fly' ? 'border-blue-300 text-blue-300' : 'text-golden border-golden'"
               >
                 <FontAwesomeIcon :icon="['fas', 'info']" />
               </button>
@@ -67,24 +89,29 @@
                 <button
                   type="button"
                   @click="hideMessageUser"
-                  class="transition-all duration-500 h-5 w-5 object-cover rounded-full border-2 border-golden text-golden flex items-center justify-center text-xs cursor-pointer p-1"
+                  class="transition-all duration-500 h-5 w-5 object-cover rounded-full border-2 flex items-center justify-center text-xs cursor-pointer p-1"
+                  :class="this.userLogged.dragon.actions.position === 'fly' ? 'border-blue-300 text-blue-300' : 'text-golden border-golden'"
                 >
                   <FontAwesomeIcon :icon="['fas', 'list']" />
                 </button>
               </div>
               <img
                 :src="userLogged.profileImage"
-                class="transition-all duration-500 h-10 w-10 object-cover rounded-full absolute z-20 bottom-0 left-0 bg-black border-2 border-golden"
+                class="transition-all duration-500 h-10 w-10 object-cover rounded-full absolute z-20 bottom-0 left-0 bg-black border-2"
+                :class="this.userLogged.dragon.actions.position === 'fly' ? 'border-blue-300' : 'border-golden'"
               />
               <img
                 :src="userLogged.dragon.imageIconURL"
-                :class="['ml-6', 'transition-all', 'duration-500', 'mb-3', 'h-20', 'w-20', 'object-cover', 'rounded-full', 'relative', 'border-4', 'border-golden']"
+                :class="['ml-6', 'transition-all', 'duration-500', 'mb-3', 'h-20', 'w-20', 'object-cover', 'rounded-full', 'relative', 'border-4', userLogged.dragon.actions.position === 'fly' ? 'border-blue-300' :'border-golden']"
               />
             </div>
             <div class="transition-all duration-500 col-span-3 flex w-full mr-2 ml-1">
               <div class="transition-all duration-500 flex flex-col items-start justify-center w-full">
                 <div class="transition-all duration-500 flex flex-col items-start w-full pr-1">
-                  <p class="transition-all duration-500 text-xs bg-green-700 px-2 rounded-full text-white w-full border-2 border-golden mb-1">
+                  <p
+                    class="transition-all duration-500 text-xs bg-green-700 px-2 rounded-full text-white w-full border-2 mb-1"
+                    :class="this.userLogged.dragon.actions.position === 'fly' ? 'border-blue-300' : 'border-golden'"
+                  >
                     hp
                     {{
                       userLogged.dragon.vitalidade.actual
@@ -92,11 +119,17 @@
                     }} / 
                     {{ userLogged.dragon.vitalidade.total }} {{ userLogged.dragon.vitalidade  .bonus !== 0 ? '+' + userLogged.dragon.vitalidade .bonus : '' }}
                   </p>
-                  <p class="transition-all duration-500 text-xs bg-blue-800 px-2 rounded-full border-2 border-golden w-8/12 text-white mb-1">
+                  <p
+                    class="transition-all duration-500 text-xs bg-blue-800 px-2 rounded-full border-2 border-golden w-8/12 text-white mb-1"
+                    :class="this.userLogged.dragon.actions.position === 'fly' ? 'border-blue-300' : 'border-golden'"
+                  >
                     vel.
                     {{ userLogged.dragon.velocidade.actual }} {{ userLogged.dragon.velocidade.bonus !== 0 ? '+' + userLogged.dragon.velocidade.bonus : '' }}
                   </p>
-                  <p class="transition-all duration-500 text-xs bg-red-700 px-2 rounded-full text-white border-2 w-1/2 border-golden mb-1">
+                  <p
+                    class="transition-all duration-500 text-xs bg-red-700 px-2 rounded-full text-white border-2 w-1/2 mb-1"
+                    :class="this.userLogged.dragon.actions.position === 'fly' ? 'border-blue-300' : 'border-golden'"
+                  >
                     reb.
                     {{ userLogged.dragon.rebeldia.actual }} {{ userLogged.dragon.rebeldia.bonus !== 0 ? '+' + userLogged.dragon.rebeldia.bonus : '' }}
                   </p>
@@ -318,7 +351,10 @@
             <div class="transition-all duration-500 col-span-3 flex w-full mr-2 ml-1">
               <div class="transition-all duration-500 flex flex-col items-end justify-center w-full">
                 <div class="transition-all duration-500 flex flex-col items-end w-full">
-                  <p class="transition-all duration-500 text-right text-xs bg-green-700 px-2 rounded-full text-white w-full border-2 border-golden mb-1">
+                  <p
+                    class="transition-all duration-500 text-right text-xs bg-green-700 px-2 rounded-full text-white w-full border-2 mb-1"
+                    :class="this.userOponent.dragon.actions.position === 'fly' ? 'border-blue-300' : 'border-golden'"
+                  >
                     hp
                     {{
                       userOponent.dragon.vitalidade.actual
@@ -326,11 +362,17 @@
                     }} / 
                     {{ userOponent.dragon.vitalidade.total }} {{ userOponent.dragon.vitalidade  .bonus !== 0 ? '+' + userOponent.dragon.vitalidade .bonus : '' }}
                   </p>
-                  <p class="transition-all duration-500 text-right text-xs bg-blue-800 px-2 rounded-full border-2 border-golden w-8/12 text-white mb-1">
+                  <p
+                    class="transition-all duration-500 text-right text-xs bg-blue-800 px-2 rounded-full border-2 w-8/12 text-white mb-1"
+                    :class="this.userOponent.dragon.actions.position === 'fly' ? 'border-blue-300' : 'border-golden'"
+                  >
                     vel.
                     {{ userOponent.dragon.velocidade.actual }} {{ userOponent.dragon.velocidade.bonus !== 0 ? '+' + userOponent.dragon.velocidade.bonus : '' }}
                   </p>
-                  <p class="transition-all duration-500 text-right text-xs bg-red-700 px-2 rounded-full text-white border-2 w-1/2 border-golden mb-1">
+                  <p
+                    class="transition-all duration-500 text-right text-xs bg-red-700 px-2 rounded-full text-white border-2 w-1/2 mb-1"
+                    :class="this.userOponent.dragon.actions.position === 'fly' ? 'border-blue-300' : 'border-golden'"
+                  >
                     reb.
                     {{ userOponent.dragon.rebeldia.actual }} {{ userOponent.dragon.rebeldia.bonus !== 0 ? '+' + userOponent.dragon.rebeldia.bonus : '' }}
                   </p>
@@ -343,17 +385,19 @@
               <button
                 type="button"
                 @click="hideInfoUser"
-                class="transition-all duration-500 h-5 w-5 object-cover rounded-full absolute z-20 top-1 right-2 border-2 border-golden text-golden flex items-center justify-center text-xs cursor-pointer"
+                class="transition-all duration-500 h-5 w-5 object-cover rounded-full absolute z-20 top-1 right-2 border-2 flex items-center justify-center text-xs cursor-pointer"
+                :class="this.userOponent.dragon.actions.position === 'fly' ? 'border-blue-300 text-blue-300' : 'border-golden text-golden'"
               >
                 <FontAwesomeIcon :icon="['fas', 'info']" />
               </button>
               <img
                 :src="userOponent.profileImage"
-                class="transition-all duration-500 h-10 w-10 object-cover rounded-full absolute z-20 bottom-0 right-0 bg-black border-2 border-golden"
+                class="transition-all duration-500 h-10 w-10 object-cover rounded-full absolute z-20 bottom-0 right-0 bg-black border-2"
+                :class="this.userOponent.dragon.actions.position === 'fly' ? 'border-blue-300' : 'border-golden'"
               />
               <img
                 :src="userOponent.dragon.imageIconURL"
-                :class="['mr-6', 'transition-all', 'duration-500', 'mb-3', 'h-20', 'w-20', 'object-cover', 'rounded-full', 'relative', 'border-4', 'border-golden']"
+                :class="['mr-6', 'transition-all', 'duration-500', 'mb-3', 'h-20', 'w-20', 'object-cover', 'rounded-full', 'relative', 'border-4', this.userOponent.dragon.actions.position === 'fly' ? 'border-blue-300' : 'border-golden']"
               />
             </div>
           </div>
@@ -420,6 +464,7 @@ export default {
       this.rangeSquaresLogged = updateRanges.rangeSquaresLogged
       this.rangeSquaresOponent = updateRanges.rangeSquaresOponent;
       if (this.userLogged.dragon.hunt !== 0) this.disabledHunt = true;
+      console.log(this.userLogged.actions);
     } else this.router.push("/login");
   },
   computed: {
@@ -430,7 +475,6 @@ export default {
         const isUserOponentAffected = this.affectedSquaresOponent.includes(item);
         const isUserLoggedRange = this.rangeSquaresLogged.includes(item);
         const isUserOponentRange = this.rangeSquaresOponent.includes(item);
-
         return {
           'bg-golden/40': isUserLoggedAffected || isUserOponentAffected,
           'bg-black/40': isUserLoggedRange,
@@ -488,8 +532,14 @@ export default {
     getSquareClass(item) {
       const updateRanges = this.updateRangedSquare();
       return (
-        (this.affectedSquaresLogged.includes(item) ? 'bg-golden/40' : '') ||
-        (this.affectedSquaresOponent.includes(item) ? 'bg-golden/40' : '') ||
+        (this.affectedSquaresLogged.includes(item)
+          ? this.userLogged.dragon.actions.position === 'fly'
+            ? 'bg-blue-300/40'
+            : 'bg-golden/40' : '') ||
+        (this.affectedSquaresOponent.includes(item)
+          ? this.userOponent.dragon.actions.position === 'fly'
+            ? 'bg-blue-300/40'
+            : 'bg-golden/40' : '') ||
         (updateRanges.rangeSquaresLogged.includes(item) ? 'bg-black/40' : '') ||
         (updateRanges.rangeSquaresOponent.includes(item) ? 'bg-green-500/30' : '')
       );
