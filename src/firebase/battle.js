@@ -297,9 +297,9 @@ export const endTurn = async (matchId, email) => {
       const data = battleDocSnapshot.data();
       const userUpdating = data.users.find((user) => user.email === email);
       const otherUser = data.users.find((user) => user.email !== email);
-      data.userTurn === otherUser.email;
+      const userTurn = otherUser.email;
       otherUser.actions = { bonus: 0, default: 0, movement: 0 };
-      await updateDoc(battleDocRef, { users: [userUpdating, otherUser] });
+      await updateDoc(battleDocRef, { userTurn, users: [userUpdating, otherUser] });
     }
   } catch (error) {
     return false;
