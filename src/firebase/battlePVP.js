@@ -24,7 +24,7 @@ export const createPVPBattle = async (
             name: selectedDragon.name,
             nivel: selectedDragon.data.nivel,
             imageURL: selectedDragon.data.imageURL,
-            imageIconURL: selectedDragon.data.imageURL,
+            imageIconURL: selectedDragon.data.imageIconURL,
             description: selectedDragon.data.description,
             actions: {
               dracarys: { total: selectedDragon.data.dracarys.value, actual: selectedDragon.data.dracarys.value, bonus: 0 },
@@ -72,7 +72,7 @@ export const createPVPBattle = async (
               profileImage,        
               dragon: {
                 row: 4,
-                column: 11,
+                column: 7,
                 id: selectedDragon.dragonId,
                 name: selectedDragon.name,
                 nivel: selectedDragon.data.nivel,

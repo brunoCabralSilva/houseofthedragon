@@ -127,7 +127,7 @@
                       <p class="w-full pb-1">Dracarys - Ação Padrão</p>
                       <hr />
                       <p class="w-full pt-1 leading-4">Ataca o oponente com uma torrente de chamas ardentes, expelindo um poderoso jato de fogo de suas mandíbulas.</p>
-                      <p class="w-full pt-1">Ataque: {{ this.userLogged.dragon.dracarys.actual }} - De {{(1 + this.userLogged.dragon.dracarys.actual) * 2}} a {{ (12 + this.userLogged.dragon.dracarys.actual) * 2 }} de dano</p>
+                      <p class="w-full pt-1">Ataque: {{ this.userLogged.dragon.actions.dracarys.actual }} - De {{(1 + this.userLogged.dragon.actions.dracarys.actual) * 2}} a {{ (12 + this.userLogged.dragon.actions.dracarys.actual) * 2 }} de dano</p>
                       <p class="w-full">Alcance: {{ Math.ceil(this.userLogged.dragon.alcance.actual / 2) }}</p>
                       <p class="pt-1"></p>
                     </div>
@@ -150,7 +150,7 @@
                       <p class="w-full pb-1">Mordida - Ação Padrão</p>
                       <hr />
                       <p class="w-full pt-1 leading-4">Ataca o oponente com uma mordida feroz, cravando suas afiadas presas na carne inimiga e causando danos devastadores.</p>
-                      <p class="w-full pt-1">Ataque: {{ this.userLogged.dragon.mordida.actual }} - De {{(1 + this.userLogged.dragon.mordida.actual) * 2}} a {{ (12 + this.userLogged.dragon.mordida.actual) * 2 }} de dano</p>
+                      <p class="w-full pt-1">Ataque: {{ this.userLogged.dragon.actions.mordida.actual }} - De {{(1 + this.userLogged.dragon.actions.mordida.actual) * 2}} a {{ (12 + this.userLogged.dragon.actions.mordida.actual) * 2 }} de dano</p>
                       <p class="w-full">Alcance: {{ this.userLogged.dragon.alcance.actual }}</p>
                       <p class="pt-1"></p>
                     </div>
@@ -173,7 +173,7 @@
                       <p class="w-full pb-1">Garras - Ação Padrão</p>
                       <hr />
                       <p class="w-full pt-1 leading-4">Ataca o oponente com suas garras afiadas, desferindo golpes rápidos e precisos.</p>
-                      <p class="w-full pt-1">Ataque: {{ this.userLogged.dragon.garras.actual }} - De {{(1 + this.userLogged.dragon.garras.actual) * 2}} a {{ (12 + this.userLogged.dragon.garras.actual) * 2 }} de dano</p>
+                      <p class="w-full pt-1">Ataque: {{ this.userLogged.dragon.actions.garras.actual }} - De {{(1 + this.userLogged.dragon.actions.garras.actual) * 2}} a {{ (12 + this.userLogged.dragon.actions.garras.actual) * 2 }} de dano</p>
                       <p class="w-full">Alcance: {{ this.userLogged.dragon.alcance.actual }}</p>
                       <p class="pt-1"></p>
                     </div>
@@ -189,32 +189,50 @@
               <div class="flex w-full justify-center items-center gap-2">
                 <div
                   @mouseout="setTooltip('')"
-                  @mouseover="setTooltip('Caçar')"
-                  @click="movementDragon(userLogged)"
+                  @mouseover="setTooltip(this.userLogged.dragon.actions.position === 'ground' ? 'Caçar': 'Derrubar')"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
                 >
                   <img
-                    src="@/assets/icons/sheep.png"
+                    :src="this.userLogged.dragon.actions.position === 'ground'
+                        ? require('@/assets/icons/sheep.png')
+                        : require('@/assets/icons/derrubar.png')"
                     class="transition-all duration-500 h-8 w-8 object-cover"
+                    :class="this.userLogged.dragon.actions.hunt === 0 ? 'opacity-1' : 'opacity-40'"
                   />
                   <div
                     v-if="tooltip === 'Caçar'"  
                     class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
                   >
                     <div class="bg-black/80 w-1/3 rounded p-1 px-2 h-full">
-                      <p class="w-full pb-1">Caçar - Ação Bônus</p>
+                      <p class="w-full pb-1">                        
+                        Caçar - Ação Bônus e de Movimento
+                      </p>
                       <hr />
                       <p class="w-full pt-1 leading-4">O dragão avista uma ovelha, avança rapidamente e a devora com voracidade, recuperando {{ Math.ceil(Math.ceil(this.userLogged.dragon.vitalidade.total / 5) / 10) }}d10 pontos de vida. Esta ação só pode ser realizada uma vez durante o combate.</p>
                     </div>
                   </div>
+                  <div
+                    v-if="tooltip === 'Derrubar'"  
+                    class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
+                  >
+                    <div class="bg-black/80 w-1/3 rounded p-1 px-2 h-full">
+                      <p class="w-full pb-1">                        
+                        Derrubar - Ação Bônus e de Movimento
+                      </p>
+                      <hr />
+                      <p class="w-full pt-1 leading-4">Ambos os Dragões precisam estar Voando para que esta ação seja possível, além de que é necessário estar fora do alcance do Oponente. Executando esta ação, o alvo é derrubado dos céus ao chão, precisando ter sucesso em um teste de Vitalidade para que não fique Atordoado.</p>
+                    </div>
+                  </div>
                 </div>
                 <div
-                  @mouseover="setTooltip('Voar')"
+                  @mouseover="setTooltip(this.userLogged.dragon.actions.position === 'ground' ? 'Voar': 'Aterrisar')"
                   @mouseout="setTooltip('')"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
                 >
                   <img
-                    src="@/assets/icons/voar.png"
+                    :src="this.userLogged.dragon.actions.position === 'ground'
+                      ? require('@/assets/icons/voar.png')
+                      : require('@/assets/icons/aterrisar.png')"
                     class="transition-all duration-500 h-8 w-8 object-cover"
                   />
                   <div
@@ -225,6 +243,16 @@
                       <p class="w-full pb-1">Voar - Ação De Movimento</p>
                       <hr />
                       <p class="w-full pt-1 leading-4">Com um poderoso bater de asas, o dragão se ergue do solo e alça voo aos céus. Concede Ataque de Oportunidade caso as circunstâncias permitam.</p>
+                    </div>
+                  </div>
+                  <div
+                    v-if="tooltip === 'Aterrisar'"
+                    class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
+                  >
+                    <div class="bg-black/80 w-1/3 rounded p-1 px-2 h-full">
+                      <p class="w-full pb-1">Aterrisar - Ação De Movimento</p>
+                      <hr />
+                      <p class="w-full pt-1 leading-4">Com um último bater de asas, o dragão toca o chão suavemente, pronto para enfrentar qualquer desafio em solo que o aguarde. Concede Ataque de Oportunidade caso as circunstâncias permitam.</p>
                     </div>
                   </div>
                 </div>
