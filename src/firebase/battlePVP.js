@@ -16,7 +16,8 @@ export const createPVPBattle = async (
         const userToAdd = {
           email,
           displayName,
-          profileImage,        
+          profileImage,
+          actions: { movement: 0, default: 0, bonus: 0 },
           dragon: {
             row: 4,
             column: 11,
@@ -69,7 +70,8 @@ export const createPVPBattle = async (
             {
               email,
               displayName,
-              profileImage,        
+              profileImage,
+              actions: { movement: 0, default: 0, bonus: 0 },    
               dragon: {
                 row: 4,
                 column: 7,
