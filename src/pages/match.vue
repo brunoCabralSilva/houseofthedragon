@@ -110,67 +110,150 @@
           <div class="col-span-2 grid grid-cols-2 w-full">
             <div class="col-span-2 w-full h-full flex flex-col items-center justify-center gap-2 p-1">
               <div class="flex w-full justify-center items-center gap-2">
-                <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
+                <div
+                  @mouseover="setTooltip('Dracarys')"
+                  @mouseout="setTooltip('')"
+                  class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
+                >
                   <img
-                    src="@/assets/dracarys.png"
+                    src="@/assets/icons/dracarys.png"
                     class="transition-all duration-500 h-8 w-8 object-cover"
                   />
+                  <div
+                    v-if="tooltip === 'Dracarys'"
+                    class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
+                  >
+                    <div class="bg-black/80 w-1/3 rounded p-1 px-2 h-full">
+                      <p class="w-full pb-1">Dracarys - Ação Padrão</p>
+                      <hr />
+                      <p class="w-full pt-1 leading-4">Ataca o oponente com uma torrente de chamas ardentes, expelindo um poderoso jato de fogo de suas mandíbulas.</p>
+                      <p class="w-full pt-1">Ataque: {{ this.userLogged.dragon.dracarys.actual }} - De {{(1 + this.userLogged.dragon.dracarys.actual) * 2}} a {{ (12 + this.userLogged.dragon.dracarys.actual) * 2 }} de dano</p>
+                      <p class="w-full">Alcance: {{ Math.ceil(this.userLogged.dragon.alcance.actual / 2) }}</p>
+                      <p class="pt-1"></p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  @mouseover="setTooltip('Mordida')"
+                  @mouseout="setTooltip('')"
+                  class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
+                >
+                  <img
+                    src="@/assets/icons/mordida.png"
+                    class="transition-all duration-500 h-8 w-8 object-cover"
+                  />
+                  <div
+                    v-if="tooltip === 'Mordida'"
+                    class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
+                  >
+                    <div class="bg-black/80 w-1/3 rounded p-1 px-2 h-full">
+                      <p class="w-full pb-1">Mordida - Ação Padrão</p>
+                      <hr />
+                      <p class="w-full pt-1 leading-4">Ataca o oponente com uma mordida feroz, cravando suas afiadas presas na carne inimiga e causando danos devastadores.</p>
+                      <p class="w-full pt-1">Ataque: {{ this.userLogged.dragon.mordida.actual }} - De {{(1 + this.userLogged.dragon.mordida.actual) * 2}} a {{ (12 + this.userLogged.dragon.mordida.actual) * 2 }} de dano</p>
+                      <p class="w-full">Alcance: {{ this.userLogged.dragon.alcance.actual }}</p>
+                      <p class="pt-1"></p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  @mouseover="setTooltip('Garras')"
+                  @mouseout="setTooltip('')"
+                  class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
+                >
+                  <img
+                    src="@/assets/icons/garras.png"
+                    class="transition-all duration-500 h-8 w-8 object-cover"
+                  />
+                  <div
+                    v-if="tooltip === 'Garras'"
+                    class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
+                  >
+                    <div class="bg-black/80 w-1/3 rounded p-1 px-2 h-full">
+                      <p class="w-full pb-1">Garras - Ação Padrão</p>
+                      <hr />
+                      <p class="w-full pt-1 leading-4">Ataca o oponente com suas garras afiadas, desferindo golpes rápidos e precisos.</p>
+                      <p class="w-full pt-1">Ataque: {{ this.userLogged.dragon.garras.actual }} - De {{(1 + this.userLogged.dragon.garras.actual) * 2}} a {{ (12 + this.userLogged.dragon.garras.actual) * 2 }} de dano</p>
+                      <p class="w-full">Alcance: {{ this.userLogged.dragon.alcance.actual }}</p>
+                      <p class="pt-1"></p>
+                    </div>
+                  </div>
                 </div>
                 <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
-                  <img
-                    src="@/assets/mordida.png"
-                    class="transition-all duration-500 h-8 w-8 object-cover"
-                  />
+                  1
                 </div>
                 <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
-                  <img
-                    src="@/assets/garras.png"
-                    class="transition-all duration-500 h-8 w-8 object-cover"
-                  />
-                </div>
-                <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
-                  <img
-                    src="@/assets/dracarys.png"
-                    class="transition-all duration-500 h-8 w-8 object-cover"
-                  />
-                </div>
-                <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
-                  <img
-                    src="@/assets/dracarys.png"
-                    class="transition-all duration-500 h-8 w-8 object-cover"
-                  />
+                  2
                 </div>
               </div>
               <div class="flex w-full justify-center items-center gap-2">
-                <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
+                <div
+                  @mouseout="setTooltip('')"
+                  @mouseover="setTooltip('Caçar')"
+                  @click="movementDragon(userLogged)"
+                  class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
+                >
                   <img
-                    src="@/assets/dracarys.png"
+                    src="@/assets/icons/sheep.png"
                     class="transition-all duration-500 h-8 w-8 object-cover"
                   />
+                  <div
+                    v-if="tooltip === 'Caçar'"  
+                    class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
+                  >
+                    <div class="bg-black/80 w-1/3 rounded p-1 px-2 h-full">
+                      <p class="w-full pb-1">Caçar - Ação Bônus</p>
+                      <hr />
+                      <p class="w-full pt-1 leading-4">O dragão avista uma ovelha, avança rapidamente e a devora com voracidade, recuperando {{ Math.ceil(Math.ceil(this.userLogged.dragon.vitalidade.total / 5) / 10) }}d10 pontos de vida. Esta ação só pode ser realizada uma vez durante o combate.</p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  @mouseover="setTooltip('Voar')"
+                  @mouseout="setTooltip('')"
+                  class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
+                >
+                  <img
+                    src="@/assets/icons/voar.png"
+                    class="transition-all duration-500 h-8 w-8 object-cover"
+                  />
+                  <div
+                    v-if="tooltip === 'Voar'"
+                    class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
+                  >
+                    <div class="bg-black/80 w-1/3 rounded p-1 px-2 h-full">
+                      <p class="w-full pb-1">Voar - Ação De Movimento</p>
+                      <hr />
+                      <p class="w-full pt-1 leading-4">Com um poderoso bater de asas, o dragão se ergue do solo e alça voo aos céus. Concede Ataque de Oportunidade caso as circunstâncias permitam.</p>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  @mouseout="setTooltip('')"
+                  @mouseover="setTooltip('Mover')"
+                  @click="movementDragon(userLogged)"
+                  class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
+                >
+                  <img
+                    src="@/assets/icons/move.png"
+                    class="transition-all duration-500 h-8 w-8 object-cover"
+                  />
+                  <div
+                    v-if="tooltip === 'Mover'"  
+                    class="fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col items-center justify-center"
+                  >
+                    <div class="bg-black/80 w-1/3 rounded p-1 px-2 h-full">
+                      <p class="w-full pb-1">Deslocar-se - Ação De Movimento</p>
+                      <hr />
+                      <p class="w-full pt-1 leading-4">Permite que o Dragão se mova baseado no seu valor de deslocamento e também pode ser feito clicando diretamente no ícone do Dragão. Pode gerar Ataque de Oportunidade caso esteja saindo da área de alcance do oponente.</p>
+                    </div>
+                  </div>
                 </div>
                 <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
-                  <img
-                    src="@/assets/dracarys.png"
-                    class="transition-all duration-500 h-8 w-8 object-cover"
-                  />
+                  3
                 </div>
                 <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
-                  <img
-                    src="@/assets/dracarys.png"
-                    class="transition-all duration-500 h-8 w-8 object-cover"
-                  />
-                </div>
-                <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
-                  <img
-                    src="@/assets/dracarys.png"
-                    class="transition-all duration-500 h-8 w-8 object-cover"
-                  />
-                </div>
-                <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
-                  <img
-                    src="@/assets/dracarys.png"
-                    class="transition-all duration-500 h-8 w-8 object-cover"
-                  />
+                  4
                 </div>
               </div>
 
@@ -261,6 +344,7 @@ export default {
   data() {
     const router = useRouter();
     return {
+      tooltip: '',
       grid: [],
       email: '',
       rangeSquaresLogged: [],
@@ -316,6 +400,9 @@ export default {
   },
   methods: {
     ...mapActions(['fetchMatchData']),
+    setTooltip(item) {
+      this.tooltip = item;
+    },
     updateRangedSquare() {
       const rangeSquaresLogged = this.grid.filter(item => {
         const distance = Math.abs(item.column - this.userLogged.dragon.column) + Math.abs(item.row - this.userLogged.dragon.row);
@@ -425,7 +512,7 @@ export default {
         ];
 
         for (const direction of directions) {
-          if (direction.column > 0 && direction.column <= 16 && direction.row > 0 && direction.row <= 7) {
+          if (direction.column > 0 && direction.column <= 20 && direction.row > 0 && direction.row <= 7) {
             queue.push({ ...direction, path: [...path, { column, row }] });
           }
         }

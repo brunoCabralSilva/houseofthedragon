@@ -18,53 +18,26 @@ export const createPVPBattle = async (
           displayName,
           profileImage,        
           dragon: {
-            ...selectedDragon.data,
-            column: 11,
             row: 4,
-            oportunity: '',
-            name: selectedDragon.name,
+            column: 11,
             id: selectedDragon.dragonId,
-            vitalidade: {
-              total: selectedDragon.data.vitalidade.value,
-              actual: selectedDragon.data.vitalidade.value,
-              bonus: 0
-            },
-            velocidade: {
-              total: selectedDragon.data.velocidade.value,
-              actual: selectedDragon.data.velocidade.value,
-              bonus: 0
-            },
-            rebeldia: {
-              total: selectedDragon.data.rebeldia.value,
-              actual: selectedDragon.data.rebeldia.value,
-              bonus: 0
-            },
-            dracarys: {
-              total: selectedDragon.data.dracarys.value,
-              actual: selectedDragon.data.dracarys.value,
-              bonus: 0
-            },
-            mordida: {
-              total: selectedDragon.data.mordida.value,
-              actual: selectedDragon.data.mordida.value,
-              bonus: 0
-            },
-            garras: {
-              total: selectedDragon.data.garras.value,
-              actual: selectedDragon.data.garras.value,
-              bonus: 0
-            },
-            alcance: {
-              total: selectedDragon.data.alcance.value,
-              actual: selectedDragon.data.alcance.value,
-              bonus: 0
-            },
-            deslocamento: {
-              total: selectedDragon.data.deslocamento.value,
-              actual: selectedDragon.data.deslocamento.value,
-              bonus: 0
-            },
+            name: selectedDragon.data.name,
             nivel: selectedDragon.data.nivel,
+            imageURL: selectedDragon.data.imageURL,
+            imageIconURL: selectedDragon.data.imageURL,
+            description: selectedDragon.data.description,
+            actions: {
+              dracarys: { total: selectedDragon.data.dracarys.value, actual: selectedDragon.data.dracarys.value, bonus: 0 },
+              mordida: { total: selectedDragon.data.mordida.value, actual: selectedDragon.data.mordida.value, bonus: 0 },
+              garras: { total: selectedDragon.data.garras.value, actual: selectedDragon.data.garras.value, bonus: 0 },
+              hunt: { used: 0 },
+              position: 'ground',
+            },
+            vitalidade: { total: selectedDragon.data.vitalidade.value, actual: selectedDragon.data.vitalidade.value, bonus: 0 },
+            velocidade: { total: selectedDragon.data.velocidade.value, actual: selectedDragon.data.velocidade.value, bonus: 0 },
+            rebeldia: { total: selectedDragon.data.rebeldia.value, actual: selectedDragon.data.rebeldia.value, bonus: 0 },
+            alcance: { total: selectedDragon.data.alcance.value, actual: selectedDragon.data.alcance.value, bonus: 0 },
+            deslocamento: { total: selectedDragon.data.deslocamento.value, actual: selectedDragon.data.deslocamento.value, bonus: 0 },
           },
         }
         try {
@@ -90,64 +63,33 @@ export const createPVPBattle = async (
           userTurn: email,
           end: [],
           message: [],
-          actualAttack: {
-            damage: '',
-            type: '',
-            turnAttack: '',
-          },
+          actualAttack: { damage: '', type: '', turnAttack: '' },
           users: [
             {
               email,
               displayName,
-              profileImage,
+              profileImage,        
               dragon: {
-                column: 6,
                 row: 4,
-                oportunity: '',
-                ...selectedDragon.data,
-                name: selectedDragon.name,
+                column: 11,
                 id: selectedDragon.dragonId,
-                vitalidade: {
-                  total: selectedDragon.data.vitalidade.value,
-                  actual: selectedDragon.data.vitalidade.value,
-                  bonus: 0
-                },
-                velocidade: {
-                  total: selectedDragon.data.velocidade.value,
-                  actual: selectedDragon.data.velocidade.value,
-                  bonus: 0
-                },
-                rebeldia: {
-                  total: selectedDragon.data.rebeldia.value,
-                  actual: selectedDragon.data.rebeldia.value,
-                  bonus: 0
-                },
-                dracarys: {
-                  total: selectedDragon.data.dracarys.value,
-                  actual: selectedDragon.data.dracarys.value,
-                  bonus: 0
-                },
-                mordida: {
-                  total: selectedDragon.data.mordida.value,
-                  actual: selectedDragon.data.mordida.value,
-                  bonus: 0
-                },
-                garras: {
-                  total: selectedDragon.data.garras.value,
-                  actual: selectedDragon.data.garras.value,
-                  bonus: 0
-                },
-                alcance: {
-                  total: selectedDragon.data.alcance.value,
-                  actual: selectedDragon.data.alcance.value,
-                  bonus: 0
-                },
-                deslocamento: {
-                  total: selectedDragon.data.deslocamento.value,
-                  actual: selectedDragon.data.deslocamento.value,
-                  bonus: 0
-                },
+                name: selectedDragon.data.name,
                 nivel: selectedDragon.data.nivel,
+                imageURL: selectedDragon.data.imageURL,
+                imageIconURL: selectedDragon.data.imageURL,
+                description: selectedDragon.data.description,
+                actions: {
+                  dracarys: { total: selectedDragon.data.dracarys.value, actual: selectedDragon.data.dracarys.value, bonus: 0 },
+                  mordida: { total: selectedDragon.data.mordida.value, actual: selectedDragon.data.mordida.value, bonus: 0 },
+                  garras: { total: selectedDragon.data.garras.value, actual: selectedDragon.data.garras.value, bonus: 0 },
+                  hunt: { used: 0 },
+                  position: 'ground',
+                },
+                vitalidade: { total: selectedDragon.data.vitalidade.value, actual: selectedDragon.data.vitalidade.value, bonus: 0 },
+                velocidade: { total: selectedDragon.data.velocidade.value, actual: selectedDragon.data.velocidade.value, bonus: 0 },
+                rebeldia: { total: selectedDragon.data.rebeldia.value, actual: selectedDragon.data.rebeldia.value, bonus: 0 },
+                alcance: { total: selectedDragon.data.alcance.value, actual: selectedDragon.data.alcance.value, bonus: 0 },
+                deslocamento: { total: selectedDragon.data.deslocamento.value, actual: selectedDragon.data.deslocamento.value, bonus: 0 },
               },
             },
           ],

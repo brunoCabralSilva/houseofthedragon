@@ -85,6 +85,9 @@ module.exports = {
         '80rem': '80rem',
       },
       spacing: {
+        '20vh': '20vh',
+        '30vh': '30vh',
+        '40vh': '40vh',
         '4rem': '4rem',
         '8rem': '8rem',
         '12em': '12rem',
@@ -107,6 +110,9 @@ module.exports = {
         '80rem': '80rem',
       },
       inset: {
+        '20vh': '20vh',
+        '30vh': '30vh',
+        '40vh': '40vh',
         '4rem': '4rem',
         '8rem': '8rem',
         '12em': '12rem',
