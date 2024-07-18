@@ -5,6 +5,7 @@
       <div class="grid grid-cols-20 grid-rows-8 relative">
         <button
           type="button"
+          :disabled="userTurn !== userLogged.email || verifyActions('movement')"
           @click="movementDragon(userLogged)"
           class="transition-all duration-500 flex flex-col absolute cursor-pointer"
           :style="computedPosition(userLogged.dragon)"
@@ -238,7 +239,7 @@
                 <button 
                   type="button"
                   v-if="this.userLogged.dragon.actions.position === 'ground'"
-                  :disabled="this.userLogged.dragon.actions.hunt !== 0 || userTurn !== userLogged.email  || this.verifyActions('movement-bonus')"
+                  :disabled="this.userLogged.dragon.actions.hunt !== 0 || userTurn !== userLogged.email  || verifyActions('movement-bonus')"
                   @click="huntSheep"
                   @mouseout="setTooltip('')"
                   @mouseover="setTooltip('Caçar')"
@@ -247,7 +248,7 @@
                   <img
                     :src="require('@/assets/icons/sheep.png')"
                     class="transition-all duration-500 h-8 w-8 object-cover"
-                    :class="this.userLogged.dragon.actions.hunt === 0 || userTurn !== userLogged.email || verifyActions('movement-bonus') ? 'opacity-40' : 'opacity-1'"
+                    :class="this.userLogged.dragon.actions.hunt !== 0 || userTurn !== userLogged.email || verifyActions('movement-bonus') ? 'opacity-40' : 'opacity-1'"
                   />
                   <div
                     v-if="tooltip === 'Caçar'"  
