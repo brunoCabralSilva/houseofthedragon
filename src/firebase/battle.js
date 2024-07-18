@@ -118,7 +118,7 @@ const updateStamina = (totalDamage, critical, name) => {
   let textAttacker = '';
   if (name === 'Ataque de Oportunidade') {
     textAttacker = 'Seu Dragão causou ' + totalDamage + ' de Dano em um Ataque de Oportunidade!';
-    textDefender = 'Seu Dragão sofreu um Ataque de Oportunidade que causou a ele ' + totalDamage + ' de Dano! Evite sair da área de alcance do Oponente ou atravessá-la.';
+    textDefender = 'Seu Dragão sofreu um Ataque de Oportunidade que causou a ele ' + totalDamage + ' de Dano! Ao estar na Área de Alcance do Oponente, evite sair dela ou atravessá-la caso não esteja.';
   } else if(critical) {
     textAttacker = 'Seu Dragão causou ' + totalDamage + ' de Dano Crítico em ataque de ' + name + '!';
     textDefender = 'Seu Dragão sofreu ' + totalDamage + ' de Dano Crítico em um ataque de ' + name + '!';
