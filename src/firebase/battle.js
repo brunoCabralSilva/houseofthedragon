@@ -247,6 +247,7 @@ export const updateDragonPosition = async (matchId, email, column, row, oportuni
     else {
       const data = battleDocSnapshot.data();
       const userUpdating = data.users.find((user) => user.email === email);
+      const otherUser = data.users.find((user) => user.email !== email);
       userUpdating.dragon.column = column;
       userUpdating.dragon.row = row;
       userUpdating.actions = {
@@ -254,7 +255,11 @@ export const updateDragonPosition = async (matchId, email, column, row, oportuni
         default: userUpdating.actions.default,
         movement: userUpdating.actions.movement + 1,
       }
-      const otherUser = data.users.find((user) => user.email !== email);
+      const getHora = await getHoraOficialBrasil();
+      const textUserUpdating = 'Seu Dragão realizou uma Ação de movimento para se Deslocar de um ponto a outro.'
+      const textOtherUser = 'O Dragão do Oponente realizou uma Ação de movimento para se Deslocar de um ponto a outro.';
+      userUpdating.messages = [ ...userUpdating.messages, { text: textUserUpdating, getHora }];
+      otherUser.messages = [ ...otherUser.messages, { text: textOtherUser, date: getHora }];
       await updateDoc(battleDocRef, { users: [userUpdating, otherUser] });
       if (oportunity !== '') {
         let attackValue = 0;
@@ -282,16 +287,27 @@ export const hunt = async (matchId, email, numberOfDices) => {
     else {
       const data = battleDocSnapshot.data();
       const userUpdating = data.users.find((user) => user.email === email);
+      const otherUser = data.users.find((user) => user.email !== email);
+      const getHora = await getHoraOficialBrasil();
+      let textUserUpdating = '';
+      let textOtherUser = '';
       if (userUpdating.dragon.vitalidade.actual + result < userUpdating.dragon.vitalidade.total) {
         userUpdating.dragon.vitalidade.actual += result;
-      } else userUpdating.dragon.vitalidade.actual = userUpdating.dragon.vitalidade.total;
+        textUserUpdating = 'Você usou a habilidade "Caçar" e seu Dragão recuperou ' + result + ' pontos de vida.';
+        textOtherUser = 'O Oponente usou a habilidade "Caçar" e o Dragão dele recuperou ' + result + ' pontos de vida.';
+      } else {
+        userUpdating.dragon.vitalidade.actual = userUpdating.dragon.vitalidade.total;
+        textUserUpdating = 'Você usou a habilidade "Caçar" e seu Dragão voltou a ter ' + userUpdating.dragon.vitalidade.actual + ' pontos de vida.';
+        textOtherUser = 'O Oponente usou a habilidade "Caçar" e o Dragão dele voltou a ter ' + userUpdating.dragon.vitalidade.actual + ' pontos de vida.';
+      }
       userUpdating.actions = {
         movement: userUpdating.actions.movement + 1,
         bonus: userUpdating.actions.bonus + 1,
         default: userUpdating.actions.default,
       }
+      userUpdating.messages = [ ...userUpdating.messages, { text: textUserUpdating, getHora }];
+      otherUser.messages = [ ...otherUser.messages, { text: textOtherUser, date: getHora }];
       userUpdating.dragon.actions.hunt = 1;
-      const otherUser = data.users.find((user) => user.email !== email);
       await updateDoc(battleDocRef, { users: [userUpdating, otherUser] });
     }
   } catch (error) {
@@ -308,15 +324,26 @@ export const changePosition = async (matchId, email) => {
     else {
       const data = battleDocSnapshot.data();
       const userUpdating = data.users.find((user) => user.email === email);
+      const otherUser = data.users.find((user) => user.email !== email);
+      const getHora = await getHoraOficialBrasil();
+      let textUserUpdating = '';
+      let textOtherUser = '';
       if (userUpdating.dragon.actions.position === 'ground') {
         userUpdating.dragon.actions.position = 'fly';
-      } else userUpdating.dragon.actions.position = 'ground';
+        textUserUpdating = 'Seu Dragão utilizou uma Ação de Movimento para Voar.';
+        textOtherUser = 'O Dragão do Oponente utilizou uma Ação de Movimento para Voar.';
+      } else {
+        userUpdating.dragon.actions.position = 'ground';
+        textUserUpdating = 'Seu Dragão utilizou uma Ação de Movimento para Aterrisar.';
+        textOtherUser = 'O Dragão do Oponente utilizou uma Ação de Movimento para Aterrisar.';
+      }
       userUpdating.actions = {
         bonus: userUpdating.actions.bonus,
         default: userUpdating.actions.default,
         movement: userUpdating.actions.movement + 1,
       }
-      const otherUser = data.users.find((user) => user.email !== email);
+      userUpdating.messages = [ ...userUpdating.messages, { text: textUserUpdating, getHora }];
+      otherUser.messages = [ ...otherUser.messages, { text: textOtherUser, date: getHora }];
       await updateDoc(battleDocRef, { users: [userUpdating, otherUser] });
     }
   } catch (error) {
@@ -336,6 +363,11 @@ export const endTurn = async (matchId, email) => {
       const otherUser = data.users.find((user) => user.email !== email);
       const userTurn = otherUser.email;
       otherUser.actions = { bonus: 0, default: 0, movement: 0 };
+      const getHora = await getHoraOficialBrasil();
+      let textUserUpdating = 'Você encerrou o Turno. Vez do Oponente.';
+      let textOtherUser = 'Seu Oponente encerrou o turno. Sua Vez.';
+      userUpdating.messages = [ ...userUpdating.messages, { text: textUserUpdating, getHora }];
+      otherUser.messages = [ ...otherUser.messages, { text: textOtherUser, date: getHora }];
       await updateDoc(battleDocRef, { userTurn, users: [userUpdating, otherUser] });
     }
   } catch (error) {
