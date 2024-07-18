@@ -258,7 +258,7 @@ export const updateDragonPosition = async (matchId, email, column, row, oportuni
       const getHora = await getHoraOficialBrasil();
       const textUserUpdating = 'Seu Dragão realizou uma Ação de movimento para se Deslocar de um ponto a outro.'
       const textOtherUser = 'O Dragão do Oponente realizou uma Ação de movimento para se Deslocar de um ponto a outro.';
-      userUpdating.messages = [ ...userUpdating.messages, { text: textUserUpdating, getHora }];
+      userUpdating.messages = [ ...userUpdating.messages, { text: textUserUpdating, date: getHora }];
       otherUser.messages = [ ...otherUser.messages, { text: textOtherUser, date: getHora }];
       await updateDoc(battleDocRef, { users: [userUpdating, otherUser] });
       if (oportunity !== '') {
@@ -305,7 +305,7 @@ export const hunt = async (matchId, email, numberOfDices) => {
         bonus: userUpdating.actions.bonus + 1,
         default: userUpdating.actions.default,
       }
-      userUpdating.messages = [ ...userUpdating.messages, { text: textUserUpdating, getHora }];
+      userUpdating.messages = [ ...userUpdating.messages, { text: textUserUpdating, date: getHora }];
       otherUser.messages = [ ...otherUser.messages, { text: textOtherUser, date: getHora }];
       userUpdating.dragon.actions.hunt = 1;
       await updateDoc(battleDocRef, { users: [userUpdating, otherUser] });
@@ -342,7 +342,7 @@ export const changePosition = async (matchId, email) => {
         default: userUpdating.actions.default,
         movement: userUpdating.actions.movement + 1,
       }
-      userUpdating.messages = [ ...userUpdating.messages, { text: textUserUpdating, getHora }];
+      userUpdating.messages = [ ...userUpdating.messages, { text: textUserUpdating, date: getHora }];
       otherUser.messages = [ ...otherUser.messages, { text: textOtherUser, date: getHora }];
       await updateDoc(battleDocRef, { users: [userUpdating, otherUser] });
     }
@@ -366,7 +366,7 @@ export const endTurn = async (matchId, email) => {
       const getHora = await getHoraOficialBrasil();
       let textUserUpdating = 'Você encerrou o Turno. Vez do Oponente.';
       let textOtherUser = 'Seu Oponente encerrou o turno. Sua Vez.';
-      userUpdating.messages = [ ...userUpdating.messages, { text: textUserUpdating, getHora }];
+      userUpdating.messages = [ ...userUpdating.messages, { text: textUserUpdating, date: getHora }];
       otherUser.messages = [ ...otherUser.messages, { text: textOtherUser, date: getHora }];
       await updateDoc(battleDocRef, { userTurn, users: [userUpdating, otherUser] });
     }
