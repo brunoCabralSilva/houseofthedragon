@@ -445,7 +445,7 @@
               <p class="transition-all duration-500 w-full px-2 pt-1 border-b-golden border border-transparent text-sm">Histórico</p>
               <div class="transition-all duration-500 w-full justify-end relative overflow-y-auto h-14vh py-2 px-2">
                 <div
-                  v-for="(msg, index) in messages"
+                  v-for="(msg, index) in userLogged.messages"
                   :key="index"
                   class="transition-all duration-500 leading-4"
                 >

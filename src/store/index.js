@@ -19,11 +19,11 @@ const store = createStore({
       type: '',
       winner: '',
       userTurn: '',
-      messages: [],
       userLogged: {
         email: '',
         profileImage: '',
         displayName: '',
+        messages: [],
         actions: { movement: 0, default: 0, bonus: 0 },
         dragon: {
           id: '',
@@ -57,6 +57,7 @@ const store = createStore({
         email: '',
         profileImage: '',
         displayName: '',
+        messages: [],
         actions: { movement: 0, default: 0, bonus: 0 },
         dragon: {
           id: '',
@@ -93,7 +94,6 @@ const store = createStore({
     setType(state, type) { state.type = type },
     setWinner(state, winner) { state.winner = winner },
     setUserTurn(state, userTurn) { state.userTurn = userTurn },
-    setMessages(state, messages) { state.messages = messages },
   },
   actions: {
     fetchMatchData({ commit }, { matchId, auth }) {
@@ -103,11 +103,6 @@ const store = createStore({
           commit('setType', data.type);
           commit('setWinner', data.winner);
           commit('setUserTurn', data.userTurn);
-          commit('setMessage', data.userLogged.messages.sort((a, b) => {
-            let dateA = new Date(a.date.split(', ')[0].split('/').reverse().join('-') + 'T' + a.date.split(', ')[1]);
-            let dateB = new Date(b.date.split(', ')[0].split('/').reverse().join('-') + 'T' + b.date.split(', ')[1]);
-            return dateB - dateA;
-          }));
           const userLogged = data.users.find((user) => user.email === auth.email);
           const userOponent = data.users.find((user) => user.email !== auth.email);
           commit('setUserLogged', {
@@ -150,7 +145,6 @@ const store = createStore({
     type: state => state.type,
     winner: state => state.winner,
     userTurn: state => state.userTurn,
-    messages: state => state.messages,
   }
 });
 
