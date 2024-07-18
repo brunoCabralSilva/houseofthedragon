@@ -221,7 +221,6 @@ export default {
     async huntSheep() {
       this.updateAffectedSquaresLogged([]);
       this.updateAffectedSquaresOponent([]);
-      this.disabledHunt = true;
       await hunt(this.matchId, this.email, Math.ceil(Math.ceil(this.userLogged.dragon.vitalidade.total / 5) / 10))
     },
   }
