@@ -73,23 +73,7 @@
     </div>
     <div class="w-full h-20vh bg-black/80 rounded-t-xl mt-1 z-20">
       <div class="transition-all duration-500 flex h-full px-2 w-full">
-        <div
-          v-if="tooltip.show"
-          class="z-20 fixed left-0 bottom-20vh h-25vh w-full text-white text-sm rounded py-1 px-2 flex flex-col justify-center"
-          :class="!hideMessages || !hideInfo ? 'items-end': 'items-center'"
-        >
-          <div class="bg-black/80 w-1/3 rounded px-2 h-full p-2">
-            <p class="w-full pb-1">{{ tooltip.title }}</p>
-            <hr />
-            <p class="w-full pt-1 leading-4">{{ tooltip.description }}</p>
-            <p v-if="tooltip.ataque !== ''" class="w-full pt-1 leading-4">
-              {{ tooltip.ataque }}
-            </p>
-            <p v-if="tooltip.alcance !== ''" class="w-full pt-1 leading-4">
-              {{ tooltip.alcance }}
-            </p>
-          </div>
-        </div>
+        <TooltipActions />
         <div class="transition-all duration-500 w-full h-full grid grid-cols-4">
           <DataUserLogged />
           <UserActions />
@@ -110,6 +94,7 @@ import DataUserLogged from '@/components/dataUserLogged.vue';
 import DataUserOponent from '@/components/dataUserOponent.vue';
 import UserActions from '@/components/userActions.vue';
 import MessageInfo from '@/components/messageInfo.vue';
+import TooltipActions from '@/components/tooltipAction.vue';
 import { updateDragonPosition, updateRangedSquare, verifyActions } from '@/firebase/battle';
 
 export default {
@@ -118,6 +103,7 @@ export default {
     MessageInfo,
     UserActions,
     DataUserLogged,
+    TooltipActions,
     NavigationBattle,
     DataUserOponent,
   },
