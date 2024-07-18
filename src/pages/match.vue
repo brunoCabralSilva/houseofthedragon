@@ -75,7 +75,7 @@
             <div class="transition-all duration-500 relative w-40">
               <button
                 type="button"
-                @click="hideInfoUser"
+                @click="showInfo"
                 class="transition-all duration-500 h-5 w-5 object-cover rounded-full absolute z-20 top-1 left-2 border-2 flex items-center justify-center text-xs cursor-pointer"
                 :class="this.userLogged.dragon.actions.position === 'fly' ? 'border-blue-300 text-blue-300' : 'text-golden border-golden'"
               >
@@ -88,7 +88,7 @@
                 </div>
                 <button
                   type="button"
-                  @click="hideMessageUser"
+                  @click="showMessages"
                   class="transition-all duration-500 h-5 w-5 object-cover rounded-full border-2 flex items-center justify-center text-xs cursor-pointer p-1"
                   :class="this.userLogged.dragon.actions.position === 'fly' ? 'border-blue-300 text-blue-300' : 'text-golden border-golden'"
                 >
@@ -265,7 +265,7 @@
                 <button 
                   v-else
                   type="button"
-                  :disabled="userTurn !== userLogged.email || verifyActions('movement-bonus')"
+                  :disabled="userTurn !== userLogged.email || verifyActions('movement-default')"
                   @mouseout="setTooltip('')"
                   @mouseover="setTooltip('Derrubar')"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
@@ -273,7 +273,7 @@
                   <img
                     :src="require('@/assets/icons/derrubar.png')"
                     class="transition-all duration-500 h-8 w-8 object-cover"
-                    :class="userTurn !== userLogged.email || verifyActions('movement-bonus') ? 'opacity-40' : 'opacity-1'"
+                    :class="userTurn !== userLogged.email || verifyActions('movement-default') ? 'opacity-40' : 'opacity-1'"
                   />
                   <div
                     v-if="tooltip === 'Derrubar'"  
@@ -416,7 +416,6 @@
             <div class="transition-all duration-500 relative w-40">
               <button
                 type="button"
-                @click="hideInfoUser"
                 class="transition-all duration-500 h-5 w-5 object-cover rounded-full absolute z-20 top-1 right-2 border-2 flex items-center justify-center text-xs cursor-pointer"
                 :class="this.userOponent.dragon.actions.position === 'fly' ? 'border-blue-300 text-blue-300' : 'border-golden text-golden'"
               >
@@ -435,6 +434,72 @@
           </div>
         </div>
         
+        <div
+          v-if="!hideMessages || !hideInfo"
+          class="col-span-1 fixed left-0 bottom-20vh h-25vh w-full "
+        >
+          <div v-if="!hideMessages" class="transition-all duration-500 border border-golden rounded w-1/2 bg-black/80">
+            <div
+              class="transition-all duration-500 w-full flex flex-col h-full items-center justify-center"
+            >
+              <p class="transition-all duration-500 w-full px-2 pt-1 border-b-golden border border-transparent text-sm">Histórico</p>
+              <div class="transition-all duration-500 w-full justify-end relative overflow-y-auto h-14vh py-2 px-2">
+                <div
+                  v-for="(msg, index) in messages"
+                  :key="index"
+                  class="transition-all duration-500 leading-4"
+                >
+                  <span class="transition-all duration-500  pb-1 leading-3 text-golden pr-1">{{ msg.date }}:</span>
+                  <span :class="['transition-all', 'duration-500', 'pt-1', 'leading-3', 'text-sm', index === 0 ? 'underline': '']">
+                    {{ msg.text }}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- <div v-if="hideInfo" class="transition-all duration-500 border border-golden rounded w-full">
+            <div
+              class="transition-all duration-500 w-full flex flex-col h-full items-center justify-center relative"
+            >
+              <p class="transition-all duration-500 w-full px-2 pt-1 border-b-golden border border-transparent text-sm">Status</p>
+              <div class="transition-all duration-500 w-full justify-end relative overflow-y-auto h-15vh py-2 px-2">
+                <div class="transition-all duration-500 flex w-full">
+                  <div class="transition-all duration-500 w-1/2">
+                    <p class="transition-all duration-500 pb-1">Jogador: {{  userLogged.displayName  }}</p>
+                    <p class="transition-all duration-500 leading-5">
+                      hp:
+                      {{
+                        userLogged.dragon.vitalidade.actual
+                        + userLogged.dragon.vitalidade.bonus
+                      }} / 
+                      {{ userLogged.dragon.vitalidade.total }} + {{ userLogged.dragon.vitalidade.bonus }}
+                    </p>
+                    <p class="transition-all duration-500 leading-5">
+                      velocidade:
+                      {{ userLogged.dragon.velocidade.total }} + 
+                      {{ userLogged.dragon.velocidade.bonus }}
+                    </p>
+                    <p class="transition-all duration-500 leading-5">
+                      rebeldia: 
+                      {{ userLogged.dragon.rebeldia.actual }} + {{ userLogged.dragon.rebeldia.bonus }}
+                    </p>
+                    <p
+                      v-for="(attack, index) in userLogged.dragon.attacks"
+                      :key="index"
+                      class="transition-all duration-500 leading-5"
+                    >
+                      {{ attack.name }}: {{ attack.actual }} + {{ attack.bonus }}
+                    </p>
+                  </div>
+                  <div class="transition-all duration-500 w-1/2 border-l-white border border-transparent pl-3">
+                    <p class="transition-all duration-500 pb-1">Condições:</p>
+                    <p class="transition-all duration-500 text-sm leading-5 pl-1">- desvantagem nas rolagens de ataque e rolagens de ataque.</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div> -->
+        </div>
       </div>
     </div>
   </div>
@@ -468,6 +533,8 @@ export default {
     return {
       tooltip: '',
       grid: [],
+      hideMessages: true,
+      hideInfo: true,
       email: '',
       disabledHunt: false,
       rangeSquaresLogged: [],
@@ -499,7 +566,7 @@ export default {
     } else this.router.push("/login");
   },
   computed: {
-    ...mapState(['userLogged', 'userOponent', 'type', 'winner', 'userTurn']),
+    ...mapState(['userLogged', 'userOponent', 'type', 'winner', 'userTurn', 'messages']),
     squareClasses() {
       return (item) => {
         const isUserLoggedAffected = this.affectedSquaresLogged.includes(item);
@@ -524,12 +591,25 @@ export default {
   },
   methods: {
     ...mapActions(['fetchMatchData']),
+    setTooltip(item) { this.tooltip = item },
+    async finishTurn() { await endTurn(this.matchId, this.email) },
+    async changeDragonPosition() { await changePosition(this.matchId, this.email) },
+    showMessages() { 
+      this.hideInfo = true;
+      this.hideMessages = !this.hideMessages;
+    },
+    showInfo() { 
+      this.hideMessages = true;
+      this.hideInfo = !this.hideInfo;
+    },
     verifyActions(type) {
       const actMove = this.userLogged.actions.movement;
       const actDefault = this.userLogged.actions.default;
       const actBonus = this.userLogged.actions.bonus;
-
-      if (type === 'movement-bonus') {
+      if (type === 'movement-default') {
+        if (actDefault === 0 && actMove === 0 && actBonus <= 1) return false;
+        return true;
+      } else if (type === 'movement-bonus') {
         if (actDefault <= 1 && actMove === 0 && actBonus === 0) return false;
         if (actDefault === 0 && actMove <= 1 && actBonus === 0) return false;
         if (actDefault === 0 && actMove === 0 && actBonus <= 1) return false;
@@ -549,15 +629,10 @@ export default {
         return true;
       }
     },
-    async finishTurn() {
-      await endTurn(this.matchId, this.email);
-    },
-    setTooltip(item) { this.tooltip = item },
     async huntSheep() {
       this.disabledHunt = true;
       await hunt(this.matchId, this.email, Math.ceil(Math.ceil(this.userLogged.dragon.vitalidade.total / 5) / 10))
     },
-    async changeDragonPosition() { await changePosition(this.matchId, this.email) },
     updateRangedSquare() {
       const rangeSquaresLogged = this.grid.filter(item => {
         const distance = Math.abs(item.column - this.userLogged.dragon.column) + Math.abs(item.row - this.userLogged.dragon.row);
@@ -614,12 +689,10 @@ export default {
       let oportunity = '';
       if (paths && paths.length > 0) {
         for (const path of paths) {
-          const { safe, oportunity: pathOportunity } = this.isPathSafe(path);
-          if (safe) {
-            safePath = path;
-            oportunity = pathOportunity;
-            break;
-          }
+          const { oportunity: pathOportunity } = this.isPathSafe(path);
+          safePath = path;
+          oportunity = pathOportunity;
+          break;
         }
 
         if (safePath) {
@@ -627,26 +700,14 @@ export default {
             this.affectedSquaresLogged.push(this.grid.find(item => item.column === square.column && item.row === square.row));
           });
           const finalSquare = safePath[safePath.length - 1];
-          await updateDragonPosition(this.matchId, this.email, finalSquare.column, finalSquare.row);
+          await updateDragonPosition(this.matchId, this.email, finalSquare.column, finalSquare.row, oportunity);
         } else {
           paths[0].forEach(square => {
             this.affectedSquaresLogged.push(this.grid.find(item => item.column === square.column && item.row === square.row));
           });
 
           const finalSquare = paths[0][paths[0].length - 1];
-          await updateDragonPosition(this.matchId, this.email, finalSquare.column, finalSquare.row);
-          oportunity = 'Ataque de Oportunidade';
-        }
-
-        if (oportunity) {
-          this.selectedDragon.oportunity = 'Ataque de Oportunidade';
-          const selectedDragonName = this.selectedDragon.name;
-          setTimeout(() => {
-            const another = this.dragons.find((dragon) => selectedDragonName !== dragon.name);
-            const same = this.dragons.find((dragon) => selectedDragonName === dragon.name);
-            same.oportunity = '';
-            this.dragons = [another, same];
-          }, 3000);
+          await updateDragonPosition(this.matchId, this.email, finalSquare.column, finalSquare.row, oportunity);
         }
         const updateRanges = this.updateRangedSquare();
         this.rangeSquaresLogged = updateRanges.rangeSquaresLogged
@@ -681,92 +742,29 @@ export default {
       return paths;
     },
     isPathSafe(path) {
-      let isStartInRange = false;
-      let isAnyIntermediateOutOfRange = false;
-      let isEndInRange = false;
-      const startSquare = path[0];
-      const endSquare = path[path.length - 1];
-      const startInRange = this.rangeSquaresOponent.find(square => square.column === startSquare.column && square.row === startSquare.row);
-      if (startInRange) isStartInRange = true;
-      const endInRange = this.rangeSquaresOponent.some(square => square.column === endSquare.column && square.row === endSquare.row);
-      if (endInRange) isEndInRange = true;
-      for (let i = 1; i < path.length - 1; i++) {
-        const square = path[i];
-        const intermediateInTheRange = this.rangeSquaresOponent.some(s => s.column === square.column && s.row === square.row);
-        if (intermediateInTheRange) isAnyIntermediateOutOfRange = true;
-      }
-      if (isStartInRange && isEndInRange) return { safe: true, oportunity: '' };
-      else if (!isStartInRange && !isEndInRange && isAnyIntermediateOutOfRange) return { safe: false, oportunity: 'Ataque de Oportunidade' }; 
-      else if (!isStartInRange && !isEndInRange) return { safe: true, oportunity: '' }; 
-      else if (!isStartInRange && isEndInRange) return { safe: true, oportunity: '' }; 
-      else if (isStartInRange && !isEndInRange) return { safe: false, oportunity: 'Ataque de Oportunidade' };
-      else return { safe: false, oportunity: 'Ataque de Oportunidade' };
+      if (this.userLogged.actions.position === this.userOponent.actions.position) {
+        let isStartInRange = false;
+        let isAnyIntermediateOutOfRange = false;
+        let isEndInRange = false;
+        const startSquare = path[0];
+        const endSquare = path[path.length - 1];
+        const startInRange = this.rangeSquaresOponent.find(square => square.column === startSquare.column && square.row === startSquare.row);
+        if (startInRange) isStartInRange = true;
+        const endInRange = this.rangeSquaresOponent.some(square => square.column === endSquare.column && square.row === endSquare.row);
+        if (endInRange) isEndInRange = true;
+        for (let i = 1; i < path.length - 1; i++) {
+          const square = path[i];
+          const intermediateInTheRange = this.rangeSquaresOponent.some(s => s.column === square.column && s.row === square.row);
+          if (intermediateInTheRange) isAnyIntermediateOutOfRange = true;
+        }
+        if (isStartInRange && isEndInRange) return { safe: true, oportunity: '' };
+        else if (!isStartInRange && !isEndInRange && isAnyIntermediateOutOfRange) return { safe: false, oportunity: 'Ataque de Oportunidade' }; 
+        else if (!isStartInRange && !isEndInRange) return { safe: true, oportunity: '' }; 
+        else if (!isStartInRange && isEndInRange) return { safe: true, oportunity: '' }; 
+        else if (isStartInRange && !isEndInRange) return { safe: false, oportunity: 'Ataque de Oportunidade' };
+        else return { safe: false, oportunity: 'Ataque de Oportunidade' };
+      } else return { safe: false, oportunity: '' };
     }
   },
 }
 </script>
-
-
-<!-- <div class="col-span-1 w-4/5">
-  <div v-if="!hideMessages" class="transition-all duration-500 border border-golden w-full rounded ">
-    <div
-      class="transition-all duration-500 w-full flex flex-col h-full items-center justify-center"
-    >
-      <p class="transition-all duration-500 w-full px-2 pt-1 border-b-golden border border-transparent text-sm">Histórico</p>
-      <div class="transition-all duration-500 w-full justify-end relative overflow-y-auto h-14vh py-2 px-2">
-        <div
-          v-for="(message, index) in messages"
-          :key="index"
-          class="transition-all duration-500 leading-4"
-        >
-          <span class="transition-all duration-500  pb-1 leading-3 text-golden pr-1">{{ message.date }}:</span>
-          <span :class="['transition-all', 'duration-500', 'pt-1', 'leading-3', 'text-sm', index === 0 ? 'underline': '']">
-            {{ message.text }}
-          </span>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div v-if="hideInfo" class="transition-all duration-500 border border-golden rounded w-full">
-    <div
-      class="transition-all duration-500 w-full flex flex-col h-full items-center justify-center relative"
-    >
-      <p class="transition-all duration-500 w-full px-2 pt-1 border-b-golden border border-transparent text-sm">Status</p>
-      <div class="transition-all duration-500 w-full justify-end relative overflow-y-auto h-15vh py-2 px-2">
-        <div class="transition-all duration-500 flex w-full">
-          <div class="transition-all duration-500 w-1/2">
-            <p class="transition-all duration-500 pb-1">Jogador: {{  userLogged.displayName  }}</p>
-            <p class="transition-all duration-500 leading-5">
-              hp:
-              {{
-                userLogged.dragon.vitalidade.actual
-                + userLogged.dragon.vitalidade.bonus
-              }} / 
-              {{ userLogged.dragon.vitalidade.total }} + {{ userLogged.dragon.vitalidade.bonus }}
-            </p>
-            <p class="transition-all duration-500 leading-5">
-              velocidade:
-              {{ userLogged.dragon.velocidade.total }} + 
-              {{ userLogged.dragon.velocidade.bonus }}
-            </p>
-            <p class="transition-all duration-500 leading-5">
-              rebeldia: 
-              {{ userLogged.dragon.rebeldia.actual }} + {{ userLogged.dragon.rebeldia.bonus }}
-            </p>
-            <p
-              v-for="(attack, index) in userLogged.dragon.attacks"
-              :key="index"
-              class="transition-all duration-500 leading-5"
-            >
-              {{ attack.name }}: {{ attack.actual }} + {{ attack.bonus }}
-            </p>
-          </div>
-          <div class="transition-all duration-500 w-1/2 border-l-white border border-transparent pl-3">
-            <p class="transition-all duration-500 pb-1">Condições:</p>
-             <p class="transition-all duration-500 text-sm leading-5 pl-1">- desvantagem nas rolagens de ataque e rolagens de ataque.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div> -->

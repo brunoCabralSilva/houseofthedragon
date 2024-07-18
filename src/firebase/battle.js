@@ -2,26 +2,45 @@ import { deleteDoc, doc, getDoc, getFirestore, updateDoc } from "firebase/firest
 import { applyVictoryOrDefeat } from "./mount";
 import firebaseConfig from "./connection";
 
-export const attack = async (attacker, defender, matchId) => {
+export const attack = async (attacker, defender, matchId, attackValue, attackName) => {
   let totalDamage = 0;
   let finalDamage = 0;
-  let text = '';
-  const testAttack = rollAttack(attacker, defender);
+  let textAttacker = '';
+  let textDefender = '';
+  const testAttack = rollAttack(defender, attackValue);
   const { type } = testAttack;
   if (type === 'success') {
-    const damage = calculateDamage(attacker) * 2;
+    const damage = calculateDamage(attackValue) * 2;
     totalDamage = calcAbsorption(defender, damage);
-    const updtStamina = updateStamina(defender, totalDamage, false, attacker.dragon.selectedAttack.name);
+    const updtStamina = updateStamina(totalDamage, false, attackName);
     finalDamage = updtStamina.finalDamage;
-    text = updtStamina.text;
+    textAttacker = updtStamina.textAttacker;
+    textDefender = updtStamina.textDefender;
   } else if (type === 'criticalSuccess') {
-    totalDamage = (attacker.dragon.selectedAttack.actual + 12) * 2;
-    const updtStamina = updateStamina(defender, totalDamage, true, attacker.dragon.selectedAttack.name);
+    totalDamage = (attackValue + 12) * 2;
+    const updtStamina = updateStamina(totalDamage, true, attackName);
     finalDamage = updtStamina.finalDamage;
-    text = updtStamina.text;
-  } else if (type === 'criticalFail') text = attacker.dragon.name + ' Errou o ataque ' + attacker.dragon.selectedAttack.name + ' (FALHA CRÍTICA).';
-  else text = attacker.dragon.name + ' Errou o ataque ' + attacker.dragon.selectedAttack.name + '.';
-  applyDamage(matchId, attacker, defender, finalDamage, text);
+    textAttacker = updtStamina.textAttacker;
+    textDefender = updtStamina.textDefender;
+  } else if (type === 'criticalFail') {
+    if (attackName === 'Ataque de Oportunidade') {
+      textAttacker = 'Seu Dragão errou um Ataque de Oportunidade (FALHA CRÍTICA).'
+      textDefender = 'Seu Dragão desviou de um Ataque de Oportunidade (FALHA CRÍTICA).'
+    } else {
+      textAttacker = 'Seu Dragão errou o Ataque ' + attackName + ' (FALHA CRÍTICA).';
+      textDefender = 'Seu Dragão desviou do Ataque ' + attackName + ' (FALHA CRÍTICA).';
+    }
+  }
+  else {
+    if (attackName === 'Ataque de Oportunidade') {
+      textAttacker = 'Seu Dragão errou um Ataque de Oportunidade.';
+      textDefender = 'Seu Dragão desviou de um Ataque de Oportunidade.';
+    } else {
+      textAttacker = 'Seu Dragão errou o Ataque ' + attackName + '.';
+      textDefender = 'Seu Dragão desviou do Ataque ' + attackName + '.';
+    }
+  }
+  applyDamage(matchId, attacker, defender, finalDamage, textAttacker, textDefender);
 };
 
 export const getHoraOficialBrasil = async () => {
@@ -44,7 +63,7 @@ export const getHoraOficialBrasil = async () => {
 
 const rollDice = (faces) => Math.floor(Math.random() * faces) + 1;
 
-const rollAttack = (attacker, defender) => {
+const rollAttack = (defender, attackValue) => {
   const roll = rollDice(20);
   let type = '';
   let dodgeBonus = 0;
@@ -60,8 +79,7 @@ const rollAttack = (attacker, defender) => {
   if (roll === 20) type = "criticalSuccess";
   else if (roll === 1) type = 'criticalFail';
   else {
-    const typeAttack = attacker.dragon.selectedAttack.actual;
-    const attackRoll = rollDice(20) + (typeAttack * 2);
+    const attackRoll = rollDice(20) + (attackValue * 2);
     const dodgeRoll = rollDice(20) + dodgeBonus;
     if (attackRoll >= dodgeRoll) type = 'success';
     else type = 'fail';
@@ -69,9 +87,9 @@ const rollAttack = (attacker, defender) => {
   return { type };
 };
 
-const calculateDamage = (attacker) => {
+const calculateDamage = (attackValue) => {
   const roll = rollDice(12);
-  return roll + attacker.dragon.selectedAttack.actual;
+  return roll + attackValue;
 };
 
 const calcAbsorption = (defender, damage) => {
@@ -94,15 +112,24 @@ const calcAbsorption = (defender, damage) => {
   } return damage;
 };
 
-const updateStamina = (defender, totalDamage, critical, name) => {
+const updateStamina = (totalDamage, critical, name) => {
   const finalDamage = totalDamage;
-  let text = '';
-  if(critical) text = defender.dragon.name + ' recebeu ' + totalDamage + ' de Dano Crítico de um ataque de ' + name + '!';
-  else text = defender.dragon.name + ' recebeu ' + totalDamage + ' de Dano de um ataque de ' + name + '!';
-  return { finalDamage, text };
+  let textDefender = '';
+  let textAttacker = '';
+  if (name === 'Ataque de Oportunidade') {
+    textAttacker = 'Seu Dragão causou ' + totalDamage + ' de Dano em um Ataque de Oportunidade!';
+    textDefender = 'Seu Dragão sofreu um Ataque de Oportunidade que causou a ele ' + totalDamage + ' de Dano! Evite sair da área de alcance do Oponente ou atravessá-la.';
+  } else if(critical) {
+    textAttacker = 'Seu Dragão causou ' + totalDamage + ' de Dano Crítico em ataque de ' + name + '!';
+    textDefender = 'Seu Dragão sofreu ' + totalDamage + ' de Dano Crítico em um ataque de ' + name + '!';
+  } else {
+    textAttacker = 'Seu Dragão causou ' + totalDamage + ' de Dano em um ataque de ' + name + '!';
+    textDefender = 'Seu Dragão sofreu ' + totalDamage + ' de Dano em um ataque de ' + name + '!';
+  }
+  return { finalDamage, textAttacker, textDefender };
 };
 
-const applyDamage = async (matchId, attacker, defender, finalDamage, text) => {
+const applyDamage = async (matchId, attacker, defender, finalDamage, textAttacker, textDefender) => {
   try {
     const db = getFirestore(firebaseConfig);
     const battleDocRef = doc(db, 'battles', matchId);
@@ -120,11 +147,11 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, text) => {
       if (defenderUser.dragon.vitalidade.actual <= 0) {
         defenderUser.dragon.vitalidade.actual = 0;
         const message = ' ' + attackerUser.displayName + ' venceu o combate!';
-        const updtdMsg = [
-          ...currDt.message,
-          { text: text + message, date: getHora },
-        ];
-        await updateDoc(battleDocRef, { winner: attackerUser.email, userTurn: '', timeTurn: Date.now(), message: updtdMsg, users: [ attackerUser, defenderUser ] });
+        const msgAttacker = [ ...attackerUser.messages, { text: textAttacker + message, date: getHora }];
+        const msgDefender = [ ...defenderUser.messages, { text: textDefender + message, date: getHora }];
+        attackerUser.messages = msgAttacker;
+        defenderUser.messages = msgDefender;
+        await updateDoc(battleDocRef, { winner: attackerUser.email, userTurn: '', users: [ attackerUser, defenderUser ] });
         if (currDt.type === 'pvp') {
             await applyVictoryOrDefeat(attackerUser, 'winsPVP');
             await applyVictoryOrDefeat(defenderUser, 'lossesPVP');
@@ -136,25 +163,25 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, text) => {
         }
       } else {
         const message = ' Vez de ' + defenderUser.displayName + '!';
-        const updtdMsg = [
-          ...currDt.message,
-          { text: text + message, date: getHora },
-        ];
+        const msgAttacker = [ ...attackerUser.messages, { text: textAttacker + message, date: getHora }];
+        const msgDefender = [ ...defenderUser.messages, { text: textDefender + message, date: getHora }];
+        attackerUser.messages = msgAttacker;
+        defenderUser.messages = msgDefender;
         const actualAttack = {
           damage: '',
           type: '',
           turnAttack: defenderUser.email,
         };
 
-        if (text.includes('dracarys')) actualAttack.type = 'dracarys';
-        else if(text.includes('mordida')) actualAttack.type = 'mordida';
-        else if(text.includes('garras')) actualAttack.type = 'garras';
-        if (text.includes('Errou')) actualAttack.damage = 'Errou';
+        if (textAttacker.includes('dracarys')) actualAttack.type = 'dracarys';
+        else if(textAttacker.includes('mordida')) actualAttack.type = 'mordida';
+        else if(textAttacker.includes('garras')) actualAttack.type = 'garras';
+        else actualAttack.type = 'Ataque de Oportunidade';
+        if (textAttacker.includes('Errou')) actualAttack.damage = 'Errou';
         else actualAttack.damage = -finalDamage;
         await updateDoc(battleDocRef, {
           userTurn,
           actualAttack,
-          message: updtdMsg,
           users: [ attackerUser, defenderUser ]
         });
       }
@@ -208,7 +235,7 @@ export const endMatch = async (matchId, emailUser) => {
   }
 }
 
-export const updateDragonPosition = async (matchId, email, column, row) => {
+export const updateDragonPosition = async (matchId, email, column, row, oportunity) => {
   try {
     const db = getFirestore(firebaseConfig);
     const battleDocRef = doc(db, 'battles', matchId);
@@ -226,6 +253,13 @@ export const updateDragonPosition = async (matchId, email, column, row) => {
       }
       const otherUser = data.users.find((user) => user.email !== email);
       await updateDoc(battleDocRef, { users: [userUpdating, otherUser] });
+      if (oportunity !== '') {
+        let attackValue = 0;
+        if (otherUser.dragon.actions.garras.actual > otherUser.dragon.actions.mordida.actual) {
+          attackValue = otherUser.dragon.actions.garras.actual;
+        } else attackValue = otherUser.dragon.actions.mordida.actual;
+        await attack(otherUser, userUpdating, matchId, attackValue, oportunity);
+      }
     }
   } catch (error) {
     return false;
