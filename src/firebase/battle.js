@@ -137,7 +137,6 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, textAttacke
     if (!battleDocSnapshot.exists()) window.alert('Batalha não encontrad(a). Por favor, atualize a página e tente novamente.');
     else {
       const currDt = battleDocSnapshot.data();
-      let userTurn = '';
       const attackerUser = currDt.users.find((user) => user.email === attacker.email);
       const defenderUser = currDt.users.find((user) => user.email === defender.email);
       defenderUser.dragon.vitalidade.actual -= finalDamage;
@@ -149,7 +148,7 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, textAttacke
         const msgDefender = [ ...defenderUser.messages, { text: textDefender + message, date: getHora }];
         attackerUser.messages = msgAttacker;
         defenderUser.messages = msgDefender;
-        await updateDoc(battleDocRef, { winner: attackerUser.email, userTurn: '', users: [ attackerUser, defenderUser ] });
+        await updateDoc(battleDocRef, { winner: attackerUser.email, users: [ attackerUser, defenderUser ] });
         if (currDt.type === 'pvp') {
             await applyVictoryOrDefeat(attackerUser, 'winsPVP');
             await applyVictoryOrDefeat(defenderUser, 'lossesPVP');
@@ -176,11 +175,7 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, textAttacke
         else actualAttack.type = 'Ataque de Oportunidade';
         if (textAttacker.includes('Errou')) actualAttack.damage = 'Errou';
         else actualAttack.damage = -finalDamage;
-        await updateDoc(battleDocRef, {
-          userTurn,
-          actualAttack,
-          users: [ attackerUser, defenderUser ]
-        });
+        await updateDoc(battleDocRef, { actualAttack, users: [ attackerUser, defenderUser ] });
       }
     }
   } catch (error) {
