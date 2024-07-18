@@ -32,8 +32,7 @@
         </button>
         <button
           type="button"
-          @click="movementDragon(userOponent)"
-          class="transition-all duration-500 flex flex-col absolute cursor-pointer"
+          class="transition-all duration-500 flex flex-col absolute"
           :style="computedPosition(userOponent.dragon)"
         >
           <div
