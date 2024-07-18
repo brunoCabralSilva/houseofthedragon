@@ -17,6 +17,7 @@ export const createPVPBattle = async (
           email,
           displayName,
           profileImage,
+          messages: [],
           actions: { movement: 0, default: 0, bonus: 0 },
           dragon: {
             row: 4,
@@ -63,11 +64,11 @@ export const createPVPBattle = async (
           timeTurn: '',
           userTurn: email,
           end: [],
-          message: [],
           actualAttack: { damage: '', type: '', turnAttack: '' },
           users: [
             {
               email,
+              messages: [],
               displayName,
               profileImage,
               actions: { movement: 0, default: 0, bonus: 0 },    

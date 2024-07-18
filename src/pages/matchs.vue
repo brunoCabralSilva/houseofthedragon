@@ -10,6 +10,13 @@
         <div class="bg-golden w-1/2 h-full rounded"></div>
       </div>
       <p>Nível 1 (10/100)</p>
+      <button
+        type="button"
+        @click="addDragon"
+        v-if="email === 'bruno.cabral.silva2018@gmail.com'"
+      >
+        Adicionar Montaria
+      </button>
       <div class="grid grid-cols-1 sm:grid-cols-3 w-full">
         <div class="flex flex-col sm:col-span-2 sm:grid sm:grid-cols-2 w-full mt-5"> 
           <div>
@@ -349,8 +356,8 @@ import { useRouter } from 'vue-router';
 import { authenticate } from '@/firebase/authenticate';
 import Loading from '@/components/loading.vue';
 import { getUserByEmail } from '@/firebase/user';
-import { changeSelectedDragon, getMountsByEmail } from '@/firebase/mount';
-import { getDragonsWithVitalityNotOne } from '@/firebase/dragons';
+import { changeSelectedDragon, getMountsByEmail, registerMount } from '@/firebase/mount';
+import { getDragonByName, getDragonsWithVitalityNotOne } from '@/firebase/dragons';
 import { Swiper, SwiperSlide } from 'vue-awesome-swiper';
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome';
 import { faArrowUp, faChevronRight, faCheck } from '@fortawesome/free-solid-svg-icons';
@@ -453,6 +460,12 @@ export default {
     } else router.push('/login');
   },
   methods: {
+    async addDragon() {
+      const dragon = await getDragonByName('Caraxes');
+      await registerMount(dragon, this.email);
+      const dragon2 = await getDragonByName('Meleys');
+      await registerMount(dragon2, this.email);
+    },
     async redirectToFindOpponent() {
       const battleId = await createPVPBattle(
         'pvp',
