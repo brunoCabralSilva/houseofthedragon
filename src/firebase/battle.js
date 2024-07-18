@@ -138,8 +138,6 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, textAttacke
     else {
       const currDt = battleDocSnapshot.data();
       let userTurn = '';
-      if (currDt.userTurn === attacker.email ) userTurn = defender.email;
-      else if (currDt.userTurn === defender.email) userTurn = attacker.email;
       const attackerUser = currDt.users.find((user) => user.email === attacker.email);
       const defenderUser = currDt.users.find((user) => user.email === defender.email);
       defenderUser.dragon.vitalidade.actual -= finalDamage;
