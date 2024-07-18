@@ -151,7 +151,7 @@
               <div class="flex w-full justify-center items-center gap-2">
                 <button
                   type="button"
-                  :disabled="userTurn !== userLogged.email || this.verifyActions('default')"
+                  :disabled="userTurn !== userLogged.email || verifyActions('default')"
                   @mouseover="setTooltip('Dracarys')"
                   @mouseout="setTooltip('')"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
@@ -159,7 +159,7 @@
                   <img
                     src="@/assets/icons/dracarys.png"
                     class="transition-all duration-500 h-8 w-8 object-cover"
-                    :class="userTurn !== userLogged.email ? 'opacity-40' : 'opaticy-1'"
+                    :class="userTurn !== userLogged.email || verifyActions('default') ? 'opacity-40' : 'opaticy-1'"
                   />
                   <div
                     v-if="tooltip === 'Dracarys'"
@@ -185,7 +185,7 @@
                   <img
                     src="@/assets/icons/mordida.png"
                     class="transition-all duration-500 h-8 w-8 object-cover"
-                    :class="userTurn !== userLogged.email ? 'opacity-40' : 'opaticy-1'"
+                    :class="userTurn !== userLogged.email || verifyActions('default') ? 'opacity-40' : 'opaticy-1'"
                   />
                   <div
                     v-if="tooltip === 'Mordida'"
@@ -203,7 +203,7 @@
                 </button>
                 <button
                   type="button"
-                  :disabled="userTurn !== userLogged.email || this.verifyActions('default')"
+                  :disabled="userTurn !== userLogged.email || verifyActions('default')"
                   @mouseover="setTooltip('Garras')"
                   @mouseout="setTooltip('')"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
@@ -211,7 +211,7 @@
                   <img
                     src="@/assets/icons/garras.png"
                     class="transition-all duration-500 h-8 w-8 object-cover"
-                    :class="userTurn !== userLogged.email ? 'opacity-40' : 'opaticy-1'"
+                    :class="userTurn !== userLogged.email || verifyActions('default') ? 'opacity-40' : 'opaticy-1'"
                   />
                   <div
                     v-if="tooltip === 'Garras'"
@@ -247,7 +247,7 @@
                   <img
                     :src="require('@/assets/icons/sheep.png')"
                     class="transition-all duration-500 h-8 w-8 object-cover"
-                    :class="this.userLogged.dragon.actions.hunt === 0 || userTurn === userLogged.email ? 'opacity-1' : 'opacity-40'"
+                    :class="this.userLogged.dragon.actions.hunt === 0 || userTurn !== userLogged.email || verifyActions('movement-bonus') ? 'opacity-40' : 'opacity-1'"
                   />
                   <div
                     v-if="tooltip === 'Caçar'"  
@@ -265,7 +265,7 @@
                 <button 
                   v-else
                   type="button"
-                  :disabled="userTurn !== userLogged.email || this.verifyActions('movement-bonus')"
+                  :disabled="userTurn !== userLogged.email || verifyActions('movement-bonus')"
                   @mouseout="setTooltip('')"
                   @mouseover="setTooltip('Derrubar')"
                   class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
@@ -273,7 +273,7 @@
                   <img
                     :src="require('@/assets/icons/derrubar.png')"
                     class="transition-all duration-500 h-8 w-8 object-cover"
-                    :class="userTurn === userLogged.email ? 'opacity-1' : 'opacity-40'"
+                    :class="userTurn !== userLogged.email || verifyActions('movement-bonus') ? 'opacity-40' : 'opacity-1'"
                   />
                   <div
                     v-if="tooltip === 'Derrubar'"  
@@ -301,7 +301,7 @@
                       ? require('@/assets/icons/voar.png')
                       : require('@/assets/icons/aterrisar.png')"
                     class="transition-all duration-500 h-8 w-8 object-cover"
-                    :class="userTurn === userLogged.email ? 'opacity-1' : 'opacity-40'"
+                    :class="userTurn !== userLogged.email || verifyActions('movement') ? 'opacity-40' : 'opacity-1'"
                   />
                   <div
                     v-if="tooltip === 'Voar'"
@@ -335,7 +335,7 @@
                   <img
                     src="@/assets/icons/move.png"
                     class="transition-all duration-500 h-8 w-8 object-cover"
-                    :class="userTurn === userLogged.email ? 'opacity-1' : 'opacity-40'"
+                    :class="userTurn !== userLogged.email || verifyActions('movement') ? 'opacity-40' : 'opacity-1'"
                   />
                   <div
                     v-if="tooltip === 'Mover'"  
@@ -376,15 +376,6 @@
                   </div>
                 </button>
               </div>
-
-              <!-- Voar
-              Caçar
-              Dracarys
-              Mordida
-              Garras
-              Skill1
-              Skill2
-              Mover -->
             </div>
           </div>
           
@@ -527,13 +518,13 @@ export default {
           'cursor-pointer': true,
           'text-sm': true,
         };
+        
       };
     },
   },
   methods: {
     ...mapActions(['fetchMatchData']),
-    async verifyActions(type) {
-      console.log(type);
+    verifyActions(type) {
       const actMove = this.userLogged.actions.movement;
       const actDefault = this.userLogged.actions.default;
       const actBonus = this.userLogged.actions.bonus;
