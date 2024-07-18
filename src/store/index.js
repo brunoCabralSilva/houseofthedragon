@@ -13,79 +13,53 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+const userModel = { 
+  email: '', profileImage: '', displayName: '',
+  messages: [],
+  actions: { movement: 0, default: 0, bonus: 0 },
+  dragon: {
+    id: '', name: '', nivel: 1, column: 0, row: 0, oportunity: '', aparencia: '', description: '', imageURL: '', imageIconURL: '', linkFont: '', nameFont: '',
+    actions: {
+      dracarys: { actual: 0, total: 0, bonus: 0 },
+      mordida: { actual: 0, total: 0, bonus: 0 },
+      garras: { actual: 0, total: 0, bonus: 0 },
+      hunt: 0,
+      position: 'ground',
+    },
+    vitalidade: { actual: 0, total: 0, bonus: 0 },
+    velocidade: { actual: 0, total: 0, bonus: 0 },
+    rebeldia: { actual: 0, total: 0, bonus: 0 },
+    deslocamento: { actual: 0, total: 0, bonus: 0 },
+    alcance: { actual: 0, total: 0, bonus: 0 },
+    selectedAttack: { name: 'dracarys', actual: 0, bonus: 0 },
+  }
+};
+
 const store = createStore({
   state() {
     return {
+      grid: [],
+      tooltip: {
+        show: false,
+        title: '',
+        description: '',
+        ataque: '',
+        alcance: '',
+      },
+      initialPosition: { column: 0, row: 0 },
+      rangeSquaresLogged: [],
+      rangeSquaresOponent: [],
+      affectedSquaresLogged: [],
+      affectedSquaresOponent: [],
       type: '',
+      email: '',
       winner: '',
+      matchId: '',
       userTurn: '',
-      userLogged: {
-        email: '',
-        profileImage: '',
-        displayName: '',
-        messages: [],
-        actions: { movement: 0, default: 0, bonus: 0 },
-        dragon: {
-          id: '',
-          name: '',
-          nivel: 1,
-          column: 0,
-          row: 0,
-          oportunity: '',
-          actions: {
-            dracarys: { actual: 0, total: 0, bonus: 0 },
-            mordida: { actual: 0, total: 0, bonus: 0 },
-            garras: { actual: 0, total: 0, bonus: 0 },
-            hunt: 0,
-            position: 'ground',
-          },
-          vitalidade: { actual: 0, total: 0, bonus: 0 },
-          velocidade: { actual: 0, total: 0, bonus: 0 },
-          rebeldia: { actual: 0, total: 0, bonus: 0 },
-          deslocamento: { actual: 0, total: 0, bonus: 0 },
-          alcance: { actual: 0, total: 0, bonus: 0 },
-          selectedAttack: { name: 'dracarys', actual: 0, bonus: 0 },
-          aparencia: '',
-          description: '',
-          imageURL: '',
-          imageIconURL: '',
-          linkFont: '',
-          nameFont: '',
-        }
-      },
-      userOponent: {
-        email: '',
-        profileImage: '',
-        displayName: '',
-        messages: [],
-        actions: { movement: 0, default: 0, bonus: 0 },
-        dragon: {
-          id: '',
-          name: '',
-          nivel: 1,
-          column: 0,
-          row: 0,
-          oportunity: '',
-          actions: {
-            dracarys: { actual: 0, total: 0, bonus: 0 },
-            mordida: { actual: 0, total: 0, bonus: 0 },
-            garras: { actual: 0, total: 0, bonus: 0 },
-            hunt: 0,
-            position: 'ground',
-          },
-          vitalidade: { actual: 0, total: 0, bonus: 0 },
-          velocidade: { actual: 0, total: 0, bonus: 0 },
-          rebeldia: { actual: 0, total: 0, bonus: 0 },
-          deslocamento: { actual: 0, total: 0, bonus: 0 },
-          alcance: { actual: 0, total: 0, bonus: 0 },
-          aparencia: '',
-          description: '',
-          imageURL: '',
-          imageIconURL: '',
-          linkFont: '',
-          nameFont: '',
-        }
-      },
+      hideInfo: true,
+      hideMessages: true,
+      userLogged: userModel,
+      userOponent: userModel,
     };
   },
   mutations: {
@@ -94,17 +68,38 @@ const store = createStore({
     setType(state, type) { state.type = type },
     setWinner(state, winner) { state.winner = winner },
     setUserTurn(state, userTurn) { state.userTurn = userTurn },
+    setMatchId(state, matchId) { state.matchId = matchId },
+    setEmail(state, email) { state.email = email },
+    setAffectedSquaresLogged(state, affectedSquaresLogged) { state.affectedSquaresLogged = affectedSquaresLogged },
+    setRangeSquaresLogged(state, rangeSquaresLogged) { state.rangeSquaresLogged = rangeSquaresLogged },
+    setRangeSquaresOponent(state, rangeSquaresOponent) { state.rangeSquaresOponent = rangeSquaresOponent },
+    setAffectedSquaresOponent(state, affectedSquaresOponent) { state.affectedSquaresOponent = affectedSquaresOponent },
+    setHideMessages(state) {  state.hideInfo = true; state.hideMessages = !state.hideMessages },
+    setHideInfo(state) { state.hideMessages = true; state.hideInfo = !state.hideInfo },
+    setGrid(state, grid) { state.grid = grid },
+    setInitialPosition(state, initialPosition) { state.initialPosition = initialPosition },
+    setTooltip(state, tooltip) { state.tooltip = tooltip },
   },
   actions: {
+    showTooltip({ commit }, tooltip) { commit('setTooltip', tooltip) },
+    updateGrid({ commit }, grid) { commit('setGrid', grid) },
+    updateAffectedSquaresLogged({ commit }, data) { commit('setAffectedSquaresLogged', data) },
+    updateAffectedSquaresOponent({ commit }, data) { commit('setAffectedSquaresOponent', data) },
+    updateRangeSquaresLogged({ commit }, data) { commit('setRangeSquaresLogged', data) },
+    updateRangeSquaresOponent({ commit }, data) { commit('setRangeSquaresOponent', data) },
+    hideMessagesFromUser({ commit }) { commit('setHideMessages') },
+    hideInfoFromUser({ commit }) { commit('setHideInfo') },
     fetchMatchData({ commit }, { matchId, auth }) {
       onSnapshot(doc(db, 'battles', matchId), (snapshot) => {
         if (snapshot.data()) {
           const data = snapshot.data();
-          commit('setType', data.type);
-          commit('setWinner', data.winner);
-          commit('setUserTurn', data.userTurn);
           const userLogged = data.users.find((user) => user.email === auth.email);
           const userOponent = data.users.find((user) => user.email !== auth.email);
+          commit('setType', data.type);
+          commit('setMatchId', matchId);
+          commit('setEmail', auth.email);
+          commit('setWinner', data.winner);
+          commit('setUserTurn', data.userTurn);
           commit('setUserLogged', {
             ...userLogged,
             messages: userLogged.messages.sort((a, b) => {
@@ -143,6 +138,23 @@ const store = createStore({
         }
       });
     },
+    setMovementDragon({ state, commit }) {
+      const dragon = state.userLogged.dragon;
+      if (state.affectedSquaresLogged.length > 0) {
+        commit('setAffectedSquaresLogged', []);
+        commit('setRangeSquaresLogged', state.grid.filter(item => {
+          const distance = Math.abs(item.column - dragon.column) + Math.abs(item.row - dragon.row);
+          return distance <= dragon.alcance.actual;
+        }));
+      } else {
+        commit('setRangeSquaresLogged', []);
+        commit('setInitialPosition', { column: dragon.column, row: dragon.row });
+        commit('setAffectedSquaresLogged', state.grid.filter(item => {
+          const distance = Math.abs(item.column - dragon.column) + Math.abs(item.row - dragon.row);
+          return distance <= dragon.deslocamento.actual;
+        }));
+      }
+    },
   },
   getters: {
     userLogged: state => state.userLogged,
@@ -150,6 +162,15 @@ const store = createStore({
     type: state => state.type,
     winner: state => state.winner,
     userTurn: state => state.userTurn,
+    matchId: state => state.matchId,
+    email: state => state.email,
+    grid: state => state.grid,
+    rangeSquaresLogged: state => state.rangeSquaresLogged,
+    rangeSquaresOponent: state => state.rangeSquaresOponent,
+    affectedSquaresLogged: state => state.affectedSquaresLogged,
+    affectedSquaresOponent: state => state.affectedSquaresOponent,
+    initialPosition: state => state.initialPosition,
+    tooltip: state => state.tooltip,
   }
 });
 

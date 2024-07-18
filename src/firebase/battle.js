@@ -368,3 +368,43 @@ export const endTurn = async (matchId, email) => {
     return false;
   }
 }
+
+export const verifyActions = (type, userLogged) => {
+  const actMove = userLogged.actions.movement;
+  const actDefault = userLogged.actions.default;
+  const actBonus = userLogged.actions.bonus;
+  if (type === 'movement-default') {
+    if (actDefault === 0 && actMove === 0 && actBonus <= 1) return false;
+    return true;
+  } else if (type === 'movement-bonus') {
+    if (actDefault <= 1 && actMove === 0 && actBonus === 0) return false;
+    if (actDefault === 0 && actMove <= 1 && actBonus === 0) return false;
+    if (actDefault === 0 && actMove === 0 && actBonus <= 1) return false;
+    return true;
+  } else if (type === 'bonus') {
+    if (actDefault <= 1 && actMove <= 1 && actBonus === 0) return false;
+    if (actDefault === 0 && actMove <= 2 && actBonus === 0) return false;
+    if (actDefault === 0 && actMove <= 1 && actBonus <= 1) return false;
+    return true;
+  } else if (type === 'movement') {
+    if (actDefault <= 1 && actBonus <= 1 && actMove === 0) return false;
+    if (actDefault === 0 && actBonus <= 2 && actMove === 0) return false;
+    if (actDefault === 0 && actBonus <= 1 && actMove <= 1) return false;  
+    return true;
+  } else {
+    if (actBonus <= 1 && actMove <= 1 && actDefault === 0) return false;
+    return true;
+  }
+}
+
+export const updateRangedSquare = (grid, userLogged, userOponent) => {
+  const rangeSquaresLogged = grid.filter(item => {
+    const distance = Math.abs(item.column - userLogged.dragon.column) + Math.abs(item.row - userLogged.dragon.row);
+    return distance <= userLogged.dragon.alcance.actual;
+  });
+  const rangeSquaresOponent = grid.filter(item => {
+    const distance = Math.abs(item.column - userOponent.dragon.column) + Math.abs(item.row - userOponent.dragon.row);
+    return distance <= userOponent.dragon.alcance.actual;
+  });
+  return {rangeSquaresLogged, rangeSquaresOponent };
+}
