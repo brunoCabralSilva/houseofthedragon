@@ -162,9 +162,8 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, textAttacke
             await applyVictoryOrDefeat(defenderUser, 'lossesIA');
         }
       } else {
-        const message = ' Vez de ' + defenderUser.displayName + '!';
-        const msgAttacker = [ ...attackerUser.messages, { text: textAttacker + message, date: getHora }];
-        const msgDefender = [ ...defenderUser.messages, { text: textDefender + message, date: getHora }];
+        const msgAttacker = [ ...attackerUser.messages, { text: textAttacker, date: getHora }];
+        const msgDefender = [ ...defenderUser.messages, { text: textDefender, date: getHora }];
         attackerUser.messages = msgAttacker;
         defenderUser.messages = msgDefender;
         const actualAttack = {
@@ -201,8 +200,10 @@ export const createNewMessage = async (matchId, email, messageLogged, messageOpo
       const data = battleDocSnapshot.data();
       const userLogged = data.users.find((user) => user.email === email);
       const userOponent = data.users.find((user) => user.email !== email);
-      const sameMessage = data.message.find((msg) => msg.text.includes('A Batalha começou! Vez de '));
-      if (!sameMessage) {
+      const sameMessage = data.userLogged.messages.find((msg) => msg.text.includes('A Batalha começou! Vez de '));
+      if (messageLogged.includes('A Batalha começou! Vez de ') && sameMessage) {
+        return false;
+      } else {
         const getHora = await getHoraOficialBrasil();
         userLogged.messages = [...userLogged.messages, { text: messageLogged, date: getHora }];
         userOponent.messages = [...userOponent.messages, { text: messageOponent, date: getHora }];

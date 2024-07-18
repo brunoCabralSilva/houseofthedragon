@@ -107,6 +107,11 @@ const store = createStore({
           const userOponent = data.users.find((user) => user.email !== auth.email);
           commit('setUserLogged', {
             ...userLogged,
+            messages: userLogged.messages.sort((a, b) => {
+              let dateA = new Date(a.date.split(', ')[0].split('/').reverse().join('-') + 'T' + a.date.split(', ')[1]);
+              let dateB = new Date(b.date.split(', ')[0].split('/').reverse().join('-') + 'T' + b.date.split(', ')[1]);
+              return dateB - dateA;
+            }),
             dragon: {
               ...userLogged.dragon,
               actions: {
