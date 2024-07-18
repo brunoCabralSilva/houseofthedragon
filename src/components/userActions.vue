@@ -205,7 +205,7 @@ export default {
   computed: { ...mapState(['userLogged', 'userTurn', 'matchId', 'email']) },
   data() { return { } },
   methods: {
-    ...mapActions(['setMovementDragon', 'showTooltip']),
+    ...mapActions(['setMovementDragon', 'showTooltip', 'updateAffectedSquaresLogged', 'updateAffectedSquaresOponent']),
     setTooltip(show, title, description, ataque, alcance) { 
       this.showTooltip({ show, title, description, ataque, alcance });
      },
@@ -213,8 +213,14 @@ export default {
     attackOponent(type) { console.log('Attack: ' + type) },
     verifyAction(type) { return verifyActions(type, this.userLogged) },
     async finishTurn() { await endTurn(this.matchId, this.email) },
-    async changeDragonPosition() { await changePosition(this.matchId, this.email) },
+    async changeDragonPosition() { 
+      this.updateAffectedSquaresLogged([]);
+      this.updateAffectedSquaresOponent([]);
+      await changePosition(this.matchId, this.email);
+    },
     async huntSheep() {
+      this.updateAffectedSquaresLogged([]);
+      this.updateAffectedSquaresOponent([]);
       this.disabledHunt = true;
       await hunt(this.matchId, this.email, Math.ceil(Math.ceil(this.userLogged.dragon.vitalidade.total / 5) / 10))
     },
