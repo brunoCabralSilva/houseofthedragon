@@ -191,7 +191,7 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, textAttacke
   }
 }
 
-export const createNewMessage = async (matchId, message) => {
+export const createNewMessage = async (matchId, email, messageLogged, messageOponent) => {
   try {
     const db = getFirestore(firebaseConfig);
     const battleDocRef = doc(db, 'battles', matchId);
@@ -199,11 +199,14 @@ export const createNewMessage = async (matchId, message) => {
     if (!battleDocSnapshot.exists()) window.alert('Batalha não encontrad(a). Por favor, atualize a página e tente novamente.');
     else {
       const data = battleDocSnapshot.data();
+      const userLogged = data.users.find((user) => user.email === email);
+      const userOponent = data.users.find((user) => user.email !== email);
       const sameMessage = data.message.find((msg) => msg.text.includes('A Batalha começou! Vez de '));
       if (!sameMessage) {
         const getHora = await getHoraOficialBrasil();
-        const updtdMsg = [...data.message, { text: message, date: getHora }];
-        await updateDoc(battleDocRef, { message: updtdMsg });
+        userLogged.messages = [...userLogged.messages, { text: messageLogged, date: getHora }];
+        userOponent.messages = [...userOponent.messages, { text: messageOponent, date: getHora }];
+        await updateDoc(battleDocRef, { users: [ userLogged, userOponent ] });
       }
     }
   } catch (error) {
