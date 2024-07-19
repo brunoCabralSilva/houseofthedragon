@@ -159,7 +159,10 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, textAttacke
             await applyVictoryOrDefeat(defenderUser, 'lossesIA');
         }
       } else {
-        if (textAttacker.includes('Seu Dragão causou') && textAttacker.includes('Dano Crítico')) defenderUser.dragon.conditions.slow = true;
+        if (textAttacker.includes('Seu Dragão causou') && textAttacker.includes('Dano Crítico')) {
+          defenderUser.dragon.conditions.slow = true;
+          defenderUser.dragon.deslocamento.actual = Math.ceil(defenderUser.dragon.deslocamento.actual / 2);
+        }
         const msgAttacker = [ ...attackerUser.messages, { text: textAttacker, date: getHora }];
         const msgDefender = [ ...defenderUser.messages, { text: textDefender, date: getHora }];
         attackerUser.messages = msgAttacker;
