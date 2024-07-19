@@ -367,7 +367,7 @@ export const endTurn = async (matchId, email) => {
       const userUpdating = data.users.find((user) => user.email === email);
       const otherUser = data.users.find((user) => user.email !== email);
       const userTurn = otherUser.email;
-      if (userUpdating.dragon.conditions.slow || userUpdating.dragon.conditions.stunned) userUpdating.dragon.condicions = { slow: false, stunned: false };
+      if (userUpdating.dragon.conditions.slow || userUpdating.dragon.conditions.stunned) userUpdating.dragon.conditions = { slow: false, stunned: false };
       if(!otherUser.dragon.conditions.stunned) {
         otherUser.actions = { bonus: 0, default: 0, movement: 0 };
       }
@@ -445,8 +445,8 @@ export const knockDown = async (matchId, email) => {
       const rollOtherUser = rollDice(20) + (otherUser.dragon.vitalidade.total / 10);
       console.log(rollUserUpdating, rollOtherUser);
       if (rollUserUpdating >= rollOtherUser) {
-        textUserUpdating = 'Seu Dragão derrubou o Dragão do Oponente dos Céus.';
-        textOtherUser = 'O Oponente derrubou dos Céus o Dragão que pertence a você';
+        textUserUpdating = 'Seu Dragão derrubou o Dragão do Oponente dos Céus e o deixou Atordoado.';
+        textOtherUser = 'O Oponente derrubou dos Céus o Dragão que pertence a você e o deixou Atordoado.';
         otherUser.dragon.actions.position = 'ground';
         otherUser.dragon.conditions.stunned = true;
       } else {
