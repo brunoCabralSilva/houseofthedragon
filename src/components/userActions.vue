@@ -216,7 +216,8 @@ export default {
         if (distance <= this.userLogged.dragon.actions.dracarys.actual) return false;
         return true;
       } else {
-        if (distance <= this.userLogged.dragon.alcance.actual) return false;
+        if(this.userOponent.dragon.actions.position !== this.userLogged.dragon.actions.position) return true;
+        else if (distance <= this.userLogged.dragon.alcance.actual) return false;
         return true;
       }
     },
