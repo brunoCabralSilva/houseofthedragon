@@ -443,13 +443,14 @@ export const knockDown = async (matchId, email) => {
       let textOtherUser = '';
       const rollUserUpdating = rollDice(20) + (userUpdating.dragon.vitalidade.total / 10);
       const rollOtherUser = rollDice(20) + (otherUser.dragon.vitalidade.total / 10);
+      console.log(rollUserUpdating, rollOtherUser);
       if (rollUserUpdating >= rollOtherUser) {
         textUserUpdating = 'Seu Dragão derrubou o Dragão do Oponente dos Céus.';
         textOtherUser = 'O Oponente derrubou dos Céus o Dragão que pertence a você';
-        otherUser.actions.position = 'ground';
-        otherUser.conditions.stunned = true;
+        otherUser.dragon.actions.position = 'ground';
+        otherUser.dragon.conditions.stunned = true;
       } else {
-        textUserUpdating = 'Seu Dragão falhou em tentar derrubat o Dragão do Oponente dos Céus.';
+        textUserUpdating = 'Seu Dragão falhou em tentar derrubar o Dragão do Oponente dos Céus.';
         textOtherUser = 'O Oponente falhou em derrubar dos Céus o Dragão que pertence a você.';
       }
       userUpdating.messages = [ ...userUpdating.messages, { text: textUserUpdating, date: getHora }];
