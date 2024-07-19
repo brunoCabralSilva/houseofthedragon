@@ -36,14 +36,35 @@
     <div class="transition-all duration-500 col-span-3 flex w-full mr-2 ml-1">
       <div class="transition-all duration-500 flex flex-col items-start justify-center w-full">
         <div class="transition-all duration-500 flex flex-col items-start w-full pr-1">
-          <p
-            class="transition-all duration-500 text-xs bg-green-700 px-2 rounded-full text-white w-full border-2 mb-1"
-            :class="userLogged.dragon.actions.position === 'fly' ? 'border-blue-300' : 'border-golden'"
+          <div
+            class="transition-all duration-500 text-right text-xs rounded-full text-white w-full border-2 mb-1"
+            :class="this.userLogged.dragon.actions.position === 'fly' ? 'border-blue-300' : 'border-golden'"
           >
-            hp
-            {{ userLogged.dragon.vitalidade.actual + userLogged.dragon.vitalidade.bonus }} /
-            {{ userLogged.dragon.vitalidade.total }} {{ userLogged.dragon.vitalidade.bonus !== 0 ? '+' + userLogged.dragon.vitalidade.bonus : '' }}
-          </p>
+            <div class="relative flex">
+              <p
+                class="transition-all duration-500 text-left text-xs px-2 rounded-full text-white w-full absolute z-10"
+              >
+                hp
+                {{
+                  userLogged.dragon.vitalidade.actual
+                  + userLogged.dragon.vitalidade.bonus
+                }} / 
+                {{ userLogged.dragon.vitalidade.total }} {{ userLogged.dragon.vitalidade  .bonus !== 0 ? '+' + userLogged.dragon.vitalidade .bonus : '' }}
+              </p>
+              <div :class="[percentage() >= 1 ? 'bg-green-700': 'bg-transparent', 'w-1/12', 'h-4', 'rounded-l-full']"></div>
+              <div :class="[percentage() >= 2 ? 'bg-green-700': 'bg-transparent', 'w-1/12', 'h-4']"></div>
+              <div :class="[percentage() >= 3 ? 'bg-green-700': 'bg-transparent', 'w-1/12', 'h-4']"></div>
+              <div :class="[percentage() >= 4 ? 'bg-green-700': 'bg-transparent', 'w-1/12', 'h-4']"></div>
+              <div :class="[percentage() >= 5 ? 'bg-green-700': 'bg-transparent', 'w-1/12', 'h-4']"></div>
+              <div :class="[percentage() >= 6 ? 'bg-green-700': 'bg-transparent', 'w-1/12', 'h-4']"></div>
+              <div :class="[percentage() >= 7 ? 'bg-green-700': 'bg-transparent', 'w-1/12', 'h-4']"></div>
+              <div :class="[percentage() >= 8 ? 'bg-green-700': 'bg-transparent', 'w-1/12', 'h-4']"></div>
+              <div :class="[percentage() >= 9 ? 'bg-green-700': 'bg-transparent', 'w-1/12', 'h-4']"></div>
+              <div :class="[percentage() >= 10 ? 'bg-green-700': 'bg-transparent', 'w-1/12', 'h-4']"></div>
+              <div :class="[percentage() >= 11 ? 'bg-green-700': 'bg-transparent', 'w-1/12', 'h-4']"></div>
+              <div :class="[percentage() >= 12 ? 'bg-green-700': 'bg-transparent', 'w-1/12', 'h-4', 'rounded-r-full']"></div>
+            </div>
+          </div>
           <p
             class="transition-all duration-500 text-xs bg-blue-800 px-2 rounded-full border-2 w-8/12 text-white mb-1"
             :class="userLogged.dragon.actions.position === 'fly' ? 'border-blue-300' : 'border-golden'"
@@ -87,6 +108,11 @@ export default {
   },
   methods: {
     ...mapActions(['hideMessagesFromUser', 'hideInfoFromUser']),
+    percentage() {
+      const currentHP = this.userLogged.dragon.vitalidade.actual;
+      const totalHP = this.userLogged.dragon.vitalidade.total;
+      return Math.floor((currentHP / totalHP) * 12);
+    }
   }
 }
 </script>

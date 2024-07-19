@@ -7,7 +7,7 @@ export const attack = async (attacker, defender, matchId, attackValue, attackNam
   let finalDamage = 0;
   let textAttacker = '';
   let textDefender = '';
-  const testAttack = rollAttack(defender, attackValue);
+  const testAttack = rollAttack(defender, JSON.parse(JSON.stringify(attackValue)));
   const { type } = testAttack;
   if (type === 'success') {
     const damage = calculateDamage(attackValue) * 2;
@@ -175,6 +175,13 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, textAttacke
         else actualAttack.type = 'Ataque de Oportunidade';
         if (textAttacker.includes('Errou')) actualAttack.damage = 'Errou';
         else actualAttack.damage = -finalDamage;
+        if (actualAttack.type !== 'Ataque de Oportunidade') {
+          attackerUser.actions = {
+            movement: attackerUser.actions.movement,
+            default: attackerUser.actions.default + 1,
+            bonus: attackerUser.actions.bonus,
+          }
+        }
         await updateDoc(battleDocRef, { actualAttack, users: [ attackerUser, defenderUser ] });
       }
     }

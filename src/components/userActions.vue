@@ -4,7 +4,7 @@
       <div class="flex w-full justify-center items-center gap-2">
         <button
           type="button"
-          :disabled="userTurn !== userLogged.email || verifyAction('default')"
+          :disabled="userTurn !== userLogged.email || verifyAction('default') || verifyAlcance('dracarys')"
           @click="attackOponent('dracarys')"
           @mouseover="setTooltip(
             true,
@@ -19,12 +19,12 @@
           <img
             src="@/assets/icons/dracarys.png"
             class="transition-all duration-500 h-8 w-8 object-cover"
-            :class="userTurn !== userLogged.email || verifyAction('default') ? 'opacity-40' : 'opaticy-1'"
+            :class="userTurn !== userLogged.email || verifyAction('default') || verifyAlcance('dracarys') ? 'opacity-40' : 'opaticy-1'"
           />
         </button>
         <button
           type="button"
-          :disabled="userTurn !== userLogged.email || this.verifyAction('default')"
+          :disabled="userTurn !== userLogged.email || this.verifyAction('default') || verifyAlcance('mordida')"
           @click="attackOponent('mordida')"
           @mouseover="setTooltip(
             true,
@@ -39,12 +39,12 @@
           <img
             src="@/assets/icons/mordida.png"
             class="transition-all duration-500 h-8 w-8 object-cover"
-            :class="userTurn !== userLogged.email || verifyAction('default') ? 'opacity-40' : 'opaticy-1'"
+            :class="userTurn !== userLogged.email || verifyAction('default') || verifyAlcance('mordida') ? 'opacity-40' : 'opaticy-1'"
           />
         </button>
         <button
           type="button"
-          :disabled="userTurn !== userLogged.email || verifyAction('default')"
+          :disabled="userTurn !== userLogged.email || verifyAction('default') || verifyAlcance('garras')"
           @click="attackOponent('garras')"
           @mouseover="setTooltip(
             true,
@@ -59,7 +59,7 @@
           <img
             src="@/assets/icons/garras.png"
             class="transition-all duration-500 h-8 w-8 object-cover"
-            :class="userTurn !== userLogged.email || verifyAction('default') ? 'opacity-40' : 'opaticy-1'"
+            :class="userTurn !== userLogged.email || verifyAction('default') || verifyAlcance('garras') ? 'opacity-40' : 'opaticy-1'"
           />
         </button>
         <div class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer">
@@ -197,20 +197,34 @@
 </template>
 
 <script>
-import { changePosition, endTurn, hunt, verifyActions } from '@/firebase/battle';
+import { attack, changePosition, endTurn, hunt, verifyActions } from '@/firebase/battle';
 import { mapActions, mapState } from 'vuex';
 export default {
   name: 'UserActions',
   components: { },
-  computed: { ...mapState(['userLogged', 'userTurn', 'matchId', 'email']) },
+  computed: { ...mapState(['userLogged', 'userOponent', 'userTurn', 'matchId', 'email']) },
   data() { return { } },
   methods: {
     ...mapActions(['setMovementDragon', 'showTooltip', 'updateAffectedSquaresLogged', 'updateAffectedSquaresOponent']),
+    verifyAlcance(type) {
+      const distance = Math.sqrt(
+        Math.pow(this.userOponent.dragon.column - this.userLogged.dragon.column, 2) +
+        Math.pow(this.userOponent.dragon.row - this.userLogged.dragon.row, 2)
+      );
+      console.log(distance)
+      if (type === 'dracarys') {
+        if (distance <= this.userLogged.dragon.actions.dracarys.actual) return false;
+        return true;
+      } else {
+        if (distance <= this.userLogged.dragon.alcance.actual) return false;
+        return true;
+      }
+    },
     setTooltip(show, title, description, ataque, alcance) { 
       this.showTooltip({ show, title, description, ataque, alcance });
      },
     knockDown() { console.log('Knock Down') },
-    attackOponent(type) { console.log('Attack: ' + type) },
+    async attackOponent(type) { await attack(this.userLogged, this.userOponent, this.matchId, this.userLogged.dragon.actions[type].actual, type) },
     verifyAction(type) { return verifyActions(type, this.userLogged) },
     async finishTurn() { await endTurn(this.matchId, this.email) },
     async changeDragonPosition() { 
