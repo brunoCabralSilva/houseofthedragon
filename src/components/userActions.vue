@@ -225,7 +225,7 @@ export default {
         Math.pow(this.userOponent.dragon.column - this.userLogged.dragon.column, 2) +
         Math.pow(this.userOponent.dragon.row - this.userLogged.dragon.row, 2)
       );
-      if (distance === 1) return false;
+      if (distance === 1 && this.userOponent.dragon.actions.position !== this.userLogged.dragon.actions.position) return false;
       return true;
     },
     setTooltip(show, title, description, ataque, alcance) { 
