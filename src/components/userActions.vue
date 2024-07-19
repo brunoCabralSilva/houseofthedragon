@@ -93,13 +93,13 @@
         <button 
           v-else
           type="button"
-          :disabled="userTurn !== userLogged.email || verifyAction('movement-default')"
-          @click="knockDown"
+          :disabled="userTurn != userLogged.email || verifyAction('movement-default') || verifyKnockDown()"
+          @click="knockDownOponent"
           @mouseout="setTooltip(false, '', '', '', '')"
           @mouseover="setTooltip(
             true,
             'Derrubar - Ação Bônus e de Movimento',
-            'Ambos os Dragões precisam estar Voando para que esta ação seja possível, além de que é necessário estar fora do alcance do Oponente. Executando esta ação, o alvo é derrubado dos céus ao chão, precisando ter sucesso em um teste de Vitalidade para que não fique Atordoado.',
+            'Ambos os Dragões precisam estar Voando para que esta ação seja possível. Executando esta ação, o alvo é derrubado dos céus ao chão, precisando ter sucesso em um teste de Vitalidade para que não fique Atordoado.',
             '', '',
           )"
           class="flex items-center justify-center border-golden border rounded w-10 h-10 cursor-pointer"
@@ -197,7 +197,7 @@
 </template>
 
 <script>
-import { attack, changePosition, endTurn, hunt, verifyActions } from '@/firebase/battle';
+import { attack, changePosition, endTurn, hunt, knockDown, verifyActions } from '@/firebase/battle';
 import { mapActions, mapState } from 'vuex';
 export default {
   name: 'UserActions',
@@ -211,7 +211,6 @@ export default {
         Math.pow(this.userOponent.dragon.column - this.userLogged.dragon.column, 2) +
         Math.pow(this.userOponent.dragon.row - this.userLogged.dragon.row, 2)
       );
-      console.log(distance)
       if (type === 'dracarys') {
         if (distance <= this.userLogged.dragon.actions.dracarys.actual) return false;
         return true;
@@ -221,12 +220,20 @@ export default {
         return true;
       }
     },
+    verifyKnockDown() {
+      const distance = Math.sqrt(
+        Math.pow(this.userOponent.dragon.column - this.userLogged.dragon.column, 2) +
+        Math.pow(this.userOponent.dragon.row - this.userLogged.dragon.row, 2)
+      );
+      if (distance === 1) return false;
+      return true;
+    },
     setTooltip(show, title, description, ataque, alcance) { 
       this.showTooltip({ show, title, description, ataque, alcance });
-     },
-    knockDown() { console.log('Knock Down') },
-    async attackOponent(type) { await attack(this.userLogged, this.userOponent, this.matchId, this.userLogged.dragon.actions[type].actual, type) },
+    },
     verifyAction(type) { return verifyActions(type, this.userLogged) },
+    async knockDownOponent() { await knockDown(this.matchId, this.email) },
+    async attackOponent(type) { await attack(this.userLogged, this.userOponent, this.matchId, this.userLogged.dragon.actions[type].actual, type) },
     async finishTurn() { await endTurn(this.matchId, this.email) },
     async changeDragonPosition() { 
       this.updateAffectedSquaresLogged([]);

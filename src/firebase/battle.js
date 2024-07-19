@@ -159,6 +159,7 @@ const applyDamage = async (matchId, attacker, defender, finalDamage, textAttacke
             await applyVictoryOrDefeat(defenderUser, 'lossesIA');
         }
       } else {
+        if (textAttacker.includes('Seu Dragão causou') && textAttacker.includes('Dano Crítico')) defenderUser.dragon.conditions.slow = true;
         const msgAttacker = [ ...attackerUser.messages, { text: textAttacker, date: getHora }];
         const msgDefender = [ ...defenderUser.messages, { text: textDefender, date: getHora }];
         attackerUser.messages = msgAttacker;
@@ -363,7 +364,10 @@ export const endTurn = async (matchId, email) => {
       const userUpdating = data.users.find((user) => user.email === email);
       const otherUser = data.users.find((user) => user.email !== email);
       const userTurn = otherUser.email;
-      otherUser.actions = { bonus: 0, default: 0, movement: 0 };
+      if (userUpdating.dragon.conditions.slow || userUpdating.dragon.conditions.stunned) userUpdating.dragon.condicions = { slow: false, stunned: false };
+      if(!otherUser.dragon.conditions.stunned) {
+        otherUser.actions = { bonus: 0, default: 0, movement: 0 };
+      }
       const getHora = await getHoraOficialBrasil();
       let textUserUpdating = 'Você encerrou o Turno. Vez do Oponente.';
       let textOtherUser = 'Seu Oponente encerrou o turno. Sua Vez.';
@@ -414,4 +418,42 @@ export const updateRangedSquare = (grid, userLogged, userOponent) => {
     return distance <= userOponent.dragon.alcance.actual;
   });
   return {rangeSquaresLogged, rangeSquaresOponent };
+}
+
+export const knockDown = async (matchId, email) => {
+  try {
+    const db = getFirestore(firebaseConfig);
+    const battleDocRef = doc(db, 'battles', matchId);
+    const battleDocSnapshot = await getDoc(battleDocRef);
+    if (!battleDocSnapshot.exists()) window.alert('Batalha não encontrad(a). Por favor, atualize a página e tente novamente.');
+    else {
+      const data = battleDocSnapshot.data();
+      const userUpdating = data.users.find((user) => user.email === email);
+      const otherUser = data.users.find((user) => user.email !== email);
+      userUpdating.actions = {
+        bonus: userUpdating.actions.bonus + 1,
+        movement: userUpdating.actions.movement + 1,
+        default: 0,
+      };
+      const getHora = await getHoraOficialBrasil();
+      let textUserUpdating = '';
+      let textOtherUser = '';
+      const rollUserUpdating = rollDice(20) + (userUpdating.dragon.vitalidade.total / 10);
+      const rollOtherUser = rollDice(20) + (otherUser.dragon.vitalidade.total / 10);
+      if (rollUserUpdating >= rollOtherUser) {
+        textUserUpdating = 'Seu Dragão derrubou o Dragão do Oponente dos Céus.';
+        textOtherUser = 'O Oponente derrubou dos Céus o Dragão que pertence a você';
+        otherUser.actions.position = 'ground';
+        otherUser.conditions.stunned = true;
+      } else {
+        textUserUpdating = 'Seu Dragão falhou em tentar derrubat o Dragão do Oponente dos Céus.';
+        textOtherUser = 'O Oponente falhou em derrubar dos Céus o Dragão que pertence a você.';
+      }
+      userUpdating.messages = [ ...userUpdating.messages, { text: textUserUpdating, date: getHora }];
+      otherUser.messages = [ ...otherUser.messages, { text: textOtherUser, date: getHora }];
+      await updateDoc(battleDocRef, { users: [userUpdating, otherUser] });
+    }
+  } catch (error) {
+    return false;
+  }
 }
